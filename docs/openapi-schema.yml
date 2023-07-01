@@ -1128,81 +1128,81 @@ components:
                 items:
                   type: string
 
-    SelfMadeError:
-      description: Ошибка
-      type: object
-      properties:
-        errors:
-          description: 'Описание ошибки'
-          type: string
+  #   SelfMadeError:
+  #     description: Ошибка
+  #     type: object
+  #     properties:
+  #       errors:
+  #         description: 'Описание ошибки'
+  #         type: string
 
-    AuthenticationError:
-      description: Пользователь не авторизован
-      type: object
-      properties:
-        detail:
-          description: 'Описание ошибки'
-          example: "Учетные данные не были предоставлены."
-          type: string
+  #   AuthenticationError:
+  #     description: Пользователь не авторизован
+  #     type: object
+  #     properties:
+  #       detail:
+  #         description: 'Описание ошибки'
+  #         example: "Учетные данные не были предоставлены."
+  #         type: string
 
-    PermissionDenied:
-      description: Недостаточно прав
-      type: object
-      properties:
-        detail:
-          description: 'Описание ошибки'
-          example: "У вас недостаточно прав для выполнения данного действия."
-          type: string
-    NotFound:
-      description: Объект не найден
-      type: object
-      properties:
-        detail:
-          description: 'Описание ошибки'
-          example: "Страница не найдена."
-          type: string
+  #   PermissionDenied:
+  #     description: Недостаточно прав
+  #     type: object
+  #     properties:
+  #       detail:
+  #         description: 'Описание ошибки'
+  #         example: "У вас недостаточно прав для выполнения данного действия."
+  #         type: string
+  #   NotFound:
+  #     description: Объект не найден
+  #     type: object
+  #     properties:
+  #       detail:
+  #         description: 'Описание ошибки'
+  #         example: "Страница не найдена."
+  #         type: string
 
-  responses:
-    ValidationError:
-      description: 'Ошибки валидации в стандартном формате DRF'
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/ValidationError'
-    NestedValidationError:
-      description: 'Ошибки валидации в стандартном формате DRF, в том числе с внутренними элементами.'
-      content:
-        application/json:
-          schema:
-            oneOf:
-              - $ref: '#/components/schemas/NestedValidationError'
-              - $ref: '#/components/schemas/ValidationError'
+  # responses:
+  #   ValidationError:
+  #     description: 'Ошибки валидации в стандартном формате DRF'
+  #     content:
+  #       application/json:
+  #         schema:
+  #           $ref: '#/components/schemas/ValidationError'
+  #   NestedValidationError:
+  #     description: 'Ошибки валидации в стандартном формате DRF, в том числе с внутренними элементами.'
+  #     content:
+  #       application/json:
+  #         schema:
+  #           oneOf:
+  #             - $ref: '#/components/schemas/NestedValidationError'
+  #             - $ref: '#/components/schemas/ValidationError'
 
-    AuthenticationError:
-      description: Пользователь не авторизован
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/AuthenticationError'
+  #   AuthenticationError:
+  #     description: Пользователь не авторизован
+  #     content:
+  #       application/json:
+  #         schema:
+  #           $ref: '#/components/schemas/AuthenticationError'
 
-    PermissionDenied:
-      description: Недостаточно прав
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/PermissionDenied'
+  #   PermissionDenied:
+  #     description: Недостаточно прав
+  #     content:
+  #       application/json:
+  #         schema:
+  #           $ref: '#/components/schemas/PermissionDenied'
 
-    NotFound:
-      description: Объект не найден
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/NotFound'
+  #   NotFound:
+  #     description: Объект не найден
+  #     content:
+  #       application/json:
+  #         schema:
+  #           $ref: '#/components/schemas/NotFound'
 
 
-  securitySchemes:
-    Token:
-      description: 'Авторизация по токену. <br>
-      Все запросы от имени пользователя должны выполняться с заголовком "Authorization: Token TOKENVALUE"'
-      type: http
-      scheme: token
+  # securitySchemes:
+  #   Token:
+  #     description: 'Авторизация по токену. <br>
+  #     Все запросы от имени пользователя должны выполняться с заголовком "Authorization: Token TOKENVALUE"'
+  #     type: http
+  #     scheme: token
