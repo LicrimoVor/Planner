@@ -30,7 +30,6 @@ tags:
   - name: Пользователи
   - name: Теги
   - name: Статусы
-  - name: Организации
   - name: Задачи организации
     description: |
       Фильтрация по тегам: http://127.0.0.1:8000/api/organization/{id}/task/?tags=hard&tags=normal <br>
@@ -38,14 +37,15 @@ tags:
       Фильтрация по акутальным задачам: http://127.0.0.1:8000/api/organization/{id}/task/?actual=true <br>
       Поиск по названию задачи: http://127.0.0.1:8000/api/organization/{id}/task/?search=Планне <br>
       Сортировка по дедлайну: http://127.0.0.1:8000/api/organization/{id}/task/?ordering=deadline <br>
-  - name: Персональные задачи
+  - name: Мои задачи
     description: |
       Фильтрация по тегам: http://127.0.0.1:8000/api/task_me/?tags=hard&tags=normal <br>
       Фильтрация по статусу: http://127.0.0.1:8000/api/task_me/?status=1 <br>
       Фильтрация по организации: http://127.0.0.1:8000/api/task_me/?organization=1 <br>
       Фильтрация по акутальным задачам: http://127.0.0.1:8000/api/task_me/?actual=true <br>
-      Поиск по названию задачи: http://127.0.0.1:8000/api/task_me/?search=Планне <br>
+      Поиск по названию задачи: http://127.0.0.1:8000/apitask_me/?search=Планне <br>
       Сортировка по дедлайну: http://127.0.0.1:8000/api/task_me/?ordering=deadline <br>
+  - name: Организации
 
   - name: Модель пользователя
     x-displayName: Модель пользователя
@@ -63,10 +63,10 @@ tags:
     x-displayName: Модель задачи организации
     description: |
       <SchemaDefinition schemaRef="#/components/models/TaskOrganization" />
-  - name: Модель персональной задачи
-    x-displayName: Модель персональной задачи
+  - name: Модель личной задачи
+    x-displayName: Модель личной задачи
     description: |
-      <SchemaDefinition schemaRef="#/components/models/TaskPersonal" />
+      <SchemaDefinition schemaRef="#/components/models/TaskMe" />
   - name: Модель организации
     x-displayName: Модель организации
     description: |
@@ -328,7 +328,6 @@ paths:
           $ref: '#/components/responses/NotFound'
       tags:
         - Теги
-  
   /api/status/:
     get:
       operationId: Cписок статусов
@@ -467,7 +466,6 @@ paths:
           $ref: '#/components/responses/NotFound'
       tags:
         - Статусы
-  
   /api/organization/:
     get:
       operationId: Cписок организаций
@@ -658,8 +656,54 @@ paths:
           $ref: '#/components/responses/AuthenticationError'
       tags:
         - Организации
-  
-  /api/organization/{id}/task/:
+  /api/Task/me:
+    get:
+      operationId: Cписок моих задач
+      security:
+        - Token: [ ]
+      description: |
+       Получение списка задач, в которых отмечен текущий пользователь. <br>
+       Подключен пагинатор с 10 элементами на выводе <br>
+
+      parameters: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  count:
+                    type: integer
+                    example: 123
+                    description: 'Общее количество объектов в базе'
+                  next:
+                    type: string
+                    nullable: true
+                    format: uri
+                    example: http://127.0.0.1:8000/api/Task/?page=4
+                    description: 'Ссылка на следующую страницу'
+                  previous:
+                    type: string
+                    nullable: true
+                    format: uri
+                    example: http://127.0.0.1:8000/api/Task/?page=2
+                    description: 'Ссылка на предыдущую страницу'
+                  results:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Task'
+                    description: 'Список объектов текущей страницы'
+          description: ''
+        '401':
+          $ref: '#/components/responses/AuthenticationError'
+        '403':
+          $ref: '#/components/responses/PermissionDenied'
+        '404':
+          $ref: '#/components/responses/NotFound'
+      tags:
+        - Задачи
+  /api/Task/:
     post:
       operationId: Создание задачи
       description: Создание задачи
@@ -669,13 +713,13 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/TaskOrgCreate'
+              $ref: '#/components/schemas/TaskCreate'
       responses:
         '201':
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/TaskOrgCreateResp'
+                $ref: '#/components/schemas/TaskCreateResp'
           description: 'Статус успешно создан'
         '400':
           $ref: '#/components/responses/ValidationError'
@@ -686,8 +730,8 @@ paths:
         '404':
           $ref: '#/components/responses/NotFound'
       tags:
-        - Задачи организации
-  /api/organization/{id}/task/{id}/:
+        - Задачи
+  /api/Task/{id}/:
     get:
       security:
         - Token: [ ]
@@ -705,7 +749,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/TaskOrg'
+                $ref: '#/components/schemas/Task'
           description: ''
         '401':
           $ref: '#/components/responses/AuthenticationError'
@@ -732,13 +776,13 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/TaskOrgUpdate'
+              $ref: '#/components/schemas/TaskUpdate'
       responses:
         '200':
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/TaskOrgUpdateResp'
+                $ref: '#/components/schemas/TaskUpdateResp'
           description: 'Задача успешна обновлена'
         '401':
           $ref: '#/components/responses/AuthenticationError'
@@ -771,8 +815,8 @@ paths:
         '404':
           $ref: '#/components/responses/NotFound'
       tags:
-        - Задачи организации
-  /api/organization/{id}/task/{id}/subtasks/:
+        - Задачи
+  /api/Task/{id}/subtasks/:
     get:
       operationId: Cписок подзадач
       security:
@@ -808,7 +852,7 @@ paths:
                   results:
                     type: array
                     items:
-                      $ref: '#/components/schemas/TaskOrg'
+                      $ref: '#/components/schemas/Task'
                     description: 'Список объектов текущей страницы'
           description: ''
         '401':
@@ -828,13 +872,13 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/TaskOrgCreate'
+              $ref: '#/components/schemas/TaskCreate'
       responses:
         '201':
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/TaskOrgCreateResp'
+                $ref: '#/components/schemas/TaskCreateResp'
           description: 'Статус успешно создан'
         '400':
           $ref: '#/components/responses/ValidationError'
@@ -845,63 +889,11 @@ paths:
         '404':
           $ref: '#/components/responses/NotFound'
       tags:
-        - Задачи организации
-  /api/organization/{id}/task/{id}/subtasks/{id}/:
+        - Задачи
+  /api/Task/{id}/subtasks/{id}/:
     get:
     patch:
     del:
-  
-  /api/task_me/:
-    get:
-      operationId: Cписок моих задач
-      security:
-        - Token: [ ]
-      description: |
-       Получение списка задач, в которых отмечен текущий пользователь. <br>
-       Подключен пагинатор с 10 элементами на выводе <br>
-
-      parameters: []
-      responses:
-        '200':
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  count:
-                    type: integer
-                    example: 123
-                    description: 'Общее количество объектов в базе'
-                  next:
-                    type: string
-                    nullable: true
-                    format: uri
-                    example: http://127.0.0.1:8000/api/task_me/?page=4
-                    description: 'Ссылка на следующую страницу'
-                  previous:
-                    type: string
-                    nullable: true
-                    format: uri
-                    example: http://127.0.0.1:8000/api/task_me/?page=2
-                    description: 'Ссылка на предыдущую страницу'
-                  results:
-                    type: array
-                    items:
-                      $ref: '#/components/schemas/TaskPersonal'
-                    description: 'Список объектов текущей страницы'
-          description: ''
-        '401':
-          $ref: '#/components/responses/AuthenticationError'
-        '403':
-          $ref: '#/components/responses/PermissionDenied'
-        '404':
-          $ref: '#/components/responses/NotFound'
-      tags:
-        - Персональные задачи
-
-  /api/task_me/{id}/:
-  /api/task_me/{id}/subtasks/:
-  /api/task_me/{id}/subtasks/{id}/:
 
 components:
   schemas:
@@ -983,8 +975,7 @@ components:
           items:
             example:
               id: 0
-
-    TaskOrg:
+    Task:
       type: object
       required:
         - name
@@ -1036,7 +1027,7 @@ components:
         subtasks:
           description: Подзадачи
           allOf:
-            - $ref: '#/components/schemas/SubTaskOrgList'
+            - $ref: '#/components/schemas/SubTaskList'
         tags:
           description: Теги задачи
           minItems: 0
@@ -1045,7 +1036,7 @@ components:
             wrapped: true
           items:
             $ref: '#/components/models/Tag'
-    TaskOrgCreate:
+    TaskCreate:
       required:
         - name
       type: object
@@ -1089,8 +1080,14 @@ components:
           example: [1, ]
           items:
             type: integer
-    TaskOrgCreateResp:
+    TaskCreateResp:
       type: object
+      required:
+        - name
+        - discription
+        - status
+        - author
+        - organization
       properties:
         id:
           externalDocs:
@@ -1143,7 +1140,7 @@ components:
             wrapped: true
           items:
             $ref: '#/components/models/Tag'
-    TaskOrgUpdate:
+    TaskUpdate:
       required:
         - name
       type: object
@@ -1188,8 +1185,14 @@ components:
           example: [1, ]
           items:
             type: integer
-    TaskOrgUpdateResp:
+    TaskUpdateResp:
       type: object
+      required:
+        - name
+        - discription
+        - status
+        - author
+        - organization
       properties:
         id:
           externalDocs:
@@ -1243,8 +1246,14 @@ components:
             wrapped: true
           items:
             $ref: '#/components/models/Tag'
-    SubTaskOrgCreateResp:
+    SubTaskCreateResp:
       type: object
+      required:
+        - name
+        - discription
+        - status
+        - author
+        - organization
       properties:
         id:
           externalDocs:
@@ -1297,8 +1306,14 @@ components:
             wrapped: true
           items:
             $ref: '#/components/models/Tag'
-    SubTaskOrgList:
+    SubTaskList:
       type: object
+      required:
+        - name
+        - discription
+        - status
+        - author
+        - organization
       properties:
         id:
           externalDocs:
@@ -1348,433 +1363,6 @@ components:
             wrapped: true
           items:
             $ref: '#/components/models/Tag'
-    
-    TaskPersonal:
-      type: object
-      required:
-        - name
-        - discription
-        - status
-        - author
-        - organization
-      properties:
-        id:
-          externalDocs:
-            description: Id задачи
-          description: Id задачи
-          type: integer
-          readOnly: true
-          example: 1
-        name:
-          description: Название задачи
-          maxLength: 200
-          type: string
-          example: Сессия
-        discription:
-          description: Описание задачи
-          type: string
-          example: Успешная сдача сессии. Подготовка к сессии
-        status:
-          description: Статус задачи
-          allOf:
-            - $ref: '#/components/models/Status'
-        author:
-          description: Автор задачи
-          allOf:
-            - $ref: '#/components/schemas/User'
-        deadline:
-          type: datetime
-          description: Время дедлайна
-          example: 21.06.2023
-        subtasks:
-          description: Подзадачи
-          allOf:
-            - $ref: '#/components/schemas/SubTaskPersonalResp'
-        tags:
-          description: Теги задачи
-          minItems: 0
-          xml:
-            name: tag
-            wrapped: true
-          items:
-            $ref: '#/components/models/Tag'
-    TaskPersonalCreate:
-      required:
-        - name
-      type: object
-      properties:
-        name:
-          description: Название задачи
-          maxLength: 200
-          type: string
-          example: Сессия
-        discription:
-          description: Описание задачи
-          type: string
-          example: Успешная сдача сессии. Подготовка к сессии
-        status:
-          description: Статус задачи
-          example: 1
-        deadline:
-          type: datetime
-          description: Время дедлайна
-          example: 21.06.2023
-        tags:
-          description: Теги задачи
-          minItems: 0
-          xml:
-            name: tag
-            wrapped: true
-          type: array
-          example: [1, ]
-          items:
-            type: integer
-    TaskPersonalCreateResp:
-      type: object
-      properties:
-        id:
-          externalDocs:
-            description: Id задачи
-          description: Id задачи
-          type: integer
-          readOnly: true
-          example: 1
-        name:
-          description: Название задачи
-          maxLength: 200
-          type: string
-          example: Сессия
-        discription:
-          description: Описание задачи
-          type: string
-          example: Успешная сдача сессии. Подготовка к сессии
-        status:
-          description: Статус задачи
-          allOf:
-            - $ref: '#/components/models/Status'
-        author:
-          description: Автор задачи
-          allOf:
-            - $ref: '#/components/schemas/User'
-        deadline:
-          type: datetime
-          description: Время дедлайна
-          example: 21.06.2023
-        subtasks:
-          description: Подзадачи
-          example: []
-        tags:
-          description: Теги задачи
-          minItems: 0
-          xml:
-            name: tag
-            wrapped: true
-          items:
-            $ref: '#/components/models/Tag'
-    TaskPersonalUpdate:
-      required:
-        - name
-      type: object
-      properties:
-        name:
-          description: Название задачи
-          maxLength: 200
-          type: string
-          example: Сессия
-        discription:
-          description: Описание задачи
-          type: string
-          example: Успешная сдача сессии. Подготовка к сессии.
-                   Закрытие всех зачетов и прохождение практики
-        status:
-          description: Статус задачи
-          example: 1
-        deadline:
-          type: datetime
-          description: Время дедлайна
-          example: 17.07.2023
-        tags:
-          description: Теги задачи
-          minItems: 0
-          xml:
-            name: tag
-            wrapped: true
-          type: array
-          example: [1, ]
-          items:
-            type: integer
-    TaskPersonalUpdateResp:
-      type: object
-      properties:
-        id:
-          externalDocs:
-            description: Id задачи
-          description: Id задачи
-          type: integer
-          readOnly: true
-          example: 1
-        name:
-          description: Название задачи
-          maxLength: 200
-          type: string
-          example: Сессия
-        discription:
-          description: Описание задачи
-          type: string
-          example: Успешная сдача сессии. Подготовка к сессии.
-                   Закрытие всех зачетов и прохождение практики
-        status:
-          description: Статус задачи
-          allOf:
-            - $ref: '#/components/models/Status'
-        author:
-          description: Автор задачи
-          allOf:
-            - $ref: '#/components/schemas/User'
-        deadline:
-          type: datetime
-          description: Время дедлайна
-          example: 17.07.2023
-        subtasks:
-          description: Подзадачи
-          example: []
-        tags:
-          description: Теги задачи
-          minItems: 0
-          xml:
-            name: tag
-            wrapped: true
-          items:
-            $ref: '#/components/models/Tag'
-    SubTaskPersonalResp:
-      type: object
-      properties:
-        id:
-          externalDocs:
-            description: Id задачи
-          description: Id задачи
-          type: integer
-          readOnly: true
-          example: 1
-        name:
-          description: Название задачи
-          maxLength: 200
-          type: string
-          example: Изучение математики
-        discription:
-          description: Описание задачи
-          type: string
-          example: Изучение тер-вера, ДУ и линейной алгебры
-        status:
-          description: Статус задачи
-          allOf:
-            - $ref: '#/components/models/Status'
-        author:
-          description: Автор задачи
-          allOf:
-            - $ref: '#/components/schemas/User'
-        deadline:
-          type: datetime
-          description: Время дедлайна
-          example: 10.06.2023
-        tags:
-          description: Теги задачи
-          minItems: 0
-          xml:
-            name: tag
-            wrapped: true
-          items:
-            $ref: '#/components/models/Tag'
-    SubTaskPersonalCreate:
-      required:
-        - name
-      type: object
-      properties:
-        name:
-          description: Название задачи
-          maxLength: 200
-          type: string
-          example: Изучение математики
-        discription:
-          description: Описание задачи
-          type: string
-          example: Изучение тер-вера, ДУ и линейной алгебры
-        status:
-          description: Статус задачи
-          example: 1
-        deadline:
-          type: datetime
-          description: Время дедлайна
-          example: 10.06.2023
-        tags:
-          description: Теги задачи
-          minItems: 0
-          xml:
-            name: tag
-            wrapped: true
-          type: array
-          example: [1, ]
-          items:
-            type: integer
-    SubTaskPersonalCreateResp:
-      type: object
-      properties:
-        id:
-          externalDocs:
-            description: Id задачи
-          description: Id задачи
-          type: integer
-          readOnly: true
-          example: 1
-        name:
-          description: Название задачи
-          maxLength: 200
-          type: string
-          example: Изучение математики
-        discription:
-          description: Описание задачи
-          type: string
-          example: Изучение тер-вера, ДУ и линейной алгебры
-        status:
-          description: Статус задачи
-          allOf:
-            - $ref: '#/components/models/Status'
-        author:
-          description: Автор задачи
-          allOf:
-            - $ref: '#/components/schemas/User'
-        deadline:
-          type: datetime
-          description: Время дедлайна
-          example: 10.06.2023
-        subtasks:
-          description: Подзадачи
-          example: []
-        tags:
-          description: Теги задачи
-          minItems: 0
-          xml:
-            name: tag
-            wrapped: true
-          items:
-            $ref: '#/components/models/Tag'
-    SubTaskPersonalUpdate:
-      required:
-        - name
-      type: object
-      properties:
-        name:
-          description: Название задачи
-          maxLength: 200
-          type: string
-          example: Изучение математики
-        discription:
-          description: Описание задачи
-          type: string
-          example: Изучение тер-вера, ДУ, линейной алгебры и интегрирования
-        status:
-          description: Статус задачи
-          example: 1
-        deadline:
-          type: datetime
-          description: Время дедлайна
-          example: 20.06.2023
-        tags:
-          description: Теги задачи
-          minItems: 0
-          xml:
-            name: tag
-            wrapped: true
-          type: array
-          example: [1, ]
-          items:
-            type: integer
-    SubTaskPersonalUpdateResp:
-      type: object
-      properties:
-        id:
-          externalDocs:
-            description: Id задачи
-          description: Id задачи
-          type: integer
-          readOnly: true
-          example: 1
-        name:
-          description: Название задачи
-          maxLength: 200
-          type: string
-          example: Изучение математики
-        discription:
-          description: Описание задачи
-          type: string
-          example: Изучение тер-вера, ДУ, линейной алгебры и интегрирования
-        status:
-          description: Статус задачи
-          allOf:
-            - $ref: '#/components/models/Status'
-        author:
-          description: Автор задачи
-          allOf:
-            - $ref: '#/components/schemas/User'
-        deadline:
-          type: datetime
-          description: Время дедлайна
-          example: 20.06.2023
-        subtasks:
-          description: Подзадачи
-          example: []
-        tags:
-          description: Теги задачи
-          minItems: 0
-          xml:
-            name: tag
-            wrapped: true
-          items:
-            $ref: '#/components/models/Tag'
-    SubTaskPersonalList:
-      type: object
-      properties:
-        id:
-          externalDocs:
-            description: Id задачи
-          description: Id задачи
-          type: integer
-          readOnly: true
-          example: 1
-        name:
-          description: Название задачи
-          maxLength: 200
-          type: string
-          example: Сессия
-        discription:
-          description: Описание задачи
-          type: string
-          example: Успешная сдача сессии. Подготовка к сессии.
-                   Закрытие всех зачетов и прохождение практики
-        status:
-          description: Статус задачи
-          allOf:
-            - $ref: '#/components/models/Status'
-        author:
-          description: Автор задачи
-          allOf:
-            - $ref: '#/components/schemas/User'
-        deadline:
-          type: datetime
-          description: Время дедлайна
-          example: 17.07.2023
-        subtasks:
-          description: Подзадачи
-          example: []
-        tags:
-          description: Теги задачи
-          minItems: 0
-          xml:
-            name: tag
-            wrapped: true
-          items:
-            $ref: '#/components/models/Tag'
-   
     CustomUserCreate:
       type: object
       $ref: '#/components/models/User'
@@ -2116,13 +1704,8 @@ components:
             $ref: '#/components/models/Tag'
         history:
           description: История изменения задачи
-          type: object
-          example: "<HistoricalTaskOrganization>"
-          readOnly: true
-        main_task:
-          type: bool
-          readOnly: true
-    TaskPersonal:
+          example: <HistoricalTaskOrganization>
+    TaskMe:
       type: object
       required:
         - name
@@ -2161,7 +1744,7 @@ components:
         subtasks:
           description: Подзадачи
           allOf:
-            - $ref: '#/components/models/TaskPersonal'
+            - $ref: '#/components/models/TaskMe'
         tags:
           description: Теги задачи
           minItems: 0
@@ -2170,10 +1753,6 @@ components:
             wrapped: true
           items:
             $ref: '#/components/models/Tag'
-        main_task:
-          type: bool
-          readOnly: true
-
   responses:
     ValidationError:
       description: 'Ошибки валидации в стандартном формате DRF'
@@ -2203,8 +1782,7 @@ components:
   securitySchemes:
     Token:
       description: 'Авторизация по токену. <br>
-                    Все запросы от имени пользователя должны выполняться
-                    с заголовком "Authorization: Token TOKENVALUE"'
+      Все запросы от имени пользователя должны выполняться с заголовком "Authorization: Token TOKENVALUE"'
       type: http
       scheme: token
 
@@ -2214,14 +1792,14 @@ x-tagGroups:
       - Пользователи
       - Теги
       - Статусы
-      - Персональные задачи
       - Организации
       - Задачи организации
+      - Мои задачи
   - name: Models
     tags:
       - Модель пользователя
       - Модель тега
       - Модель статуса
-      - Модель персональной задачи
       - Модель организации
       - Модель задачи организации
+      - Модель личной задачи
