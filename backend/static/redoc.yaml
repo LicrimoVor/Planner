@@ -30,26 +30,44 @@ tags:
   - name: Пользователи
   - name: Теги
   - name: Статусы
-  - name: Задачи
+  - name: Задачи организации
+    description: |
+      Фильтрация по тегам: http://127.0.0.1:8000/api/organization/{id}/task/?tags=hard&tags=normal <br>
+      Фильтрация по статусу: http://127.0.0.1:8000/api/organization/{id}/task/?status=1 <br>
+      Фильтрация по акутальным задачам: http://127.0.0.1:8000/api/organization/{id}/task/?actual=true <br>
+      Поиск по названию задачи: http://127.0.0.1:8000/api/organization/{id}/task/?search=Планне <br>
+      Сортировка по дедлайну: http://127.0.0.1:8000/api/organization/{id}/task/?ordering=deadline <br>
+  - name: Мои задачи
+    description: |
+      Фильтрация по тегам: http://127.0.0.1:8000/api/task_me/?tags=hard&tags=normal <br>
+      Фильтрация по статусу: http://127.0.0.1:8000/api/task_me/?status=1 <br>
+      Фильтрация по организации: http://127.0.0.1:8000/api/task_me/?organization=1 <br>
+      Фильтрация по акутальным задачам: http://127.0.0.1:8000/api/task_me/?actual=true <br>
+      Поиск по названию задачи: http://127.0.0.1:8000/apitask_me/?search=Планне <br>
+      Сортировка по дедлайну: http://127.0.0.1:8000/api/task_me/?ordering=deadline <br>
   - name: Организации
 
-  - name: Пользователь
+  - name: Модель пользователя
     x-displayName: Модель пользователя
     description: |
       <SchemaDefinition schemaRef="#/components/models/User" />
-  - name: Тег
+  - name: Модель тега
     x-displayName: Модель тега
     description: |
       <SchemaDefinition schemaRef="#/components/models/Tag" />
-  - name: Статус
+  - name: Модель статуса
     x-displayName: Модель статуса
     description: |
       <SchemaDefinition schemaRef="#/components/models/Status" />
-  - name: Задача
-    x-displayName: Модель задачи
+  - name: Модель задачи организации
+    x-displayName: Модель задачи организации
     description: |
-      <SchemaDefinition schemaRef="#/components/models/Task" />
-  - name: Организация
+      <SchemaDefinition schemaRef="#/components/models/TaskOrganization" />
+  - name: Модель личной задачи
+    x-displayName: Модель личной задачи
+    description: |
+      <SchemaDefinition schemaRef="#/components/models/TaskMe" />
+  - name: Модель организации
     x-displayName: Модель организации
     description: |
       <SchemaDefinition schemaRef="#/components/models/Organization" />
@@ -58,7 +76,7 @@ paths:
   /api/users/:
     get:
       operationId: Список пользователей
-      description: Получение списка всех пользователей
+      description: Получение списка всех пользователей. Подключен пагинатор с 10 элементами на выводе
       parameters:
         - name: page
           required: false
@@ -87,13 +105,13 @@ paths:
                     type: string
                     nullable: true
                     format: uri
-                    example: http://foodgram.example.org/api/users/?page=4
+                    example: http://127.0.0.1:8000/api/users/?page=4
                     description: 'Ссылка на следующую страницу'
                   previous:
                     type: string
                     nullable: true
                     format: uri
-                    example: http://foodgram.example.org/api/users/?page=2
+                    example: http://127.0.0.1:8000/api/users/?page=2
                     description: 'Ссылка на предыдущую страницу'
                   results:
                     type: array
@@ -232,16 +250,36 @@ paths:
   /api/tags/:
     get:
       operationId: Cписок тегов
-      description: Получение списока всех тегов
+      description: Получение списка всех тегов. Подключен пагинатор с 10 элементами на выводе
       parameters: []
       responses:
         '200':
           content:
             application/json:
               schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/Tag'
+                type: object
+                properties:
+                  count:
+                    type: integer
+                    example: 123
+                    description: 'Общее количество объектов в базе'
+                  next:
+                    type: string
+                    nullable: true
+                    format: uri
+                    example: http://127.0.0.1:8000/api/tags/?page=4
+                    description: 'Ссылка на следующую страницу'
+                  previous:
+                    type: string
+                    nullable: true
+                    format: uri
+                    example: http://127.0.0.1:8000/api/tags/?page=2
+                    description: 'Ссылка на предыдущую страницу'
+                  results:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Tag'
+                    description: 'Список объектов текущей страницы'
           description: ''
       tags:
         - Теги
@@ -293,22 +331,42 @@ paths:
   /api/status/:
     get:
       operationId: Cписок статусов
-      description: Получение списока всех статусов
+      description: Получение списка всех статусов. Подключен пагинатор с 10 элементами на выводе
       parameters: []
       responses:
         '200':
           content:
             application/json:
               schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/Status'
+                type: object
+                properties:
+                  count:
+                    type: integer
+                    example: 123
+                    description: 'Общее количество объектов в базе'
+                  next:
+                    type: string
+                    nullable: true
+                    format: uri
+                    example: http://127.0.0.1:8000/api/status/?page=4
+                    description: 'Ссылка на следующую страницу'
+                  previous:
+                    type: string
+                    nullable: true
+                    format: uri
+                    example: http://127.0.0.1:8000/api/status/?page=2
+                    description: 'Ссылка на предыдущую страницу'
+                  results:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Status'
+                    description: 'Список объектов текущей страницы'
           description: ''
       tags:
         - Статусы
     post:
       operationId: Создание статуса
-      description: Создание статуса для задач
+      description: Создание статуса для задач. Доступно только администраторам сервиса
       security:
         - Token: [ ]
       requestBody:
@@ -327,6 +385,8 @@ paths:
           $ref: '#/components/responses/ValidationError'
         '401':
           $ref: '#/components/responses/AuthenticationError'
+        '403':
+          $ref: '#/components/responses/PermissionDenied'
       tags:
         - Статусы
   /api/status/{id}/:
@@ -351,25 +411,485 @@ paths:
           $ref: '#/components/responses/NotFound'
       tags:
         - Статусы
+    patch:
+      operationId: Обновление статуса
+      security:
+        - Token: [ ]
+      description: 'Обновление полей статуса. Доступно только администраторам сервиса'
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: "Уникальный идентификатор этого статуса."
+          schema:
+            type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Status'
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Status'
+          description: 'Статус успешно обновлен'
+        '400':
+          $ref: '#/components/responses/AuthenticationError'
+        '403':
+          $ref: '#/components/responses/PermissionDenied'
+        '404':
+          $ref: '#/components/responses/NotFound'
+      tags:
+        - Статусы
+    delete:
+      operationId: Удаление статуса
+      description: Удаление статуса. Доступно только администраторам сервиса
+      security:
+        - Token: [ ]
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: "Уникальный идентификатор этого статуса"
+          schema:
+            type: string
+      responses:
+        '204':
+          description: 'Статус успешно удален'
+        '401':
+          $ref: '#/components/responses/AuthenticationError'
+        '403':
+          $ref: '#/components/responses/PermissionDenied'
+        '404':
+          $ref: '#/components/responses/NotFound'
+      tags:
+        - Статусы
   /api/organization/:
     get:
+      operationId: Cписок организаций
+      description: Получение списка всех организаций. Подключен пагинатор с 10 элементами на выводе
+      parameters: []
+      security:
+        - Token: [ ]
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  count:
+                    type: integer
+                    example: 123
+                    description: 'Общее количество объектов в базе'
+                  next:
+                    type: string
+                    nullable: true
+                    format: uri
+                    example: http://127.0.0.1:8000/api/organization/?page=4
+                    description: 'Ссылка на следующую страницу'
+                  previous:
+                    type: string
+                    nullable: true
+                    format: uri
+                    example: http://127.0.0.1:8000/api/organization/?page=2
+                    description: 'Ссылка на предыдущую страницу'
+                  results:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/OrganizationList'
+                    description: 'Список объектов текущей страницы'
+          description: ''
+        '401':
+          $ref: '#/components/responses/AuthenticationError'
+      tags:
+        - Организации
     post:
+      operationId: Создание организации
+      description: Создание организации
+      security:
+        - Token: [ ]
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/OrganizationCreate'
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Organization'
+          description: 'Организация успешно создана'
+        '400':
+          $ref: '#/components/responses/ValidationError'
+        '401':
+          $ref: '#/components/responses/AuthenticationError'
+      tags:
+        - Организации
   /api/organization/{id}/:
     get:
+      operationId: Получение организации
+      description: Получение организации по её id
+      security:
+        - Token: [ ]
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: "Уникальный идентификатор этой организации."
+          schema:
+            type: string
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OrganizationList'
+          description: ''
+        '401':
+          $ref: '#/components/responses/AuthenticationError'
+        '404':
+          $ref: '#/components/responses/NotFound'
+      tags:
+        - Организации
     patch:
-    del:
+      operationId: Обновление организации
+      security:
+        - Token: [ ]
+      description: 'Обновление полей организации. Доступно только администратору организации'
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: "Уникальный идентификатор этой организации."
+          schema:
+            type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Organization'
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Organization'
+          description: 'Организация успешна обновлена'
+        '401':
+          $ref: '#/components/responses/AuthenticationError'
+        '403':
+          $ref: '#/components/responses/PermissionDenied'
+        '404':
+          $ref: '#/components/responses/NotFound'
+      tags:
+        - Организации
+    delete:
+      operationId: Удаление организации
+      description: Удаление организации. Доступно только администратору организации
+      security:
+        - Token: [ ]
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: "Уникальный идентификатор этой организации"
+          schema:
+            type: string
+      responses:
+        '204':
+          description: 'Организация успешна удалена'
+        '401':
+          $ref: '#/components/responses/AuthenticationError'
+        '403':
+          $ref: '#/components/responses/PermissionDenied'
+        '404':
+          $ref: '#/components/responses/NotFound'
+      tags:
+        - Организации
   /api/organization/me/:
     get:
-  /api/Task/:
+      operationId: Список моих организаций
+      description: Получение организаций, в которых состоит текущий пользователь. Подключен пагинатор с 10 элементами на выводе
+      security:
+        - Token: [ ]
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: "Уникальный идентификатор этой организации."
+          schema:
+            type: string
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  count:
+                    type: integer
+                    example: 123
+                    description: 'Общее количество объектов в базе'
+                  next:
+                    type: string
+                    nullable: true
+                    format: uri
+                    example: http://127.0.0.1:8000/api/organization/?page=4
+                    description: 'Ссылка на следующую страницу'
+                  previous:
+                    type: string
+                    nullable: true
+                    format: uri
+                    example: http://127.0.0.1:8000/api/organization/?page=2
+                    description: 'Ссылка на предыдущую страницу'
+                  results:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/OrganizationList'
+                    description: 'Список объектов текущей страницы'
+          description: ''
+        '401':
+          $ref: '#/components/responses/AuthenticationError'
+      tags:
+        - Организации
+  /api/Task/me:
     get:
+      operationId: Cписок моих задач
+      security:
+        - Token: [ ]
+      description: |
+       Получение списка задач, в которых отмечен текущий пользователь. <br>
+       Подключен пагинатор с 10 элементами на выводе <br>
+
+      parameters: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  count:
+                    type: integer
+                    example: 123
+                    description: 'Общее количество объектов в базе'
+                  next:
+                    type: string
+                    nullable: true
+                    format: uri
+                    example: http://127.0.0.1:8000/api/Task/?page=4
+                    description: 'Ссылка на следующую страницу'
+                  previous:
+                    type: string
+                    nullable: true
+                    format: uri
+                    example: http://127.0.0.1:8000/api/Task/?page=2
+                    description: 'Ссылка на предыдущую страницу'
+                  results:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Task'
+                    description: 'Список объектов текущей страницы'
+          description: ''
+        '401':
+          $ref: '#/components/responses/AuthenticationError'
+        '403':
+          $ref: '#/components/responses/PermissionDenied'
+        '404':
+          $ref: '#/components/responses/NotFound'
+      tags:
+        - Задачи
+  /api/Task/:
     post:
+      operationId: Создание задачи
+      description: Создание задачи
+      security:
+        - Token: [ ]
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TaskCreate'
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TaskCreateResp'
+          description: 'Статус успешно создан'
+        '400':
+          $ref: '#/components/responses/ValidationError'
+        '401':
+          $ref: '#/components/responses/AuthenticationError'
+        '403':
+          $ref: '#/components/responses/PermissionDenied'
+        '404':
+          $ref: '#/components/responses/NotFound'
+      tags:
+        - Задачи
   /api/Task/{id}/:
     get:
+      security:
+        - Token: [ ]
+      operationId: Получение задачи
+      description: Получение задачи по его id
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: "Уникальный идентификатор этой задачи."
+          schema:
+            type: string
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Task'
+          description: ''
+        '401':
+          $ref: '#/components/responses/AuthenticationError'
+        '403':
+          $ref: '#/components/responses/PermissionDenied'
+        '404':
+          $ref: '#/components/responses/NotFound'
+      tags:
+        - Задачи
     patch:
-    del:
+      operationId: Обновление задачи
+      security:
+        - Token: [ ]
+      description: 'Обновление полей задачи. Если задача относится к 
+                    организации достпуна всем работникам, иначе только автору'
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: "Уникальный идентификатор этой задачи."
+          schema:
+            type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TaskUpdate'
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TaskUpdateResp'
+          description: 'Задача успешна обновлена'
+        '401':
+          $ref: '#/components/responses/AuthenticationError'
+        '403':
+          $ref: '#/components/responses/PermissionDenied'
+        '404':
+          $ref: '#/components/responses/NotFound'
+      tags:
+        - Задачи
+    delete:
+      operationId: Удаление задачи
+      description: Удаление задачи. Если задача относится к 
+                   организации достпуна всем работникам, иначе только автору
+      security:
+        - Token: [ ]
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: "Уникальный идентификатор этой задачи"
+          schema:
+            type: string
+      responses:
+        '204':
+          description: 'Задача успешна удалена'
+        '401':
+          $ref: '#/components/responses/AuthenticationError'
+        '403':
+          $ref: '#/components/responses/PermissionDenied'
+        '404':
+          $ref: '#/components/responses/NotFound'
+      tags:
+        - Задачи
   /api/Task/{id}/subtasks/:
     get:
+      operationId: Cписок подзадач
+      security:
+        - Token: [ ]
+      description: |
+       Получение списка подзадач этой задачи, в которой отмечен текущий пользователь. <br>
+       Подключен пагинатор с 10 элементами на выводе <br>
+
+      parameters: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  count:
+                    type: integer
+                    example: 123
+                    description: 'Общее количество объектов в базе'
+                  next:
+                    type: string
+                    nullable: true
+                    format: uri
+                    example: http://127.0.0.1:8000/api/Task/{id}?page=4
+                    description: 'Ссылка на следующую страницу'
+                  previous:
+                    type: string
+                    nullable: true
+                    format: uri
+                    example: http://127.0.0.1:8000/api/Task/?page=2
+                    description: 'Ссылка на предыдущую страницу'
+                  results:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Task'
+                    description: 'Список объектов текущей страницы'
+          description: ''
+        '401':
+          $ref: '#/components/responses/AuthenticationError'
+        '403':
+          $ref: '#/components/responses/PermissionDenied'
+        '404':
+          $ref: '#/components/responses/NotFound'
+      tags:
+        - Задачи
     post:
+      operationId: Создание задачи
+      description: Создание задачи
+      security:
+        - Token: [ ]
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TaskCreate'
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TaskCreateResp'
+          description: 'Статус успешно создан'
+        '400':
+          $ref: '#/components/responses/ValidationError'
+        '401':
+          $ref: '#/components/responses/AuthenticationError'
+        '403':
+          $ref: '#/components/responses/PermissionDenied'
+        '404':
+          $ref: '#/components/responses/NotFound'
+      tags:
+        - Задачи
   /api/Task/{id}/subtasks/{id}/:
     get:
     patch:
@@ -386,6 +906,7 @@ components:
           format: email
           maxLength: 254
           description: "Адрес электронной почты"
+          example: "ignasi_grad@yandex.ru"
         id:
           type: integer
           readOnly: true
@@ -394,16 +915,17 @@ components:
           description: "Уникальный username"
           pattern: ^[\w.@+-]+\z
           maxLength: 150
+          example: "ignasii.gradusov"
         first_name:
           type: string
           maxLength: 150
           description: "Имя"
-          example: "Вася"
+          example: "Игнасий"
         last_name:
           type: string
           maxLength: 150
           description: "Фамилия"
-          example: "Пупкин"
+          example: "Градусов"
       required:
         - username
     Tag:
@@ -415,10 +937,432 @@ components:
     Organization:
       type: object
       $ref: '#/components/models/Organization'
+    OrganizationList:
+      properties:
+        id:
+          externalDocs:
+            description: Id организации
+          description: Id организации
+          type: integer
+          readOnly: true
+          example: 1
+        name:
+          description: Название организации
+          maxLength: 200
+          type: string
+          example: Planner o_0
+        admin:
+          description: Администратор организации
+          allOf:
+            - $ref: '#/components/schemas/User'
+      type: object
+    OrganizationCreate:
+      type: object
+      required:
+        - name
+      properties:
+        name:
+          description: Название организации
+          maxLength: 200
+          type: string
+          example: Planner o_0
+        staff:
+          description: Сотрудники организации
+          minItems: 1
+          xml:
+            name: user
+            wrapped: true
+          items:
+            example:
+              id: 0
     Task:
       type: object
-      $ref: '#/components/models/Task'
-    
+      required:
+        - name
+        - discription
+        - status
+        - author
+        - organization
+      properties:
+        id:
+          externalDocs:
+            description: Id задачи
+          description: Id задачи
+          type: integer
+          readOnly: true
+          example: 1
+        name:
+          description: Название задачи
+          maxLength: 200
+          type: string
+          example: Планнер
+        discription:
+          description: Описание задачи
+          type: string
+          example: Создание собственного сервиса по созданию плана 
+        status:
+          description: Статус задачи
+          allOf:
+            - $ref: '#/components/models/Status'
+        author:
+          description: Автор задачи
+          allOf:
+            - $ref: '#/components/schemas/User'
+        organization:
+          description: Организация, в которой находится задача
+          allOf:
+            - $ref: '#/components/schemas/OrganizationList'
+        responsible:
+          description: Исполнители задачи
+          minItems: 0
+          xml:
+            name: user
+            wrapped: true
+          items:
+            $ref: '#/components/schemas/User'
+        deadline:
+          type: datetime
+          description: Время дедлайна
+          example: 15.08.2023
+        subtasks:
+          description: Подзадачи
+          allOf:
+            - $ref: '#/components/schemas/SubTaskList'
+        tags:
+          description: Теги задачи
+          minItems: 0
+          xml:
+            name: tag
+            wrapped: true
+          items:
+            $ref: '#/components/models/Tag'
+    TaskCreate:
+      required:
+        - name
+      type: object
+      properties:
+        name:
+          description: Название задачи
+          maxLength: 200
+          type: string
+          example: Планнер
+        discription:
+          description: Описание задачи
+          type: string
+          example: Создание собственного сервиса по созданию плана
+        status:
+          description: Статус задачи
+          example: 1
+        organization:
+          description: Организация, в которой находится задача
+          example: 1
+        responsible:
+          description: Исполнители задачи
+          minItems: 0
+          type: array
+          xml:
+            name: user
+            wrapped: true
+          example: [0, ]
+          items:
+            type: integer
+        deadline:
+          type: datetime
+          description: Время дедлайна
+          example: 15.08.2023
+        tags:
+          description: Теги задачи
+          minItems: 0
+          xml:
+            name: tag
+            wrapped: true
+          type: array
+          example: [1, ]
+          items:
+            type: integer
+    TaskCreateResp:
+      type: object
+      required:
+        - name
+        - discription
+        - status
+        - author
+        - organization
+      properties:
+        id:
+          externalDocs:
+            description: Id задачи
+          description: Id задачи
+          type: integer
+          readOnly: true
+          example: 1
+        name:
+          description: Название задачи
+          maxLength: 200
+          type: string
+          example: Планнер
+        discription:
+          description: Описание задачи
+          type: string
+          example: Создание собственного сервиса по созданию плана
+        status:
+          description: Статус задачи
+          allOf:
+            - $ref: '#/components/models/Status'
+        author:
+          description: Автор задачи
+          allOf:
+            - $ref: '#/components/schemas/User'
+        organization:
+          description: Организация, в которой находится задача
+          allOf:
+            - $ref: '#/components/models/Organization'
+        responsible:
+          description: Исполнители задачи
+          minItems: 0
+          xml:
+            name: user
+            wrapped: true
+          items:
+            $ref: '#/components/schemas/User'
+        deadline:
+          type: datetime
+          description: Время дедлайна
+          example: 15.08.2023
+        subtasks:
+          description: Подзадачи
+          example: []
+        tags:
+          description: Теги задачи
+          minItems: 0
+          xml:
+            name: tag
+            wrapped: true
+          items:
+            $ref: '#/components/models/Tag'
+    TaskUpdate:
+      required:
+        - name
+      type: object
+      properties:
+        name:
+          description: Название задачи
+          maxLength: 200
+          type: string
+          example: Планнер
+        discription:
+          description: Описание задачи
+          type: string
+          example: Создание собственного сервиса по созданию плана,
+                   публикация в общем доступе и его реклама
+        status:
+          description: Статус задачи
+          example: 1
+        organization:
+          description: Организация, в которой находится задача
+          example: 1
+        responsible:
+          description: Исполнители задачи
+          minItems: 0
+          type: array
+          xml:
+            name: user
+            wrapped: true
+          example: [0, ]
+          items:
+            type: integer
+        deadline:
+          type: datetime
+          description: Время дедлайна
+          example: 15.08.2025
+        tags:
+          description: Теги задачи
+          minItems: 0
+          xml:
+            name: tag
+            wrapped: true
+          type: array
+          example: [1, ]
+          items:
+            type: integer
+    TaskUpdateResp:
+      type: object
+      required:
+        - name
+        - discription
+        - status
+        - author
+        - organization
+      properties:
+        id:
+          externalDocs:
+            description: Id задачи
+          description: Id задачи
+          type: integer
+          readOnly: true
+          example: 1
+        name:
+          description: Название задачи
+          maxLength: 200
+          type: string
+          example: Планнер
+        discription:
+          description: Описание задачи
+          type: string
+          example: Создание собственного сервиса по созданию плана,
+                   публикация в общем доступе и его реклама
+        status:
+          description: Статус задачи
+          allOf:
+            - $ref: '#/components/models/Status'
+        author:
+          description: Автор задачи
+          allOf:
+            - $ref: '#/components/schemas/User'
+        organization:
+          description: Организация, в которой находится задача
+          allOf:
+            - $ref: '#/components/models/Organization'
+        responsible:
+          description: Исполнители задачи
+          minItems: 0
+          xml:
+            name: user
+            wrapped: true
+          items:
+            $ref: '#/components/schemas/User'
+        deadline:
+          type: datetime
+          description: Время дедлайна
+          example: 15.08.2025
+        subtasks:
+          description: Подзадачи
+          example: []
+        tags:
+          description: Теги задачи
+          minItems: 0
+          xml:
+            name: tag
+            wrapped: true
+          items:
+            $ref: '#/components/models/Tag'
+    SubTaskCreateResp:
+      type: object
+      required:
+        - name
+        - discription
+        - status
+        - author
+        - organization
+      properties:
+        id:
+          externalDocs:
+            description: Id задачи
+          description: Id задачи
+          type: integer
+          readOnly: true
+          example: 1
+        name:
+          description: Название задачи
+          maxLength: 200
+          type: string
+          example: Разработка бэкенда
+        discription:
+          description: Описание задачи
+          type: string
+          example: Разработать бэкенд-часть планнера на Django
+        status:
+          description: Статус задачи
+          allOf:
+            - $ref: '#/components/models/Status'
+        author:
+          description: Автор задачи
+          allOf:
+            - $ref: '#/components/schemas/User'
+        organization:
+          description: Организация, в которой находится задача
+          allOf:
+            - $ref: '#/components/models/Organization'
+        responsible:
+          description: Исполнители задачи
+          minItems: 0
+          xml:
+            name: user
+            wrapped: true
+          items:
+            $ref: '#/components/schemas/User'
+        deadline:
+          type: datetime
+          description: Время дедлайна
+          example: 15.08.2023
+        subtasks:
+          description: Подзадачи
+          example: []
+        tags:
+          description: Теги задачи
+          minItems: 0
+          xml:
+            name: tag
+            wrapped: true
+          items:
+            $ref: '#/components/models/Tag'
+    SubTaskList:
+      type: object
+      required:
+        - name
+        - discription
+        - status
+        - author
+        - organization
+      properties:
+        id:
+          externalDocs:
+            description: Id задачи
+          description: Id задачи
+          type: integer
+          readOnly: true
+          example: 1
+        name:
+          description: Название задачи
+          maxLength: 200
+          type: string
+          example: Разработка бэкенда
+        discription:
+          description: Описание задачи
+          type: string
+          example: Разработать бэкенд-часть планнера на Django
+        status:
+          description: Статус задачи
+          allOf:
+            - $ref: '#/components/models/Status'
+        author:
+          description: Автор задачи
+          allOf:
+            - $ref: '#/components/schemas/User'
+        organization:
+          description: Организация, в которой находится задача
+          allOf:
+            - $ref: '#/components/schemas/OrganizationList'
+        responsible:
+          description: Исполнители задачи
+          minItems: 0
+          xml:
+            name: user
+            wrapped: true
+          items:
+            $ref: '#/components/schemas/User'
+        deadline:
+          type: datetime
+          description: Время дедлайна
+          example: 12.12.2022
+        tags:
+          description: Теги задачи
+          minItems: 0
+          xml:
+            name: tag
+            wrapped: true
+          items:
+            $ref: '#/components/models/Tag'
     CustomUserCreate:
       type: object
       $ref: '#/components/models/User'
@@ -430,7 +1374,7 @@ components:
           format: email
           maxLength: 254
           description: "Адрес электронной почты"
-          example: "vpupkin@yandex.ru"
+          example: "ignasi_grad@yandex.ru"
         id:
           type: integer
           readOnly: true
@@ -439,17 +1383,17 @@ components:
           description: "Уникальный юзернейм"
           pattern: ^[\w.@+-]+\z
           maxLength: 150
-          example: "vasya.pupkin"
+          example: "ignasii.gradusov"
         first_name:
           type: string
           maxLength: 150
           description: "Имя"
-          example: "Вася"
+          example: "Игнасий"
         last_name:
           type: string
           maxLength: 150
           description: "Фамилия"
-          example: "Пупкин"
+          example: "Градусов"
         id_telegram:
           type: integer
           description: "Для использования телеграмм-бота необохдим id-пользователя"
@@ -531,21 +1475,6 @@ components:
           type: array
           items:
             type: string
-    NestedValidationError:
-      description: Стандартные ошибки валидации DRF
-      type: object
-      properties:
-        ingredients:
-          description: 'Ошибки в ингредиентах. В приведенном примере в первом и третьем ингредиенте не было ошибок (amount >= 1), а во втором были.'
-          example: [{},{"amount":["Убедитесь, что это значение больше либо равно 1."]}, {}]
-          type: array
-          items:
-            type: object
-            properties:
-              amount:
-                type: array
-                items:
-                  type: string
     SelfMadeError:
       description: Ошибка
       type: object
@@ -553,7 +1482,6 @@ components:
         errors:
           description: 'Описание ошибки'
           type: string
-
     AuthenticationError:
       description: Пользователь не авторизован
       type: object
@@ -562,7 +1490,6 @@ components:
           description: 'Описание ошибки'
           example: "Учетные данные не были предоставлены."
           type: string
-
     PermissionDenied:
       description: Недостаточно прав
       type: object
@@ -576,7 +1503,7 @@ components:
       type: object
       properties:
         detail:
-          description: 'Описание ошибки'
+          description: 'У вас недостаточно прав'
           example: "Страница не найдена."
           type: string
 
@@ -589,7 +1516,7 @@ components:
           format: email
           maxLength: 254
           description: "Адрес электронной почты"
-          example: "vpupkin@yandex.ru"
+          example: "ignasi_grad@yandex.ru"
         id:
           type: integer
           externalDocs:
@@ -601,17 +1528,17 @@ components:
           description: "Уникальный username"
           pattern: ^[\w.@+-]+\z
           maxLength: 150
-          example: "vasya.pupkin"
+          example: "ignasii.gradusov"
         first_name:
           type: string
           maxLength: 150
           description: "Имя пользователя"
-          example: "Вася"
+          example: "Игнасий"
         last_name:
           type: string
           maxLength: 150
           description: "Фамилия пользователя"
-          example: "Пупкин"
+          example: "Градусов"
         password:
           type: string
           maxLength: 150
@@ -688,6 +1615,7 @@ components:
       required:
         - name
         - staff
+        - admin
       properties:
         id:
           externalDocs:
@@ -701,6 +1629,10 @@ components:
           maxLength: 200
           type: string
           example: Planner o_0
+        admin:
+          description: Администратор организации
+          allOf:
+            - $ref: '#/components/schemas/User'
         staff:
           description: Сотрудники организации
           minItems: 1
@@ -708,8 +1640,8 @@ components:
             name: user
             wrapped: true
           items:
-            $ref: '#/components/schemas/User'
-    Task:
+            $ref: '#/components/schemas/User'  
+    TaskOrganization:
       type: object
       required:
         - name
@@ -761,7 +1693,7 @@ components:
         subtasks:
           description: Подзадачи
           allOf:
-            - $ref: '#/components/models/Task'
+            - $ref: '#/components/models/TaskOrganization'
         tags:
           description: Теги задачи
           minItems: 0
@@ -770,7 +1702,57 @@ components:
             wrapped: true
           items:
             $ref: '#/components/models/Tag'
-
+        history:
+          description: История изменения задачи
+          example: <HistoricalTaskOrganization>
+    TaskMe:
+      type: object
+      required:
+        - name
+        - discription
+        - status
+        - author
+      properties:
+        id:
+          externalDocs:
+            description: Id задачи
+          description: Id задачи
+          type: integer
+          readOnly: true
+          example: 1
+        name:
+          description: Название задачи
+          maxLength: 200
+          type: string
+          example: Планнер
+        discription:
+          description: Описание задачи
+          type: string
+          example: Создание собственного сервиса по созданию плана
+        status:
+          description: Статус задачи
+          allOf:
+            - $ref: '#/components/models/Status'
+        author:
+          description: Автор задачи
+          allOf:
+            - $ref: '#/components/schemas/User'
+        deadline:
+          type: datetime
+          description: Время дедлайна
+          example: 15.08.2023
+        subtasks:
+          description: Подзадачи
+          allOf:
+            - $ref: '#/components/models/TaskMe'
+        tags:
+          description: Теги задачи
+          minItems: 0
+          xml:
+            name: tag
+            wrapped: true
+          items:
+            $ref: '#/components/models/Tag'
   responses:
     ValidationError:
       description: 'Ошибки валидации в стандартном формате DRF'
@@ -778,14 +1760,6 @@ components:
         application/json:
           schema:
             $ref: '#/components/schemas/ValidationError'
-    NestedValidationError:
-      description: 'Ошибки валидации в стандартном формате DRF, в том числе с внутренними элементами.'
-      content:
-        application/json:
-          schema:
-            oneOf:
-              - $ref: '#/components/schemas/NestedValidationError'
-              - $ref: '#/components/schemas/ValidationError'
     AuthenticationError:
       description: Пользователь не авторизован
       content:
@@ -819,12 +1793,13 @@ x-tagGroups:
       - Теги
       - Статусы
       - Организации
-      - Задачи
+      - Задачи организации
+      - Мои задачи
   - name: Models
     tags:
-      - Пользователь
-      - Тег
-      - Статус
-      - Организация
-      - Задача
-
+      - Модель пользователя
+      - Модель тега
+      - Модель статуса
+      - Модель организации
+      - Модель задачи организации
+      - Модель личной задачи
