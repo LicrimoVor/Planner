@@ -46,6 +46,7 @@ tags:
       Фильтрация по акутальным задачам: http://127.0.0.1:8000/api/task_me/?actual=true <br>
       Поиск по названию задачи: http://127.0.0.1:8000/api/task_me/?search=Планне <br>
       Сортировка по дедлайну: http://127.0.0.1:8000/api/task_me/?ordering=deadline <br>
+  - name: История задач организации
 
   - name: Модель пользователя
     x-displayName: Модель пользователя
@@ -615,7 +616,8 @@ paths:
   /api/organization/me/:
     get:
       operationId: Список моих организаций
-      description: Получение организаций, в которых состоит текущий пользователь. Подключен пагинатор с 10 элементами на выводе
+      description: Получение организаций, в которых отмечен текущий пользователь. <br>
+                   Подключен пагинатор с 10 элементами на выводе
       security:
         - Token: [ ]
       parameters:
@@ -660,6 +662,53 @@ paths:
         - Организации
   
   /api/organization/{id}/task/:
+    get:
+      operationId: Cписок задач
+      security:
+        - Token: [ ]
+      description: |
+       Получение списка задач текущей организации. <br>
+       Доступно только участникам организации <br>
+       Подключен пагинатор с 10 элементами на выводе <br>
+
+      parameters: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  count:
+                    type: integer
+                    example: 123
+                    description: 'Общее количество объектов в базе'
+                  next:
+                    type: string
+                    nullable: true
+                    format: uri
+                    example: http://127.0.0.1:8000/api/organization/{id}/task/?page=4
+                    description: 'Ссылка на следующую страницу'
+                  previous:
+                    type: string
+                    nullable: true
+                    format: uri
+                    example: http://127.0.0.1:8000/api/organization/{id}/task/?page=2
+                    description: 'Ссылка на предыдущую страницу'
+                  results:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/TaskOrg'
+                    description: 'Список объектов текущей страницы'
+          description: ''
+        '401':
+          $ref: '#/components/responses/AuthenticationError'
+        '403':
+          $ref: '#/components/responses/PermissionDenied'
+        '404':
+          $ref: '#/components/responses/NotFound'
+      tags:
+        - Задачи организации 
     post:
       operationId: Создание задачи
       description: Создание задачи
@@ -714,13 +763,12 @@ paths:
         '404':
           $ref: '#/components/responses/NotFound'
       tags:
-        - Задачи
+        - Задачи организации
     patch:
       operationId: Обновление задачи
       security:
         - Token: [ ]
-      description: 'Обновление полей задачи. Если задача относится к 
-                    организации достпуна всем работникам, иначе только автору'
+      description: Обновление полей задачи
       parameters:
         - name: id
           in: path
@@ -747,11 +795,10 @@ paths:
         '404':
           $ref: '#/components/responses/NotFound'
       tags:
-        - Задачи
+        - Задачи организации
     delete:
       operationId: Удаление задачи
-      description: Удаление задачи. Если задача относится к 
-                   организации достпуна всем работникам, иначе только автору
+      description: Удаление задачи
       security:
         - Token: [ ]
       parameters:
@@ -778,7 +825,8 @@ paths:
       security:
         - Token: [ ]
       description: |
-       Получение списка подзадач этой задачи, в которой отмечен текущий пользователь. <br>
+       Получение списка подзадач этой задачи. <br>
+       Доступно только участникам организации <br>
        Подключен пагинатор с 10 элементами на выводе <br>
 
       parameters: []
@@ -797,18 +845,18 @@ paths:
                     type: string
                     nullable: true
                     format: uri
-                    example: http://127.0.0.1:8000/api/Task/{id}?page=4
+                    example: http://127.0.0.1:8000/api/organization/{id}/task/{id}/subtasks/{id}?page=4
                     description: 'Ссылка на следующую страницу'
                   previous:
                     type: string
                     nullable: true
                     format: uri
-                    example: http://127.0.0.1:8000/api/Task/?page=2
+                    example: http://127.0.0.1:8000/api/organization/{id}/task/{id}/subtasks/?page=2
                     description: 'Ссылка на предыдущую страницу'
                   results:
                     type: array
                     items:
-                      $ref: '#/components/schemas/TaskOrg'
+                      $ref: '#/components/schemas/SubTaskOrgList'
                     description: 'Список объектов текущей страницы'
           description: ''
         '401':
@@ -818,23 +866,23 @@ paths:
         '404':
           $ref: '#/components/responses/NotFound'
       tags:
-        - Задачи
+        - Задачи организации
     post:
-      operationId: Создание задачи
-      description: Создание задачи
+      operationId: Создание подзадачи
+      description: Создание подзадачи
       security:
         - Token: [ ]
       requestBody:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/TaskOrgCreate'
+              $ref: '#/components/schemas/SubTaskOrgCreate'
       responses:
         '201':
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/TaskOrgCreateResp'
+                $ref: '#/components/schemas/SubTaskOrgCreateResp'
           description: 'Статус успешно создан'
         '400':
           $ref: '#/components/responses/ValidationError'
@@ -848,16 +896,236 @@ paths:
         - Задачи организации
   /api/organization/{id}/task/{id}/subtasks/{id}/:
     get:
+      security:
+        - Token: [ ]
+      operationId: Получение подзадачи
+      description: Получение подзадачи по его id
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: "Уникальный идентификатор этой подзадачи."
+          schema:
+            type: string
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SubTaskOrgCreateResp'
+          description: ''
+        '401':
+          $ref: '#/components/responses/AuthenticationError'
+        '403':
+          $ref: '#/components/responses/PermissionDenied'
+        '404':
+          $ref: '#/components/responses/NotFound'
+      tags:
+        - Задачи организации
     patch:
-    del:
-  
-  /api/task_me/:
+      operationId: Обновление подзадачи
+      security:
+        - Token: [ ]
+      description: Обновление полей подзадачи
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: "Уникальный идентификатор этой подзадачи."
+          schema:
+            type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SubTaskOrgUpdate'
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SubTaskOrgUpdateResp'
+          description: 'Задача успешна обновлена'
+        '401':
+          $ref: '#/components/responses/AuthenticationError'
+        '403':
+          $ref: '#/components/responses/PermissionDenied'
+        '404':
+          $ref: '#/components/responses/NotFound'
+      tags:
+        - Задачи организации
+    delete:
+      operationId: Удаление подадачи
+      description: Удаление подадачи
+      security:
+        - Token: [ ]
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: "Уникальный идентификатор этой подадачи"
+          schema:
+            type: string
+      responses:
+        '204':
+          description: 'Задача успешна удалена'
+        '401':
+          $ref: '#/components/responses/AuthenticationError'
+        '403':
+          $ref: '#/components/responses/PermissionDenied'
+        '404':
+          $ref: '#/components/responses/NotFound'
+      tags:
+
+  /api/organization/{id}/task/history/:
     get:
-      operationId: Cписок моих задач
+      operationId: История всех задач
       security:
         - Token: [ ]
       description: |
-       Получение списка задач, в которых отмечен текущий пользователь. <br>
+        Получение списка изменений задач текущей организации. <br>
+        Доступно только участникам организации <br>
+        Подключен пагинатор с 10 элементами на выводе <br>
+      parameters: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  count:
+                    type: integer
+                    example: 123
+                    description: 'Общее количество объектов в базе'
+                  next:
+                    type: string
+                    nullable: true
+                    format: uri
+                    example: http://127.0.0.1:8000/api/organization/{id}/task/history/?page=4
+                    description: 'Ссылка на следующую страницу'
+                  previous:
+                    type: string
+                    nullable: true
+                    format: uri
+                    example: http://127.0.0.1:8000/api/organization/{id}/task/history/?page=2
+                    description: 'Ссылка на предыдущую страницу'
+                  results:
+                    type: array
+                    items:
+                      example: [Пока хз, ] 
+                    description: 'Список объектов текущей страницы'
+          description: ''
+        '401':
+          $ref: '#/components/responses/AuthenticationError'
+        '403':
+          $ref: '#/components/responses/PermissionDenied'
+        '404':
+          $ref: '#/components/responses/NotFound'
+      tags:
+        - История задач организации
+  /api/organization/{id}/task/{id}/history/:
+    get:
+      operationId: История задачи
+      security:
+        - Token: [ ]
+      description: |
+        Получение списка изменений задачи текущей организации. <br>
+        Доступно только участникам организации <br>
+        Подключен пагинатор с 10 элементами на выводе <br>
+      parameters: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  count:
+                    type: integer
+                    example: 123
+                    description: 'Общее количество объектов в базе'
+                  next:
+                    type: string
+                    nullable: true
+                    format: uri
+                    example: http://127.0.0.1:8000/api/organization/{id}/task/{id}/history/?page=4
+                    description: 'Ссылка на следующую страницу'
+                  previous:
+                    type: string
+                    nullable: true
+                    format: uri
+                    example: http://127.0.0.1:8000/api/organization/{id}/task/{id}/history/?page=2
+                    description: 'Ссылка на предыдущую страницу'
+                  results:
+                    type: array
+                    items:
+                      example: [Пока хз, ] 
+                    description: 'Список объектов текущей страницы'
+          description: ''
+        '401':
+          $ref: '#/components/responses/AuthenticationError'
+        '403':
+          $ref: '#/components/responses/PermissionDenied'
+        '404':
+          $ref: '#/components/responses/NotFound'
+      tags:
+        - История задач организации
+  /api/organization/{id}/task/{id}/subtasks/{id}/history/:
+    get:
+      operationId: История подзадачи
+      security:
+        - Token: [ ]
+      description: |
+        Получение списка изменений подзадачи текущей организации. <br>
+        Доступно только участникам организации <br>
+        Подключен пагинатор с 10 элементами на выводе <br>
+      parameters: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  count:
+                    type: integer
+                    example: 123
+                    description: 'Общее количество объектов в базе'
+                  next:
+                    type: string
+                    nullable: true
+                    format: uri
+                    example: http://127.0.0.1:8000/api/organization/{id}/task/{id}/subtasks/{id}/history/?page=4
+                    description: 'Ссылка на следующую страницу'
+                  previous:
+                    type: string
+                    nullable: true
+                    format: uri
+                    example: http://127.0.0.1:8000/api/organization/{id}/task/{id}/subtasks/{id}/history/?page=2
+                    description: 'Ссылка на предыдущую страницу'
+                  results:
+                    type: array
+                    items:
+                      example: [Пока хз, ] 
+                    description: 'Список объектов текущей страницы'
+          description: ''
+        '401':
+          $ref: '#/components/responses/AuthenticationError'
+        '403':
+          $ref: '#/components/responses/PermissionDenied'
+        '404':
+          $ref: '#/components/responses/NotFound'
+      tags:
+        - История задач организации
+
+  /api/task_me/:
+    get:
+      operationId: Cписок персональных задач
+      security:
+        - Token: [ ]
+      description: |
+       Получение списка персональных задач <br>
        Подключен пагинатор с 10 элементами на выводе <br>
 
       parameters: []
@@ -898,10 +1166,255 @@ paths:
           $ref: '#/components/responses/NotFound'
       tags:
         - Персональные задачи
-
+    post:
+      operationId: Создание задачи
+      description: Создание задачи
+      security:
+        - Token: [ ]
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TaskPersonalCreate'
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TaskPersonalCreateResp'
+          description: 'Статус успешно создан'
+        '400':
+          $ref: '#/components/responses/ValidationError'
+        '401':
+          $ref: '#/components/responses/AuthenticationError'
+        '404':
+          $ref: '#/components/responses/NotFound'
+      tags:
+        - Персональные задачи
   /api/task_me/{id}/:
+    get:
+      security:
+        - Token: [ ]
+      operationId: Получение задачи
+      description: Получение задачи по его id
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: "Уникальный идентификатор этой задачи."
+          schema:
+            type: string
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TaskPersonal'
+          description: ''
+        '401':
+          $ref: '#/components/responses/AuthenticationError'
+        '404':
+          $ref: '#/components/responses/NotFound'
+      tags:
+        - Персональные задачи
+    patch:
+      operationId: Обновление задачи
+      security:
+        - Token: [ ]
+      description: Обновление полей задачи
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: "Уникальный идентификатор этой задачи."
+          schema:
+            type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TaskPersonalUpdate'
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TaskPersonalUpdateResp'
+          description: 'Задача успешна обновлена'
+        '401':
+          $ref: '#/components/responses/AuthenticationError'
+        '404':
+          $ref: '#/components/responses/NotFound'
+      tags:
+        - Персональные задачи
+    delete:
+      operationId: Удаление задачи
+      description: Удаление задачи
+      security:
+        - Token: [ ]
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: "Уникальный идентификатор этой задачи"
+          schema:
+            type: string
+      responses:
+        '204':
+          description: 'Задача успешна удалена'
+        '401':
+          $ref: '#/components/responses/AuthenticationError'
+        '404':
+          $ref: '#/components/responses/NotFound'
+      tags:
+        - Персональные задачи
   /api/task_me/{id}/subtasks/:
+    get:
+      operationId: Cписок подзадач
+      security:
+        - Token: [ ]
+      description: |
+       Получение списка персональных подзадач <br>
+       Подключен пагинатор с 10 элементами на выводе <br>
+
+      parameters: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  count:
+                    type: integer
+                    example: 123
+                    description: 'Общее количество объектов в базе'
+                  next:
+                    type: string
+                    nullable: true
+                    format: uri
+                    example: http://127.0.0.1:8000/api/task_me/{id}/subtasks/?page=4
+                    description: 'Ссылка на следующую страницу'
+                  previous:
+                    type: string
+                    nullable: true
+                    format: uri
+                    example: http://127.0.0.1:8000/api/task_me/{id}/subtasks/?page=2
+                    description: 'Ссылка на предыдущую страницу'
+                  results:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/SubTaskPersonalList'
+                    description: 'Список объектов текущей страницы'
+          description: ''
+        '401':
+          $ref: '#/components/responses/AuthenticationError'
+        '404':
+          $ref: '#/components/responses/NotFound'
+      tags:
+        - Персональные задачи
+    post:
+      operationId: Создание подзадачи
+      description: Создание подзадачи
+      security:
+        - Token: [ ]
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SubTaskPersonalCreate'
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SubTaskPersonalCreateResp'
+          description: 'Статус успешно создан'
+        '400':
+          $ref: '#/components/responses/ValidationError'
+        '401':
+          $ref: '#/components/responses/AuthenticationError'
+        '404':
+          $ref: '#/components/responses/NotFound'
+      tags:
+        - Персональные задачи
   /api/task_me/{id}/subtasks/{id}/:
+    get:
+      security:
+        - Token: [ ]
+      operationId: Получение подзадачи
+      description: Получение подзадачи по его id
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: "Уникальный идентификатор этой подзадачи."
+          schema:
+            type: string
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SubTaskPersonalCreateResp'
+          description: ''
+        '401':
+          $ref: '#/components/responses/AuthenticationError'
+        '404':
+          $ref: '#/components/responses/NotFound'
+      tags:
+        - Персональные задачи
+    patch:
+      operationId: Обновление подзадачи
+      security:
+        - Token: [ ]
+      description: Обновление полей подзадачи
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: "Уникальный идентификатор этой подзадачи."
+          schema:
+            type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SubTaskPersonalUpdate'
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SubTaskPersonalUpdateResp'
+          description: 'Задача успешна обновлена'
+        '401':
+          $ref: '#/components/responses/AuthenticationError'
+        '404':
+          $ref: '#/components/responses/NotFound'
+      tags:
+        - Персональные задачи
+    delete:
+      operationId: Удаление подзадачи
+      description: Удаление подзадачи
+      security:
+        - Token: [ ]
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: "Уникальный идентификатор этой подзадачи"
+          schema:
+            type: string
+      responses:
+        '204':
+          description: 'Задача успешна удалена'
+        '401':
+          $ref: '#/components/responses/AuthenticationError'
+        '404':
+          $ref: '#/components/responses/NotFound'
+      tags:
+        - Персональные задачи
 
 components:
   schemas:
@@ -1046,6 +1559,8 @@ components:
     TaskOrgCreate:
       required:
         - name
+        - author
+        - organization
       type: object
       properties:
         name:
@@ -1117,7 +1632,7 @@ components:
         organization:
           description: Организация, в которой находится задача
           allOf:
-            - $ref: '#/components/models/Organization'
+            - $ref: '#/components/schemas/OrganizationList'
         responsible:
           description: Исполнители задачи
           minItems: 0
@@ -1219,7 +1734,7 @@ components:
         organization:
           description: Организация, в которой находится задача
           allOf:
-            - $ref: '#/components/models/Organization'
+            - $ref: '#/components/schemas/OrganizationList'
         responsible:
           description: Исполнители задачи
           minItems: 0
@@ -1243,7 +1758,7 @@ components:
             wrapped: true
           items:
             $ref: '#/components/models/Tag'
-    SubTaskOrgCreateResp:
+    SubTaskOrgList:
       type: object
       properties:
         id:
@@ -1270,10 +1785,6 @@ components:
           description: Автор задачи
           allOf:
             - $ref: '#/components/schemas/User'
-        organization:
-          description: Организация, в которой находится задача
-          allOf:
-            - $ref: '#/components/models/Organization'
         responsible:
           description: Исполнители задачи
           minItems: 0
@@ -1285,10 +1796,7 @@ components:
         deadline:
           type: datetime
           description: Время дедлайна
-          example: 15.08.2023
-        subtasks:
-          description: Подзадачи
-          example: []
+          example: 12.12.2022
         tags:
           description: Теги задачи
           minItems: 0
@@ -1297,7 +1805,49 @@ components:
             wrapped: true
           items:
             $ref: '#/components/models/Tag'
-    SubTaskOrgList:
+    SubTaskOrgCreate:
+      required:
+        - name
+      type: object
+      properties:
+        name:
+          description: Название задачи
+          maxLength: 200
+          type: string
+          example: Разработка бэкенда
+        discription:
+          description: Описание задачи
+          type: string
+          example: Разработать бэкенд-часть планнера на Django
+        status:
+          description: Статус задачи
+          example: 1
+        organization:
+          description: Организация, в которой находится задача
+          example: 1
+        responsible:
+          description: Исполнители задачи
+          minItems: 0
+          type: array
+          xml:
+            name: user
+            wrapped: true
+          example: [0, ]
+          items:
+            type: integer
+        deadline:
+          type: datetime
+          description: Время дедлайна
+          example: 15.08.2023
+        tags:
+          description: Теги задачи
+          minItems: 0
+          xml:
+            name: tag
+            wrapped: true
+          type: array
+          example: [1, ]
+    SubTaskOrgCreateResp:
       type: object
       properties:
         id:
@@ -1339,7 +1889,10 @@ components:
         deadline:
           type: datetime
           description: Время дедлайна
-          example: 12.12.2022
+          example: 15.08.2023
+        subtasks:
+          description: Подзадачи
+          example: []
         tags:
           description: Теги задачи
           minItems: 0
@@ -1348,7 +1901,105 @@ components:
             wrapped: true
           items:
             $ref: '#/components/models/Tag'
-    
+    SubTaskOrgUpdate:
+      required:
+        - name
+      type: object
+      properties:
+        name:
+          description: Название задачи
+          maxLength: 200
+          type: string
+          example: Разработка бэкенда и фротенда
+        discription:
+          description: Описание задачи
+          type: string
+          example: Разработать бэкенд-часть планнера на Django,
+                   а так же и написание вертски
+        status:
+          description: Статус задачи
+          example: 1
+        organization:
+          description: Организация, в которой находится задача
+          example: 1
+        responsible:
+          description: Исполнители задачи
+          minItems: 0
+          type: array
+          xml:
+            name: user
+            wrapped: true
+          example: [0, ]
+          items:
+            type: integer
+        deadline:
+          type: datetime
+          description: Время дедлайна
+          example: 25.08.2023
+        tags:
+          description: Теги задачи
+          minItems: 0
+          xml:
+            name: tag
+            wrapped: true
+          type: array
+          example: [1, ]
+    SubTaskOrgUpdateResp:
+      type: object
+      properties:
+        id:
+          externalDocs:
+            description: Id задачи
+          description: Id задачи
+          type: integer
+          readOnly: true
+          example: 1
+        name:
+          description: Название задачи
+          maxLength: 200
+          type: string
+          example: Разработка бэкенда и фротенда
+        discription:
+          description: Описание задачи
+          type: string
+          example: Разработать бэкенд-часть планнера на Django,
+                   а так же и написание вертски
+        status:
+          description: Статус задачи
+          allOf:
+            - $ref: '#/components/models/Status'
+        author:
+          description: Автор задачи
+          allOf:
+            - $ref: '#/components/schemas/User'
+        organization:
+          description: Организация, в которой находится задача
+          allOf:
+            - $ref: '#/components/schemas/OrganizationList'
+        responsible:
+          description: Исполнители задачи
+          minItems: 0
+          xml:
+            name: user
+            wrapped: true
+          items:
+            $ref: '#/components/schemas/User'
+        deadline:
+          type: datetime
+          description: Время дедлайна
+          example: 25.08.2023
+        subtasks:
+          description: Подзадачи
+          example: []
+        tags:
+          description: Теги задачи
+          minItems: 0
+          xml:
+            name: tag
+            wrapped: true
+          items:
+            $ref: '#/components/models/Tag'
+
     TaskPersonal:
       type: object
       required:
@@ -1387,7 +2038,7 @@ components:
         subtasks:
           description: Подзадачи
           allOf:
-            - $ref: '#/components/schemas/SubTaskPersonalList'
+            - $ref: '#/components/schemas/SubTaskPersonalResp'
         tags:
           description: Теги задачи
           minItems: 0
@@ -1567,10 +2218,6 @@ components:
           description: Статус задачи
           allOf:
             - $ref: '#/components/models/Status'
-        author:
-          description: Автор задачи
-          allOf:
-            - $ref: '#/components/schemas/User'
         deadline:
           type: datetime
           description: Время дедлайна
@@ -1743,12 +2390,11 @@ components:
           description: Название задачи
           maxLength: 200
           type: string
-          example: Сессия
+          example: Изучение математики
         discription:
           description: Описание задачи
           type: string
-          example: Успешная сдача сессии. Подготовка к сессии.
-                   Закрытие всех зачетов и прохождение практики
+          example: Изучение тер-вера, ДУ, линейной алгебры и интегрирования
         status:
           description: Статус задачи
           allOf:
@@ -1760,7 +2406,7 @@ components:
         deadline:
           type: datetime
           description: Время дедлайна
-          example: 17.07.2023
+          example: 20.06.2023
         subtasks:
           description: Подзадачи
           example: []
@@ -2214,6 +2860,7 @@ x-tagGroups:
       - Статусы
       - Организации
       - Задачи организации
+      - История задач организации
       - Персональные задачи
   - name: Models
     tags:
