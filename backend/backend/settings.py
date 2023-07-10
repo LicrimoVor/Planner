@@ -1,4 +1,3 @@
-
 import os
 from pathlib import Path
 
@@ -13,14 +12,6 @@ SECRET_KEY = os.getenv('SECRET_KEY')
 DEBUG = os.getenv('DEBUG', "False") == "True"
 
 ALLOWED_HOSTS = os.getenv('ALLOWED_HOSTS', "127.0.0.1").split(" ")
-
-INTERNAL_IPS = ['127.0.0.1', "0.0.0.0:8000"] 
-
-
-if DEBUG:
-    import socket
-    hostname, _, ips = socket.gethostbyname_ex(socket.gethostname())
-    INTERNAL_IPS += [".".join(ip.split(".")[:-1] + ["1"]) for ip in ips]
 
 
 INSTALLED_APPS = [
@@ -39,7 +30,6 @@ INSTALLED_APPS = [
     'task.apps.TaskConfig',
     'users.apps.UsersConfig',
     'django_filters',
-    # "debug_toolbar",
 ]
 
 AUTH_USER_MODEL = 'users.UserModel'
@@ -52,15 +42,16 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
-    "debug_toolbar.middleware.DebugToolbarMiddleware",
 ]
 
 ROOT_URLCONF = 'backend.urls'
 
+TEMPLATES_DIR = BASE_DIR / 'templates'
+
 TEMPLATES = [
     {
-        'BACKEND': "django.template.backends.django.DjangoTemplates",
-        'DIRS': [],
+        'BACKEND': 'django.template.backends.django.DjangoTemplates',
+        'DIRS': [TEMPLATES_DIR],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -74,6 +65,7 @@ TEMPLATES = [
 ]
 
 WSGI_APPLICATION = 'backend.wsgi.application'
+
 
 DATABASES = {
     'default': {
@@ -92,6 +84,7 @@ DATABASES = {
 #         'PORT': os.getenv('DB_PORT', 5432)
 #     }
 # }
+
 
 
 AUTH_PASSWORD_VALIDATORS = [
@@ -119,6 +112,7 @@ USE_L10N = True
 
 USE_TZ = True
 
+STATICFILES_DIRS = (os.path.join(BASE_DIR, "static"),)
 STATIC_URL = 'static/'
 STATIC_ROOT = BASE_DIR / 'collected_static'
 
