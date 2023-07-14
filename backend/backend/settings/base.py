@@ -20,6 +20,15 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'simple_history',
+    'rest_framework.authtoken',
+    'rest_framework',
+    'djoser',
+    'django_filters',
+    'users.apps.UsersConfig',
+    'core.apps.CoreConfig',
+    'task.apps.TaskConfig',
+    'organizations.apps.OrganizationsConfig',
+    'api.apps.ApiConfig',
 ]
 
 MIDDLEWARE = [
@@ -34,6 +43,8 @@ MIDDLEWARE = [
 ]
 
 ROOT_URLCONF = 'backend.urls'
+
+AUTH_USER_MODEL = 'users.UserModel'
 
 TEMPLATES_DIR = BASE_DIR / 'templates'
 

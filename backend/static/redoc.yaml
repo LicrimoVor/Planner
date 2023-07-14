@@ -2763,10 +2763,6 @@ components:
           example: пока хз)
           type: <HistoricalTaskOrganization>
           readOnly: true
-        main_task:
-          type: bool
-          example: "true"
-          readOnly: true
     TaskPersonal:
       type: object
       required:

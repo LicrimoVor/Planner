@@ -1,4 +1,3 @@
-from core.validators import validate_hex
 from django.contrib.auth import get_user_model
 from django.core.validators import MinValueValidator
 from django.db import models
@@ -6,100 +5,60 @@ from django.db import models
 from simple_history.models import HistoricalRecords
 
 from organizations.models import OrgModel
+from .abstract_models import TaskModel, NameColorModel
 
 User = get_user_model()
 
 
-class TagModel(models.Model):
+class TagModel(NameColorModel):
     """Модель тегов."""
 
-    name = models.CharField(
-        verbose_name="Название",
-        help_text="Название тега",
-        max_length=200,
-        unique=True,
-    )
-    color = models.CharField(
-        verbose_name="Цвет",
-        help_text="Цвет в HEX-формате",
-        max_length=7,
-        unique=True,
-        validators=[validate_hex],
-    )
-
     class Meta:
-        ordering = ("id",)
+        verbose_name = "Тег"
+        verbose_name_plural = "Теги"
         db_table = "Tag"
 
-    def __str__(self) -> str:
-        return self.name
 
-
-class StatusModel(models.Model):
+class StatusModel(NameColorModel):
     """Модель статусов."""
 
-    name = models.CharField(
-        verbose_name="Название",
-        help_text="Статус задачи",
-        max_length=200,
-        unique=True,
-    )
-    color = models.CharField(
-        verbose_name="Цвет",
-        help_text="Цвет в HEX-формате",
-        max_length=7,
-        unique=True,
-        validators=[validate_hex],
-    )
-
     class Meta:
-        ordering = ("id",)
         db_table = "Status"
+        verbose_name = "Статус"
+        verbose_name_plural = "Статусы"
 
-    def __str__(self) -> str:
-        return self.name
 
-
-class PersonalTaskModel(models.Model):
+class PersonalTaskModel(TaskModel):
     """Модель персональной задачи."""
 
-    name = models.CharField(
-        verbose_name="Имя",
-        max_length=255,
-    )
-    discription = models.TextField(
-        verbose_name="Описание"
-    )
-    status = models.ForeignKey(
-        StatusModel,
-        on_delete=models.SET_NULL,
-        null=True,
-        related_name="status",
-    )
-    author = models.ForeignKey(
-        User,
-        on_delete=models.CASCADE,
-        related_name="author"
-    )
-    deadline = models.DateTimeField(
-        verbose_name="Дедлайн",
-    )
     subtasks = models.ManyToManyField(
         "self", symmetrical=False,
         verbose_name="Подзадачи",
         through="SubPersonalTasksM2M",
+        related_name="subtasks+",
     )
     tags = models.ManyToManyField(
         TagModel,
         verbose_name="Теги",
         through="TagPersonalTaskModel",
+        related_name="tags+",
     )
-    main_task = models.BooleanField(
-        verbose_name="This main task?",
+    status = models.ForeignKey(
+        StatusModel,
+        on_delete=models.SET_NULL,
+        null=True,
+        related_name="status+",
+    )
+    author = models.ForeignKey(
+        User,
+        on_delete=models.CASCADE,
+        related_name="author_task_pers",
     )
 
-    def __str__(self) -> str:
-        return self.name
+    class Meta:
+        verbose_name = "Персональная задача"
+        verbose_name_plural = "Персональные задачи"
+        db_table = "PersonalTask"
 
 
 class SubPersonalTasksM2M(models.Model):
@@ -109,12 +68,12 @@ class SubPersonalTasksM2M(models.Model):
         PersonalTaskModel,
         on_delete=models.CASCADE,
         verbose_name="Main задача",
-        related_name="task",
+        related_name="main_task_pers",
     )
     subtask = models.ForeignKey(
         PersonalTaskModel,
         verbose_name="Sub задача",
-        related_name="subtask",
+        related_name="sub_task_pers",
         on_delete=models.CASCADE,
     )
 
@@ -129,70 +88,62 @@ class TagPersonalTaskModel(models.Model):
         TagModel,
         verbose_name="Тег (id)",
         on_delete=models.CASCADE,
-        related_name='tag_task',
+        related_name='tag_pers',
     )
     task = models.ForeignKey(
         PersonalTaskModel,
         verbose_name="Задача (id)",
         on_delete=models.CASCADE,
-        related_name='tag_task',
+        related_name='task_pers',
     )
 
     def __str__(self) -> str:
         return f'{self.task} {self.tag}'
 
 
-class OrgTaskModel(models.Model):
+class OrgTaskModel(TaskModel):
     """Модель  задачи."""
 
-    name = models.CharField(
-        verbose_name="Имя",
-        max_length=255,
-    )
-    discription = models.TextField(
-        verbose_name="Описание"
-    )
-    status = models.ForeignKey(
-        StatusModel,
-        on_delete=models.SET_NULL,
-        null=True,
-        related_name="status",
-    )
     author = models.ForeignKey(
         User,
         on_delete=models.CASCADE,
-        related_name="author"
-    )
-    deadline = models.DateTimeField(
-        verbose_name="Дедлайн",
+        related_name="author_task_org",
     )
     subtasks = models.ManyToManyField(
         "self", symmetrical=False,
         verbose_name="Подзадачи",
         through="SubOrgTasksM2M",
+        related_name="subtasks+",
+    )
+    status = models.ForeignKey(
+        StatusModel,
+        on_delete=models.SET_NULL,
+        null=True,
+        related_name="status+",
     )
     tags = models.ManyToManyField(
         TagModel,
         verbose_name="Теги",
         through="TagOrgTaskModel",
-    )
-    main_task = models.BooleanField(
-        verbose_name="This main task?",
+        related_name="tags+"
     )
     organization = models.ForeignKey(
         OrgModel,
         on_delete=models.CASCADE,
         related_name='organization',
     )
-    responsible = models.ManyToManyField(
+    responsibles = models.ManyToManyField(
         User,
         verbose_name="Ответственные",
         through="ResponsibleOrgTasks",
+        related_name="responsibles",
     )
     history = HistoricalRecords()
 
-    def __str__(self) -> str:
-        return self.name
+    class Meta:
+        verbose_name = "Задача организации"
+        verbose_name_plural = "Задачи организации"
+        db_table = "OrgTask"
 
 
 class TagOrgTaskModel(models.Model):
@@ -202,13 +153,13 @@ class TagOrgTaskModel(models.Model):
         TagModel,
         verbose_name="Тег (id)",
         on_delete=models.CASCADE,
-        related_name='tag_task',
+        related_name='tag_org+',
     )
     task = models.ForeignKey(
         OrgTaskModel,
         verbose_name="Задача (id)",
         on_delete=models.CASCADE,
-        related_name='tag_task',
+        related_name='task_org+',
     )
 
     def __str__(self) -> str:
@@ -222,12 +173,12 @@ class SubOrgTasksM2M(models.Model):
         OrgTaskModel,
         on_delete=models.CASCADE,
         verbose_name="Main задача",
-        related_name="task",
+        related_name="main_task_org",
     )
     subtask = models.ForeignKey(
         OrgTaskModel,
         verbose_name="Sub задача",
-        related_name="subtask",
+        related_name="sub_task_org",
         on_delete=models.CASCADE,
     )
 
@@ -236,22 +187,20 @@ class SubOrgTasksM2M(models.Model):
 
 
 class ResponsibleOrgTasks(models.Model):
-    """Модель М2М для подзадач."""
+    """Модель М2М ответственных."""
     
     task = models.ForeignKey(
         OrgTaskModel,
         on_delete=models.CASCADE,
         verbose_name="Main задача",
-        related_name="task",
+        related_name="task_org",
     )
     user = models.ForeignKey(
         User,
         verbose_name="Ответственный",
-        related_name="user",
+        related_name="resp_user_org",
         on_delete=models.CASCADE,
     )
 
     class Meta:
         unique_together = ["task", "user"]
-
-
