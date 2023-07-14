@@ -13,12 +13,15 @@ class UserModel(AbstractUser):
     telegram_id = models.PositiveIntegerField(
         _('telegram_id'),
         validators=[MaxValueValidator(telegram_id_max)],
-
+        null=True,
     )
     REQUIRED_FIELDS = ['email', 'last_name', 'first_name']
+    groups = None
 
     def __str__(self):
         return self.username
 
     class Meta:
         ordering = ("id",)
+        verbose_name = "Пользователь"
+        verbose_name_plural = "Пользователи"

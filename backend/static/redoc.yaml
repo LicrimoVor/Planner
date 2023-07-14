@@ -286,7 +286,7 @@ paths:
         - Теги
     post:
       operationId: Создание тега
-      description: Создание тега
+      description: Создание тега. Доступно пока что только администраторам сервиса.
       security:
         - Token: [ ]
       requestBody:
@@ -368,7 +368,7 @@ paths:
         - Статусы
     post:
       operationId: Создание статуса
-      description: Создание статуса для задач. Доступно только администраторам сервиса
+      description: Создание статуса для задач. Доступно пока что только администраторам сервиса
       security:
         - Token: [ ]
       requestBody:
@@ -417,7 +417,7 @@ paths:
       operationId: Обновление статуса
       security:
         - Token: [ ]
-      description: 'Обновление полей статуса. Доступно только администраторам сервиса'
+      description: 'Обновление полей статуса. Доступно пока что только администраторам сервиса'
       parameters:
         - name: id
           in: path
@@ -447,7 +447,7 @@ paths:
         - Статусы
     delete:
       operationId: Удаление статуса
-      description: Удаление статуса. Доступно только администраторам сервиса
+      description: Удаление статуса. Доступно пока что только администраторам сервиса
       security:
         - Token: [ ]
       parameters:
@@ -976,6 +976,7 @@ paths:
         '404':
           $ref: '#/components/responses/NotFound'
       tags:
+        - Задачи организации
 
   /api/organization/{id}/task/history/:
     get:

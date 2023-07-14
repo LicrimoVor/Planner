@@ -23,6 +23,11 @@ class OrgModel(models.Model):
         related_name="staff",
     )
 
+    class Meta:
+        db_table = "Organizations"
+        verbose_name = "Организация"
+        verbose_name_plural = "Организации"
+
 
 class UserOrgModel(models.Model):
     """Модель персонала M2M"""
