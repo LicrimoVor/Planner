@@ -47,6 +47,11 @@ class NameColorModel(models.Model):
         unique=True,
         validators=[validate_hex],
     )
+    slug = models.SlugField(
+        verbose_name="Slug",
+        help_text="Краткое имя",
+        unique=True,
+    )
 
     class Meta:
         ordering = ("id",)

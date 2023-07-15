@@ -36,14 +36,16 @@ tags:
       Фильтрация по тегам: http://127.0.0.1:8000/api/organization/{id}/task/?tags=hard&tags=normal <br>
       Фильтрация по статусу: http://127.0.0.1:8000/api/organization/{id}/task/?status=1 <br>
       Фильтрация по акутальным задачам: http://127.0.0.1:8000/api/organization/{id}/task/?actual=true <br>
+      Фильтрация по main задачам (исключает выборку подзадач): http://127.0.0.1:8000/api/organization/{id}/task/?main=true <br>
+      Фильтрация по ответственным: http://127.0.0.1:8000/api/organization/{id}/task/?responsible=1 <br>
       Поиск по названию задачи: http://127.0.0.1:8000/api/organization/{id}/task/?search=Планне <br>
       Сортировка по дедлайну: http://127.0.0.1:8000/api/organization/{id}/task/?ordering=deadline <br>
   - name: Персональные задачи
     description: |
       Фильтрация по тегам: http://127.0.0.1:8000/api/task_me/?tags=hard&tags=normal <br>
       Фильтрация по статусу: http://127.0.0.1:8000/api/task_me/?status=1 <br>
-      Фильтрация по организации: http://127.0.0.1:8000/api/task_me/?organization=1 <br>
       Фильтрация по акутальным задачам: http://127.0.0.1:8000/api/task_me/?actual=true <br>
+      Фильтрация по main задачам (исключает выборку подзадач): http://127.0.0.1:8000/api/organization/{id}/task/?main=true <br>
       Поиск по названию задачи: http://127.0.0.1:8000/api/task_me/?search=Планне <br>
       Сортировка по дедлайну: http://127.0.0.1:8000/api/task_me/?ordering=deadline <br>
   - name: История задач организации
@@ -741,7 +743,7 @@ paths:
       security:
         - Token: [ ]
       operationId: Получение задачи
-      description: Получение задачи по его id
+      description: Получение задачи по его id (Так же применяется и для подзадач)
       parameters:
         - name: id
           in: path
@@ -768,7 +770,7 @@ paths:
       operationId: Обновление задачи
       security:
         - Token: [ ]
-      description: Обновление полей задачи
+      description: Обновление полей задачи (Так же применяется и для подзадач)
       parameters:
         - name: id
           in: path
@@ -798,7 +800,7 @@ paths:
         - Задачи организации
     delete:
       operationId: Удаление задачи
-      description: Удаление задачи
+      description: Удаление задачи (Так же применяется и для подзадач)
       security:
         - Token: [ ]
       parameters:
@@ -894,89 +896,89 @@ paths:
           $ref: '#/components/responses/NotFound'
       tags:
         - Задачи организации
-  /api/organization/{id}/task/{id}/subtasks/{id}/:
-    get:
-      security:
-        - Token: [ ]
-      operationId: Получение подзадачи
-      description: Получение подзадачи по его id
-      parameters:
-        - name: id
-          in: path
-          required: true
-          description: "Уникальный идентификатор этой подзадачи."
-          schema:
-            type: string
-      responses:
-        '200':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/SubTaskOrgCreateResp'
-          description: ''
-        '401':
-          $ref: '#/components/responses/AuthenticationError'
-        '403':
-          $ref: '#/components/responses/PermissionDenied'
-        '404':
-          $ref: '#/components/responses/NotFound'
-      tags:
-        - Задачи организации
-    patch:
-      operationId: Обновление подзадачи
-      security:
-        - Token: [ ]
-      description: Обновление полей подзадачи
-      parameters:
-        - name: id
-          in: path
-          required: true
-          description: "Уникальный идентификатор этой подзадачи."
-          schema:
-            type: string
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/SubTaskOrgUpdate'
-      responses:
-        '200':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/SubTaskOrgUpdateResp'
-          description: 'Задача успешна обновлена'
-        '401':
-          $ref: '#/components/responses/AuthenticationError'
-        '403':
-          $ref: '#/components/responses/PermissionDenied'
-        '404':
-          $ref: '#/components/responses/NotFound'
-      tags:
-        - Задачи организации
-    delete:
-      operationId: Удаление подадачи
-      description: Удаление подадачи
-      security:
-        - Token: [ ]
-      parameters:
-        - name: id
-          in: path
-          required: true
-          description: "Уникальный идентификатор этой подадачи"
-          schema:
-            type: string
-      responses:
-        '204':
-          description: 'Задача успешна удалена'
-        '401':
-          $ref: '#/components/responses/AuthenticationError'
-        '403':
-          $ref: '#/components/responses/PermissionDenied'
-        '404':
-          $ref: '#/components/responses/NotFound'
-      tags:
-        - Задачи организации
+  # /api/organization/{id}/task/{id}/subtasks/{id}/:
+  #   get:
+  #     security:
+  #       - Token: [ ]
+  #     operationId: Получение подзадачи
+  #     description: Получение подзадачи по его id
+  #     parameters:
+  #       - name: id
+  #         in: path
+  #         required: true
+  #         description: "Уникальный идентификатор этой подзадачи."
+  #         schema:
+  #           type: string
+  #     responses:
+  #       '200':
+  #         content:
+  #           application/json:
+  #             schema:
+  #               $ref: '#/components/schemas/SubTaskOrgCreateResp'
+  #         description: ''
+  #       '401':
+  #         $ref: '#/components/responses/AuthenticationError'
+  #       '403':
+  #         $ref: '#/components/responses/PermissionDenied'
+  #       '404':
+  #         $ref: '#/components/responses/NotFound'
+  #     tags:
+  #       - Задачи организации
+  #   patch:
+  #     operationId: Обновление подзадачи
+  #     security:
+  #       - Token: [ ]
+  #     description: Обновление полей подзадачи
+  #     parameters:
+  #       - name: id
+  #         in: path
+  #         required: true
+  #         description: "Уникальный идентификатор этой подзадачи."
+  #         schema:
+  #           type: string
+  #     requestBody:
+  #       content:
+  #         application/json:
+  #           schema:
+  #             $ref: '#/components/schemas/SubTaskOrgUpdate'
+  #     responses:
+  #       '200':
+  #         content:
+  #           application/json:
+  #             schema:
+  #               $ref: '#/components/schemas/SubTaskOrgUpdateResp'
+  #         description: 'Задача успешна обновлена'
+  #       '401':
+  #         $ref: '#/components/responses/AuthenticationError'
+  #       '403':
+  #         $ref: '#/components/responses/PermissionDenied'
+  #       '404':
+  #         $ref: '#/components/responses/NotFound'
+  #     tags:
+  #       - Задачи организации
+  #   delete:
+  #     operationId: Удаление подадачи
+  #     description: Удаление подадачи
+  #     security:
+  #       - Token: [ ]
+  #     parameters:
+  #       - name: id
+  #         in: path
+  #         required: true
+  #         description: "Уникальный идентификатор этой подадачи"
+  #         schema:
+  #           type: string
+  #     responses:
+  #       '204':
+  #         description: 'Задача успешна удалена'
+  #       '401':
+  #         $ref: '#/components/responses/AuthenticationError'
+  #       '403':
+  #         $ref: '#/components/responses/PermissionDenied'
+  #       '404':
+  #         $ref: '#/components/responses/NotFound'
+  #     tags:
+  #       - Задачи организации
 
   /api/organization/{id}/task/history/:
     get:
@@ -1072,53 +1074,53 @@ paths:
           $ref: '#/components/responses/NotFound'
       tags:
         - История задач организации
-  /api/organization/{id}/task/{id}/subtasks/{id}/history/:
-    get:
-      operationId: История подзадачи
-      security:
-        - Token: [ ]
-      description: |
-        Получение списка изменений подзадачи текущей организации. <br>
-        Доступно только участникам организации <br>
-        Подключен пагинатор с 10 элементами на выводе <br>
-      parameters: []
-      responses:
-        '200':
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  count:
-                    type: integer
-                    example: 123
-                    description: 'Общее количество объектов в базе'
-                  next:
-                    type: string
-                    nullable: true
-                    format: uri
-                    example: http://127.0.0.1:8000/api/organization/{id}/task/{id}/subtasks/{id}/history/?page=4
-                    description: 'Ссылка на следующую страницу'
-                  previous:
-                    type: string
-                    nullable: true
-                    format: uri
-                    example: http://127.0.0.1:8000/api/organization/{id}/task/{id}/subtasks/{id}/history/?page=2
-                    description: 'Ссылка на предыдущую страницу'
-                  results:
-                    type: array
-                    items:
-                      example: [Пока хз, ] 
-                    description: 'Список объектов текущей страницы'
-          description: ''
-        '401':
-          $ref: '#/components/responses/AuthenticationError'
-        '403':
-          $ref: '#/components/responses/PermissionDenied'
-        '404':
-          $ref: '#/components/responses/NotFound'
-      tags:
-        - История задач организации
+  # /api/organization/{id}/task/{id}/subtasks/{id}/history/:
+  #   get:
+  #     operationId: История подзадачи
+  #     security:
+  #       - Token: [ ]
+  #     description: |
+  #       Получение списка изменений подзадачи текущей организации. <br>
+  #       Доступно только участникам организации <br>
+  #       Подключен пагинатор с 10 элементами на выводе <br>
+  #     parameters: []
+  #     responses:
+  #       '200':
+  #         content:
+  #           application/json:
+  #             schema:
+  #               type: object
+  #               properties:
+  #                 count:
+  #                   type: integer
+  #                   example: 123
+  #                   description: 'Общее количество объектов в базе'
+  #                 next:
+  #                   type: string
+  #                   nullable: true
+  #                   format: uri
+  #                   example: http://127.0.0.1:8000/api/organization/{id}/task/{id}/subtasks/{id}/history/?page=4
+  #                   description: 'Ссылка на следующую страницу'
+  #                 previous:
+  #                   type: string
+  #                   nullable: true
+  #                   format: uri
+  #                   example: http://127.0.0.1:8000/api/organization/{id}/task/{id}/subtasks/{id}/history/?page=2
+  #                   description: 'Ссылка на предыдущую страницу'
+  #                 results:
+  #                   type: array
+  #                   items:
+  #                     example: [Пока хз, ] 
+  #                   description: 'Список объектов текущей страницы'
+  #         description: ''
+  #       '401':
+  #         $ref: '#/components/responses/AuthenticationError'
+  #       '403':
+  #         $ref: '#/components/responses/PermissionDenied'
+  #       '404':
+  #         $ref: '#/components/responses/NotFound'
+  #     tags:
+  #       - История задач организации
 
   /api/task_me/:
     get:
@@ -1192,12 +1194,60 @@ paths:
           $ref: '#/components/responses/NotFound'
       tags:
         - Персональные задачи
+  /api/task_me/organizations/:
+    get:
+      operationId: Cписок задач орагнизаций
+      security:
+        - Token: [ ]
+      description: |
+       Получение списка задач организаций, в которых пользователь отмечен, как ответственный. <br>
+       Подключен пагинатор с 10 элементами на выводе <br>
+       Фильтрация по организации: http://127.0.0.1:8000/api/task_me/organizations/?organization=1 <br>
+
+      parameters: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  count:
+                    type: integer
+                    example: 123
+                    description: 'Общее количество объектов в базе'
+                  next:
+                    type: string
+                    nullable: true
+                    format: uri
+                    example: http://127.0.0.1:8000/api/task_me/?page=4
+                    description: 'Ссылка на следующую страницу'
+                  previous:
+                    type: string
+                    nullable: true
+                    format: uri
+                    example: http://127.0.0.1:8000/api/task_me/?page=2
+                    description: 'Ссылка на предыдущую страницу'
+                  results:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/TaskPersonal'
+                    description: 'Список объектов текущей страницы'
+          description: ''
+        '401':
+          $ref: '#/components/responses/AuthenticationError'
+        '403':
+          $ref: '#/components/responses/PermissionDenied'
+        '404':
+          $ref: '#/components/responses/NotFound'
+      tags:
+        - Персональные задачи
   /api/task_me/{id}/:
     get:
       security:
         - Token: [ ]
       operationId: Получение задачи
-      description: Получение задачи по его id
+      description: Получение задачи по его id (Так же применяется и для подзадач)
       parameters:
         - name: id
           in: path
@@ -1222,7 +1272,7 @@ paths:
       operationId: Обновление задачи
       security:
         - Token: [ ]
-      description: Обновление полей задачи
+      description: Обновление полей задачи (Так же применяется и для подзадач)
       parameters:
         - name: id
           in: path
@@ -1250,7 +1300,7 @@ paths:
         - Персональные задачи
     delete:
       operationId: Удаление задачи
-      description: Удаление задачи
+      description: Удаление задачи (Так же применяется и для подзадач)
       security:
         - Token: [ ]
       parameters:
@@ -1339,83 +1389,83 @@ paths:
           $ref: '#/components/responses/NotFound'
       tags:
         - Персональные задачи
-  /api/task_me/{id}/subtasks/{id}/:
-    get:
-      security:
-        - Token: [ ]
-      operationId: Получение подзадачи
-      description: Получение подзадачи по его id
-      parameters:
-        - name: id
-          in: path
-          required: true
-          description: "Уникальный идентификатор этой подзадачи."
-          schema:
-            type: string
-      responses:
-        '200':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/SubTaskPersonalCreateResp'
-          description: ''
-        '401':
-          $ref: '#/components/responses/AuthenticationError'
-        '404':
-          $ref: '#/components/responses/NotFound'
-      tags:
-        - Персональные задачи
-    patch:
-      operationId: Обновление подзадачи
-      security:
-        - Token: [ ]
-      description: Обновление полей подзадачи
-      parameters:
-        - name: id
-          in: path
-          required: true
-          description: "Уникальный идентификатор этой подзадачи."
-          schema:
-            type: string
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/SubTaskPersonalUpdate'
-      responses:
-        '200':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/SubTaskPersonalUpdateResp'
-          description: 'Задача успешна обновлена'
-        '401':
-          $ref: '#/components/responses/AuthenticationError'
-        '404':
-          $ref: '#/components/responses/NotFound'
-      tags:
-        - Персональные задачи
-    delete:
-      operationId: Удаление подзадачи
-      description: Удаление подзадачи
-      security:
-        - Token: [ ]
-      parameters:
-        - name: id
-          in: path
-          required: true
-          description: "Уникальный идентификатор этой подзадачи"
-          schema:
-            type: string
-      responses:
-        '204':
-          description: 'Задача успешна удалена'
-        '401':
-          $ref: '#/components/responses/AuthenticationError'
-        '404':
-          $ref: '#/components/responses/NotFound'
-      tags:
-        - Персональные задачи
+  # /api/task_me/{id}/subtasks/{id}/:
+  #   get:
+  #     security:
+  #       - Token: [ ]
+  #     operationId: Получение подзадачи
+  #     description: Получение подзадачи по его id
+  #     parameters:
+  #       - name: id
+  #         in: path
+  #         required: true
+  #         description: "Уникальный идентификатор этой подзадачи."
+  #         schema:
+  #           type: string
+  #     responses:
+  #       '200':
+  #         content:
+  #           application/json:
+  #             schema:
+  #               $ref: '#/components/schemas/SubTaskPersonalCreateResp'
+  #         description: ''
+  #       '401':
+  #         $ref: '#/components/responses/AuthenticationError'
+  #       '404':
+  #         $ref: '#/components/responses/NotFound'
+  #     tags:
+  #       - Персональные задачи
+  #   patch:
+  #     operationId: Обновление подзадачи
+  #     security:
+  #       - Token: [ ]
+  #     description: Обновление полей подзадачи
+  #     parameters:
+  #       - name: id
+  #         in: path
+  #         required: true
+  #         description: "Уникальный идентификатор этой подзадачи."
+  #         schema:
+  #           type: string
+  #     requestBody:
+  #       content:
+  #         application/json:
+  #           schema:
+  #             $ref: '#/components/schemas/SubTaskPersonalUpdate'
+  #     responses:
+  #       '200':
+  #         content:
+  #           application/json:
+  #             schema:
+  #               $ref: '#/components/schemas/SubTaskPersonalUpdateResp'
+  #         description: 'Задача успешна обновлена'
+  #       '401':
+  #         $ref: '#/components/responses/AuthenticationError'
+  #       '404':
+  #         $ref: '#/components/responses/NotFound'
+  #     tags:
+  #       - Персональные задачи
+  #   delete:
+  #     operationId: Удаление подзадачи
+  #     description: Удаление подзадачи
+  #     security:
+  #       - Token: [ ]
+  #     parameters:
+  #       - name: id
+  #         in: path
+  #         required: true
+  #         description: "Уникальный идентификатор этой подзадачи"
+  #         schema:
+  #           type: string
+  #     responses:
+  #       '204':
+  #         description: 'Задача успешна удалена'
+  #       '401':
+  #         $ref: '#/components/responses/AuthenticationError'
+  #       '404':
+  #         $ref: '#/components/responses/NotFound'
+  #     tags:
+  #       - Персональные задачи
 
 components:
   schemas:
@@ -2812,9 +2862,6 @@ components:
             wrapped: true
           items:
             $ref: '#/components/models/Tag'
-        main_task:
-          type: bool
-          readOnly: true
 
   responses:
     ValidationError:
