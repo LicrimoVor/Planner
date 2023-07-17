@@ -48,7 +48,6 @@ tags:
       Фильтрация по main задачам (исключает выборку подзадач): http://127.0.0.1:8000/api/organization/{id}/task/?main=true <br>
       Поиск по названию задачи: http://127.0.0.1:8000/api/task_me/?search=Планне <br>
       Сортировка по дедлайну: http://127.0.0.1:8000/api/task_me/?ordering=deadline <br>
-  - name: История задач организации
 
   - name: Модель пользователя
     x-displayName: Модель пользователя
@@ -1026,7 +1025,7 @@ paths:
         '404':
           $ref: '#/components/responses/NotFound'
       tags:
-        - История задач организации
+        - Задачи организации
   /api/organization/{id}/task/{id}/history/:
     get:
       operationId: История задачи
@@ -1073,7 +1072,7 @@ paths:
         '404':
           $ref: '#/components/responses/NotFound'
       tags:
-        - История задач организации
+        - Задачи организации
   # /api/organization/{id}/task/{id}/subtasks/{id}/history/:
   #   get:
   #     operationId: История подзадачи
@@ -1120,7 +1119,7 @@ paths:
   #       '404':
   #         $ref: '#/components/responses/NotFound'
   #     tags:
-  #       - История задач организации
+  #       - Задачи организации
 
   /api/task_me/:
     get:
@@ -2706,6 +2705,12 @@ components:
           type: integer
           readOnly: true
           example: 1
+        slug:
+          description: Уникальный slug статуса
+          maxLength: 200
+          pattern: ^[-a-zA-Z0-9_]+$
+          type: string
+          example: in_progress
         name:
           description: Название статуса
           maxLength: 200

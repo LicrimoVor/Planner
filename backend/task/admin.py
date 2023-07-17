@@ -1,4 +1,5 @@
 from django.contrib import admin
+from simple_history.admin import SimpleHistoryAdmin
 
 from task.models import (TagModel, PersonalTaskModel,
                          StatusModel, SubOrgTasksM2M,
@@ -58,15 +59,17 @@ class PersonalTaskAdmin(admin.ModelAdmin):
     inlines = [TagPersonalTaskInline, SubPersonalTaskInline ]
 
 
-class OrgTaskAdmin(admin.ModelAdmin):
+class OrgTaskAdmin(SimpleHistoryAdmin):
     """Отображение задач организации в админ-панеле."""
     list_display = ("id", "name", "author", "status", "deadline")
     list_filter = ("name", "author", "status", "deadline")
+    history_list_display = ["status"]
     inlines = [TagOrgTaskInline, ResponsibleOrgTasksAdmin, SubOrgTaskInline,]
+    search_fields = ['name', 'author__username']
+
 
 
 admin.site.register(TagModel, TagAdmin)
 admin.site.register(StatusModel, StatusAdmin)
 admin.site.register(PersonalTaskModel, PersonalTaskAdmin)
 admin.site.register(OrgTaskModel, OrgTaskAdmin)
-
