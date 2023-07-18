@@ -42,13 +42,23 @@ class ResponsibleOrgTasksAdmin(admin.TabularInline):
 
 class TagAdmin(admin.ModelAdmin):
     """Отображение тегов в админ-панеле."""
-    list_display = ("id", "name", "color",)
+    list_display = ("id", "name", 'color_fun')
+
+    def color_fun(self, obj):
+        return obj.color_html
+
+    color_fun.short_description = "Цвет"
     list_filter = ("name",)
 
 
 class StatusAdmin(admin.ModelAdmin):
     """Отображение статусов в админ-панеле."""
-    list_display = ("id", "name", "color",)
+    list_display = ("id", "name", 'color_fun')
+
+    def color_fun(self, obj):
+        return obj.color_html
+
+    color_fun.short_description = "Цвет"
     list_filter = ("name",)
 
 

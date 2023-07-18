@@ -1,5 +1,6 @@
 from django.db import models
 from django.contrib.auth import get_user_model
+from django.utils.html import format_html
 
 from core.validators import validate_hex
 
@@ -59,3 +60,11 @@ class NameColorModel(models.Model):
 
     def __str__(self) -> str:
         return self.name
+
+    @property
+    def color_html(self):
+        return format_html(
+            '<span style="color: {};">{}</span>',
+            self.color,
+            self.color
+        )

@@ -15,7 +15,10 @@ class UserModel(AbstractUser):
         validators=[MaxValueValidator(telegram_id_max)],
         null=True,
     )
-    REQUIRED_FIELDS = ['email', 'last_name', 'first_name']
+    first_name = models.CharField(_('first name'), max_length=150,)
+    last_name = models.CharField(_('last name'), max_length=150,)
+    email = models.EmailField(_('email address'), unique=True)
+    REQUIRED_FIELDS = ['email', 'last_name', 'first_name', "password"]
     groups = None
 
     def __str__(self):

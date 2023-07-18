@@ -37,7 +37,7 @@ class Command(BaseCommand):
             with open(path_model) as file:
                 file = csv.DictReader(file, delimiter=",")
                 for dict_field in file:
-                    if model.objects.get(**dict_field):
+                    if model.objects.filter(**dict_field):
                         continue
                     inst_model = model(**dict_field)
                     model_list.append(inst_model)
@@ -50,3 +50,4 @@ class Command(BaseCommand):
         else:
             name_model = options['model']
             import_data(name_model)
+        print("Импорт выполнен успешно!")
