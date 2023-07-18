@@ -3,7 +3,6 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.views import APIView
 from rest_framework.viewsets import ModelViewSet
 
-from task.models import OrgModel
 from organizations.models import OrgModel
 from ..permissions import OrgAdminPermission
 
@@ -18,7 +17,7 @@ class OrganizationSet(ModelViewSet):
     search_fields = ("name", )
 
 
-class OrganizationGetMe(APIView):
+class OrganizationMeView(APIView):
     """View для get-запрос получения своих организаций."""
     permission_classes = (IsAuthenticated, )
 

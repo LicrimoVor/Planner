@@ -1,13 +1,12 @@
 from datetime import datetime as dt
 
-from django.db.models import Q
 from rest_framework.filters import BaseFilterBackend
 
 from organizations.models import OrgModel
-from task.models import TagPersonalTaskModel, TagOrgTaskModel, SubOrgTasksM2M, SubPersonalTasksM2M
+from task.models import SubPersonalTasksM2M
 
 
-class TagsTaskFilter(BaseFilterBackend):
+class TagTaskFilter(BaseFilterBackend):
     """Фильтрация задач по тегу."""
 
     def filter_queryset(self, request, queryset, view):
@@ -32,11 +31,13 @@ class MainOrgTaskFilter(BaseFilterBackend):
 
     def filter_queryset(self, request, queryset, view):
         if request.query_params.get('main'):
-            subtask_id_queryset = SubOrgTasksM2M.objects.values("subtask").distinct()
-            subtask_id_list = []
-            for subtask_id in enumerate(subtask_id_queryset):
-                subtask_id_list.append(subtask_id["id"])
-            queryset.objects.exclude(id__in=subtask_id_list)
+            # subtask_id_queryset = SubPersonalTasksM2M.objects.values_list("subtask__id", flat=True).distinct()
+            # subtask_id_list = []
+            # for subtask_id in enumerate(subtask_id_queryset):
+            #     subtask_id_list.append(subtask_id["id"])
+            # queryset.objects.exclude(id__in=subtask_id_list)
+            subtask_queryset = SubPersonalTasksM2M.objects.values_list("subtask", flat=True).distinct()
+            queryset = queryset.difference(subtask_queryset)
         return queryset
 
 
@@ -45,11 +46,13 @@ class MainPersonalTaskFilter(BaseFilterBackend):
 
     def filter_queryset(self, request, queryset, view):
         if request.query_params.get('main'):
-            subtask_id_queryset = SubPersonalTasksM2M.objects.values("subtask").distinct()
-            subtask_id_list = []
-            for subtask_id in enumerate(subtask_id_queryset):
-                subtask_id_list.append(subtask_id["id"])
-            queryset.objects.exclude(id__in=subtask_id_list)
+            # subtask_id_queryset = SubPersonalTasksM2M.objects.values_list("subtask__id", flat=True).distinct()
+            # subtask_id_list = []
+            # for subtask_id in enumerate(subtask_id_queryset):
+            #     subtask_id_list.append(subtask_id["id"])
+            # queryset.objects.exclude(id__in=subtask_id_list)
+            subtask_queryset = SubPersonalTasksM2M.objects.values_list("subtask", flat=True).distinct()
+            queryset = queryset.difference(subtask_queryset)
         return queryset
 
 
@@ -63,7 +66,7 @@ class ResponsibleTaskFilter(BaseFilterBackend):
         return queryset
 
 
-class OrgTaskFilter(BaseFilterBackend):
+class OrganizationTaskFilter(BaseFilterBackend):
     """Фильтрация задач по организациям."""
 
     def filter_queryset(self, request, queryset, view):

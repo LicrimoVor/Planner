@@ -12,4 +12,4 @@ class StatusSet(ModelViewSet):
     # serializer_class = TagSerializer
     permission_classes = (ModifyAdminPermission, )
     filter_backends = (filters.SearchFilter,)
-    search_fields = ("name", )
+    search_fields = ("name", "slug")

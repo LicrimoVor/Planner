@@ -1,7 +1,6 @@
 from rest_framework.permissions import (
     SAFE_METHODS,
     BasePermission,
-    IsAuthenticatedOrReadOnly,
 )
 from django.contrib.auth import get_user_model
 
@@ -46,3 +45,15 @@ class ModifyAdminPermission(BasePermission):
     def has_permission(self, request, view):
         return (request.method in SAFE_METHODS
                 or request.user.is_staff)
+
+
+class AuthorPermission(BasePermission):
+    """
+    Проверка запросов get-retr, patch, put и del
+    на авторство (в которых есть id).
+    """
+
+    message = "Это не ваша задача!"
+
+    def has_permission(self, request, view):
+        return False

@@ -330,7 +330,62 @@ paths:
           $ref: '#/components/responses/NotFound'
       tags:
         - Теги
-  
+    patch:
+      operationId: Обновление тега
+      security:
+        - Token: [ ]
+      description: 'Обновление полей тега. Доступно пока что только администраторам сервиса'
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: "Уникальный идентификатор этого тега."
+          schema:
+            type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Tag'
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Tag'
+          description: 'Статус успешно обновлен'
+        '400':
+          $ref: '#/components/responses/AuthenticationError'
+        '403':
+          $ref: '#/components/responses/PermissionDenied'
+        '404':
+          $ref: '#/components/responses/NotFound'
+      tags:
+        - Теги
+    delete:
+      operationId: Удаление тега
+      description: Удаление тега. Доступно пока что только администраторам сервиса
+      security:
+        - Token: [ ]
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: "Уникальный идентификатор этого тега"
+          schema:
+            type: string
+      responses:
+        '204':
+          description: 'Статус успешно удален'
+        '401':
+          $ref: '#/components/responses/AuthenticationError'
+        '403':
+          $ref: '#/components/responses/PermissionDenied'
+        '404':
+          $ref: '#/components/responses/NotFound'
+      tags:
+        - Теги
+
   /api/status/:
     get:
       operationId: Cписок статусов
