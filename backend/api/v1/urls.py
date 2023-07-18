@@ -3,7 +3,7 @@ from rest_framework.routers import DefaultRouter
 
 from api.v1.views.org_task import OrgTaskSet, OrgSubTaskSet, HistoryTaskView, HistoryView
 from api.v1.views.personal_task import PersonalTaskSet, OrganizationTaskMeSet
-from api.v1.views.orgnazations import OrganizationMeView, OrganizationSet
+from api.v1.views.orgnizations import OrganizationMeView, OrganizationSet
 from api.v1.views.status import StatusSet
 from api.v1.views.tag import TagSet
 

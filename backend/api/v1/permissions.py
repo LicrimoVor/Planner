@@ -9,7 +9,8 @@ User = get_user_model()
 
 class OrgPermission(BasePermission):
     """
-    Разрешает изменение и просмотр задач орг.
+    Разрешает просмотр доп. инф про организацию,
+    изменение и просмотр задач организации
     только пользователям, которые состоят в 
     данной орг.
     """
@@ -18,6 +19,8 @@ class OrgPermission(BasePermission):
 
     def has_permission(self, request, view):
         user = request.user
+        # if id ...
+        # else return True
         return False
 
 

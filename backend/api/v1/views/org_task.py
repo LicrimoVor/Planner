@@ -1,7 +1,8 @@
-from rest_framework import filters
+from rest_framework import filters, status
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.viewsets import ModelViewSet
 from rest_framework.views import APIView
+from rest_framework.response import Response
 
 from task.models import OrgTaskModel
 from ..permissions import OrgPermission
@@ -48,9 +49,27 @@ class HistoryView(APIView):
     """ViewSet подзадач организации."""
     permission_classes = [IsAuthenticated&OrgPermission]
 
+    def get(self, request, *args, **kwargs):
+        """Выдает список всех изменений."""
 
+        user = request.user
+        # queryset = self.get_queryset(user)
+        # serializer = OrgPermSerializer(queryset,
+        #                                context={"request": request})
+        # return Response(serializer.data,
+        #                 status=status.HTTP_201_CREATED)
 
 class HistoryTaskView(APIView):
     """ViewSet подзадач организации."""
     permission_classes = [IsAuthenticated&OrgPermission]
+
+    def get(self, request, *args, **kwargs):
+        """Выдает список изменений задачи."""
+
+        user = request.user
+        # queryset = self.get_queryset(user)
+        # serializer = OrgPermSerializer(queryset,
+        #                                context={"request": request})
+        # return Response(serializer.data,
+        #                 status=status.HTTP_201_CREATED)
 

@@ -591,14 +591,14 @@ paths:
   /api/organization/{id}/:
     get:
       operationId: Получение организации
-      description: Получение организации по её id
+      description: Получение организации по её id. Доступно только участникам организации.
       security:
         - Token: [ ]
       parameters:
         - name: id
           in: path
           required: true
-          description: "Уникальный идентификатор этой организации."
+          description: "Уникальный идентификатор этой организации"
           schema:
             type: string
       responses:
@@ -606,10 +606,12 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/OrganizationList'
+                $ref: '#/components/schemas/Organization'
           description: ''
         '401':
           $ref: '#/components/responses/AuthenticationError'
+        '403':
+          $ref: '#/components/responses/PermissionDenied'
         '404':
           $ref: '#/components/responses/NotFound'
       tags:
@@ -630,7 +632,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/Organization'
+              $ref: '#/components/schemas/OrganizationCreate'
       responses:
         '200':
           content:
@@ -1593,14 +1595,15 @@ components:
           type: string
           example: Planner o_0
         staff:
-          description: Сотрудники организации
-          minItems: 1
+          description: Сотрудники организации (id)
+          minItems: 0
           xml:
-            name: user
+            name: tag
             wrapped: true
+          type: array
+          example: [1, ]
           items:
-            example:
-              id: 0
+            type: integer
 
     TaskOrg:
       type: object
