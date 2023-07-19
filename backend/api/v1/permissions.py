@@ -17,11 +17,15 @@ class OrgPermission(BasePermission):
 
     message = "Вы не состоите в организации."
 
-    def has_permission(self, request, view):
-        user = request.user
-        # if id ...
-        # else return True
+    def has_object_permission(request, view, obj):
+        if view.kwargs.get("pk") is None:
+            return False
+        username = request.user.username
+        staff = obj.staff.all()
+        if staff.filter(username=username):
+            return True
         return False
+
 
 
 class OrgAdminPermission(BasePermission):
@@ -32,10 +36,11 @@ class OrgAdminPermission(BasePermission):
 
     message = "Вы не являетесь администратором данной организации."
 
-    def has_permission(self, request, view):
+    def has_object_permission(self, request, view, obj):
         user = request.user
-        return (request.method in ("POST", "GET")
-                or False)
+        admin = obj.admin
+        return (request.method in SAFE_METHODS
+                or user==admin)
 
 
 class ModifyAdminPermission(BasePermission):

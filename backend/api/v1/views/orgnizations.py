@@ -14,27 +14,18 @@ class OrganizationSet(ModelViewSet):
 
     queryset = OrgModel.objects.all()
     serializer_class = OrgNotPermSerializer
-    permission_classes = [IsAuthenticated&OrgPermission&OrgAdminPermission]
+    permission_classes = [IsAuthenticated&OrgAdminPermission]
     filter_backends = (filters.SearchFilter,)
     search_fields = ("name", )
 
-    def get_serializer(self, perm_flag: bool = False, *args, **kwargs):
+    def get_serializer(self, *args, **kwargs):
         """Возвращает эксзпляр сериализатора, в зависимости от прав perm_flag"""
-        if perm_flag:
+        if OrgPermission.has_object_permission(self.request, self, args[0]):
             serializer_class = OrgPermSerializer
         else:
             serializer_class = self.get_serializer_class()
         kwargs.setdefault('context', self.get_serializer_context())
         return serializer_class(*args, **kwargs)
-
-    def create(self, request, *args, **kwargs):
-        return super().create(request, *args, **kwargs)
-    
-    def update(self, request, *args, **kwargs):
-        return super().update(request, *args, **kwargs)
-
-    # def perform_create(self, serializer):
-    #     serializer.save(admin=self.request.user)
 
 
 class OrganizationMeView(APIView):

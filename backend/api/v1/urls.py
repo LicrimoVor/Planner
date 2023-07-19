@@ -15,7 +15,7 @@ router.register("status", StatusSet, basename="status")
 #                 OrgSubTaskSet, basename="org_subtask")
 # router.register(r"organization/(?P<org_id>\d+)/task",
 #                 OrgTaskSet, basename="org_task")
-# router.register("organization", OrganizationSet, basename="organization")
+router.register("organization", OrganizationSet, basename="organization")
 # router.register("task_me/organizations", OrganizationTaskMeSet,
 #                 basename="task_me_org")
 # router.register("task_me", PersonalTaskSet, basename="task_me")
