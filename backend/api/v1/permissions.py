@@ -18,14 +18,11 @@ class OrgPermission(BasePermission):
     message = "Вы не состоите в организации."
 
     def has_object_permission(request, view, obj):
-        if view.kwargs.get("pk") is None:
-            return False
         username = request.user.username
         staff = obj.staff.all()
         if staff.filter(username=username):
             return True
         return False
-
 
 
 class OrgAdminPermission(BasePermission):
