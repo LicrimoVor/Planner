@@ -43,9 +43,9 @@ tags:
   - name: Персональные задачи
     description: |
       Фильтрация по тегам: http://127.0.0.1:8000/api/task_me/?tags=hard&tags=normal <br>
-      Фильтрация по статусу: http://127.0.0.1:8000/api/task_me/?status=1 <br>
+      Фильтрация по статусу: http://127.0.0.1:8000/api/task_me/?status=not_started <br>
       Фильтрация по акутальным задачам: http://127.0.0.1:8000/api/task_me/?actual=true <br>
-      Фильтрация по main задачам (исключает выборку подзадач): http://127.0.0.1:8000/api/organization/{id}/task/?main=true <br>
+      Фильтрация по main задачам (исключает выборку подзадач): http://127.0.0.1:8000/api/task_me/?main=true <br>
       Поиск по названию задачи: http://127.0.0.1:8000/api/task_me/?search=Планне <br>
       Сортировка по дедлайну: http://127.0.0.1:8000/api/task_me/?ordering=deadline <br>
 

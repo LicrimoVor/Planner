@@ -1,9 +1,8 @@
-from datetime import datetime as dt
-
+from django.utils import timezone
 from rest_framework.filters import BaseFilterBackend
 
 from organizations.models import OrgModel
-from task.models import SubPersonalTasksM2M
+from task.models import SubPersonalTasksM2M, SubOrgTasksM2M
 
 
 class TagTaskFilter(BaseFilterBackend):
@@ -12,7 +11,8 @@ class TagTaskFilter(BaseFilterBackend):
     def filter_queryset(self, request, queryset, view):
         if request.query_params.get('tags'):
             tags_list = request.query_params.getlist('tags')
-            queryset = queryset.filter(tags__slug__in=tags_list).distinct()
+            for tag in tags_list:
+                queryset = queryset.filter(tags__slug=tag).distinct()
         return queryset
 
 
@@ -31,13 +31,8 @@ class MainOrgTaskFilter(BaseFilterBackend):
 
     def filter_queryset(self, request, queryset, view):
         if request.query_params.get('main'):
-            # subtask_id_queryset = SubPersonalTasksM2M.objects.values_list("subtask__id", flat=True).distinct()
-            # subtask_id_list = []
-            # for subtask_id in enumerate(subtask_id_queryset):
-            #     subtask_id_list.append(subtask_id["id"])
-            # queryset.objects.exclude(id__in=subtask_id_list)
-            subtask_queryset = SubPersonalTasksM2M.objects.values_list("subtask", flat=True).distinct()
-            queryset = queryset.difference(subtask_queryset)
+            queryset_id = SubOrgTasksM2M.objects.values_list("subtask", flat=True).distinct()
+            queryset = queryset.exclude(id__in=queryset_id)
         return queryset
 
 
@@ -46,13 +41,8 @@ class MainPersonalTaskFilter(BaseFilterBackend):
 
     def filter_queryset(self, request, queryset, view):
         if request.query_params.get('main'):
-            # subtask_id_queryset = SubPersonalTasksM2M.objects.values_list("subtask__id", flat=True).distinct()
-            # subtask_id_list = []
-            # for subtask_id in enumerate(subtask_id_queryset):
-            #     subtask_id_list.append(subtask_id["id"])
-            # queryset.objects.exclude(id__in=subtask_id_list)
-            subtask_queryset = SubPersonalTasksM2M.objects.values_list("subtask", flat=True).distinct()
-            queryset = queryset.difference(subtask_queryset)
+            queryset_id = SubPersonalTasksM2M.objects.values_list("subtask", flat=True).distinct()
+            queryset = queryset.exclude(id__in=queryset_id)
         return queryset
 
 
@@ -81,5 +71,5 @@ class ActualTaskFilter(BaseFilterBackend):
 
     def filter_queryset(self, request, queryset, view):
         if request.query_params.get('actual'):
-            queryset = queryset.filter(deadline__gte=dt.now()).distinct()
+            queryset = queryset.filter(deadline__gte=timezone.now()).distinct()
         return queryset

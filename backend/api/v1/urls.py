@@ -27,7 +27,7 @@ urlpatterns = [
          HistoryView.as_view(), name="history"),
     path("organization/<int:org_id>/task/<int:tas_id>/history/",
          HistoryTaskView.as_view(), name="history_task"),
-#     path("task_me/<int:task_id>/subtasks/",
-#          PersonalSubTaskView.as_view(), name="sub_person_task"),
+    path("task_me/<int:task_id>/subtasks/",
+         PersonalSubTaskView.as_view(), name="sub_person_task"),
     path("", include(router.urls)),
 ]

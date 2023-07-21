@@ -71,15 +71,12 @@ class SubPersonalTasksM2M(models.Model):
         verbose_name="Main задача",
         related_name="main_task_pers",
     )
-    subtask = models.ForeignKey(
+    subtask = models.OneToOneField(
         PersonalTaskModel,
         verbose_name="Sub задача",
         related_name="sub_task_pers",
-        on_delete=models.CASCADE,
+        on_delete=models.CASCADE
     )
-
-    class Meta:
-        unique_together = ["task", "subtask"]
 
 
 class TagPersonalTaskModel(models.Model):

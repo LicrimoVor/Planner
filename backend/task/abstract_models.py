@@ -18,7 +18,8 @@ class TaskModel(models.Model):
     )
     deadline = models.DateTimeField(
         verbose_name="Дедлайн",
-        null=True
+        null=True,
+        blank=True
     )
     
     class Meta:
