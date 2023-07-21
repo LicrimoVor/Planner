@@ -46,9 +46,9 @@ class PersonalTaskModel(TaskModel):
     status = models.ForeignKey(
         StatusModel,
         on_delete=models.SET_NULL,
-        null=True,
         related_name="status+",
         to_field='slug',
+        null=True
     )
     author = models.ForeignKey(
         User,

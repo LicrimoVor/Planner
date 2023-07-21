@@ -29,7 +29,7 @@ class OrgTaskSet(ModelViewSet):
     ordering_fields = ("deadline",)
 
 
-class OrgSubTaskSet(NotListSet):
+class OrgSubTaskView(NotListSet):
     """ViewSet подзадач организации."""
 
     queryset = OrgTaskModel.objects.all()

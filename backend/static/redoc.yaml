@@ -330,11 +330,11 @@ paths:
           $ref: '#/components/responses/NotFound'
       tags:
         - Теги
-    patch:
+    put:
       operationId: Обновление тега
       security:
         - Token: [ ]
-      description: 'Обновление полей тега. Доступно пока что только администраторам сервиса'
+      description: 'Обновление полей тега (Доступно так же Patch). Доступно пока что только администраторам сервиса'
       parameters:
         - name: id
           in: path
@@ -469,11 +469,11 @@ paths:
           $ref: '#/components/responses/NotFound'
       tags:
         - Статусы
-    patch:
+    put:
       operationId: Обновление статуса
       security:
         - Token: [ ]
-      description: 'Обновление полей статуса. Доступно пока что только администраторам сервиса'
+      description: 'Обновление полей статуса (Доступно так же Patch). Доступно пока что только администраторам сервиса'
       parameters:
         - name: id
           in: path
@@ -616,11 +616,11 @@ paths:
           $ref: '#/components/responses/NotFound'
       tags:
         - Организации
-    patch:
+    put:
       operationId: Обновление организации
       security:
         - Token: [ ]
-      description: 'Обновление полей организации. Доступно только администратору организации'
+      description: 'Обновление полей организации (Доступно так же Patch). Доступно только администратору организации'
       parameters:
         - name: id
           in: path
@@ -822,11 +822,11 @@ paths:
           $ref: '#/components/responses/NotFound'
       tags:
         - Задачи организации
-    patch:
+    put:
       operationId: Обновление задачи
       security:
         - Token: [ ]
-      description: Обновление полей задачи (Так же применяется и для подзадач)
+      description: Обновление полей задачи (Так же применяется и для подзадач). (Доступно так же Patch)
       parameters:
         - name: id
           in: path
@@ -980,11 +980,11 @@ paths:
   #         $ref: '#/components/responses/NotFound'
   #     tags:
   #       - Задачи организации
-  #   patch:
+  #   put:
   #     operationId: Обновление подзадачи
   #     security:
   #       - Token: [ ]
-  #     description: Обновление полей подзадачи
+  #     description: Обновление полей подзадачи (Доступно так же Patch).
   #     parameters:
   #       - name: id
   #         in: path
@@ -1324,11 +1324,11 @@ paths:
           $ref: '#/components/responses/NotFound'
       tags:
         - Персональные задачи
-    patch:
+    put:
       operationId: Обновление задачи
       security:
         - Token: [ ]
-      description: Обновление полей задачи (Так же применяется и для подзадач)
+      description: Обновление полей задачи (Так же применяется и для подзадач). (Доступно так же Patch)
       parameters:
         - name: id
           in: path
@@ -1471,11 +1471,11 @@ paths:
   #         $ref: '#/components/responses/NotFound'
   #     tags:
   #       - Персональные задачи
-  #   patch:
+  #   put:
   #     operationId: Обновление подзадачи
   #     security:
   #       - Token: [ ]
-  #     description: Обновление полей подзадачи
+  #     description: Обновление полей подзадачи (Доступно так же Patch).
   #     parameters:
   #       - name: id
   #         in: path
@@ -1667,7 +1667,8 @@ components:
     TaskOrgCreate:
       required:
         - name
-        - author
+        - discription
+        - status
         - organization
       type: object
       properties:
@@ -2158,6 +2159,8 @@ components:
     TaskPersonalCreate:
       required:
         - name
+        - discription
+        - status
       type: object
       properties:
         name:

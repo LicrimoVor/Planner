@@ -5,6 +5,7 @@ from task.models import StatusModel
 from ..permissions import ModifyAdminPermission
 from ..serializers.status import StatusSerializer
 
+
 class StatusSet(ModelViewSet):
     """ViewSet модели статусов."""
 

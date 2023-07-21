@@ -37,28 +37,22 @@ class OrgPermSerializer(serializers.ModelSerializer):
 
     def create(self, validated_data):
         admin = self.context["request"].user
-        staff_list = validated_data.pop("staff")
-        model = OrgModel(admin=admin, **validated_data)
-        staff_model = UserOrgModel(
-                organization=model,
-                user=admin
-        )
-        staff_models = [staff_model, ]
-        for user in staff_list:
-            if user.id == admin.id:
-                continue
-            staff_model = UserOrgModel(
-                organization=model,
-                user=user,
-            )
-            staff_models.append(staff_model)
-        model.save()
-        UserOrgModel.objects.bulk_create(staff_models)
+        if validated_data.get("staff"):
+            staff_list = validated_data.pop("staff")
+        else:
+            staff_list = []
+        if admin.id not in staff_list:
+            staff_list.append(admin.id)
+        model = OrgModel.objects.create(admin=admin, **validated_data)
+        model.staff.set(staff_list)
         return model
 
     def update(self, instance, validated_data):
         admin = self.context["request"].user
-        staff_list = validated_data.pop("staff")
+        if validated_data.get("staff"):
+            staff_list = validated_data.pop("staff")
+        else:
+            staff_list = []
         if admin not in staff_list:
             staff_list.append(admin)
         instance.staff.set(staff_list)

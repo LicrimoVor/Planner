@@ -14,15 +14,11 @@ class TaskModel(models.Model):
         max_length=255,
     )
     discription = models.TextField(
-        verbose_name="Описание"
+        verbose_name="Описание",
     )
-    # author = models.ForeignKey(
-    #     User,
-    #     on_delete=models.CASCADE,
-    #     related_name="author",
-    # )
     deadline = models.DateTimeField(
         verbose_name="Дедлайн",
+        null=True
     )
     
     class Meta:
