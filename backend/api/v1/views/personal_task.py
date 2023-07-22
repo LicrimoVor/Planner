@@ -6,13 +6,13 @@ from rest_framework.views import APIView
 from rest_framework.pagination import LimitOffsetPagination
 from rest_framework.response import Response
 
-
 from task.models import PersonalTaskModel, OrgTaskModel, SubPersonalTasksM2M
-from ..permissions import OrgAdminPermission, AuthorPermission
+from ..permissions import AuthorPermission
 from ..filters import (TagTaskFilter, StatusTaskFilter,
                        ActualTaskFilter, MainPersonalTaskFilter,
                        OrganizationTaskFilter)
 from ..serializers.personal_task import PersonalTaskSerializer
+from ..serializers.org_task import OrgTaskSerializer
 
 
 class PersonalTaskSet(ModelViewSet):
@@ -36,23 +36,29 @@ class PersonalTaskSet(ModelViewSet):
         return queryset
 
 
-class OrganizationTaskMeSet(ListAPIView):
+class OrganizationTaskMeView(ListAPIView):
     """
     ViewSet задач организаций,
     в которых пользователь отмечен, как ответственный
     """
 
     queryset = OrgTaskModel.objects.all()
-    # serializer_class = TagSerializer
+    serializer_class = OrgTaskSerializer
     permission_classes = [IsAuthenticated,]
     filter_backends = (filters.SearchFilter,
                        filters.OrderingFilter,
                        TagTaskFilter,
                        StatusTaskFilter,
                        ActualTaskFilter,
-                       MainPersonalTaskFilter,)
+                       MainPersonalTaskFilter,
+                       OrganizationTaskFilter)
     search_fields = ("name", )
     ordering_fields = ("deadline",)
+
+    def get_queryset(self):
+        user = self.request.user
+        queryset = OrgTaskModel.objects.filter(responsibles=user)
+        return queryset
 
 
 class PersonalSubTaskView(APIView, LimitOffsetPagination):
@@ -65,7 +71,8 @@ class PersonalSubTaskView(APIView, LimitOffsetPagination):
         return queryset
 
     def get(self, request, *args, **kwargs):
-        queryset = self.get_queryset(**kwargs)
+        task_id = kwargs.get("task_id")
+        queryset = self.get_queryset(task_id)
         result = self.paginate_queryset(queryset, request, view=self)
         serializer = PersonalTaskSerializer(
             result,

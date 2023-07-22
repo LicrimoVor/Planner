@@ -5,7 +5,7 @@ from django.contrib.auth import get_user_model
 from task.models import (PersonalTaskModel, TagModel,
                          StatusModel, )
 from .user import UserSerializer
-from .tag import TagSerializer
+from .tag import TagsField
 
 User = get_user_model()
 
@@ -24,12 +24,6 @@ class SubRespSerializer(serializers.ModelSerializer):
 class SubTasksField(serializers.PrimaryKeyRelatedField):
     def to_representation(self, value):
         serializer = SubRespSerializer(value)
-        return serializer.data
-
-
-class TagsField(serializers.PrimaryKeyRelatedField):
-    def to_representation(self, value):
-        serializer = TagSerializer(value)
         return serializer.data
 
 
@@ -65,28 +59,16 @@ class PersonalTaskSerializer(serializers.ModelSerializer):
 
     def create(self, validated_data):
         author = self.context["request"].user
-        if validated_data.get("tags"):
-            tags = validated_data.pop("tags")
-        else:
-            tags = []
-        if validated_data.get("subtasks"):
-            subtasks = validated_data.pop("subtasks")
-        else:
-            subtasks = []
+        tags = validated_data.pop("tags") if validated_data.get("tags") is not None else []
+        subtasks = validated_data.pop("subtasks") if validated_data.get("subtasks") is not None else []
         model = PersonalTaskModel.objects.create(author=author, **validated_data)
         model.tags.set(tags)
         model.subtasks.set(subtasks)
         return model
 
     def update(self, instance, validated_data):
-        if validated_data.get("tags"):
-            tags = validated_data.pop("tags")
-        else:
-            tags = []
-        if validated_data.get("subtasks"):
-            subtasks = validated_data.pop("subtasks")
-        else:
-            subtasks = []
+        tags = validated_data.pop("tags") if validated_data.get("tags") is not None else []
+        subtasks = validated_data.pop("subtasks") if validated_data.get("subtasks") is not None else []
         instance.tags.set(tags)
         instance.subtasks.set(subtasks)
         return super().update(instance, validated_data)

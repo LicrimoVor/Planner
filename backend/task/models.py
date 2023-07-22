@@ -138,7 +138,7 @@ class OrgTaskModel(TaskModel):
         through="ResponsibleOrgTasks",
         related_name="responsibles",
     )
-    history = HistoricalRecords()
+    log = HistoricalRecords(related_name='history')
 
     class Meta:
         verbose_name = "Задача организации"

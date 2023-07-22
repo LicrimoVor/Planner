@@ -52,7 +52,7 @@ class ResponsibleTaskFilter(BaseFilterBackend):
     def filter_queryset(self, request, queryset, view):
         if request.query_params.get('responsible'):
             responsible_list = request.query_params.getlist('responsible')
-            queryset = queryset.filter(responsible__id__in=responsible_list).distinct()
+            queryset = queryset.filter(responsibles__id__in=responsible_list).distinct()
         return queryset
 
 
@@ -62,6 +62,7 @@ class OrganizationTaskFilter(BaseFilterBackend):
     def filter_queryset(self, request, queryset, view):
         if request.query_params.get('organization'):
             org_list = request.query_params.getlist('organization')
+            org_list = list(map(int, org_list))
             queryset = queryset.filter(organization__id__in=org_list).distinct()
         return queryset
 

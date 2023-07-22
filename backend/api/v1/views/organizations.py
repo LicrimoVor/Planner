@@ -5,7 +5,7 @@ from rest_framework.viewsets import ModelViewSet
 from rest_framework.pagination import LimitOffsetPagination
 
 from organizations.models import OrgModel
-from ..permissions import OrgAdminPermission, OrgPermission
+from ..permissions import OrgAdminPermission, OrgInfPermission
 from ..serializers.organizations import OrgNotPermSerializer, OrgPermSerializer
 
 
@@ -21,7 +21,7 @@ class OrganizationSet(ModelViewSet):
     def get_serializer(self, *args, **kwargs):
         """Возвращает эксзпляр сериализатора, в зависимости от прав perm_flag"""
         if (self.kwargs.get("pk") and
-            OrgPermission.has_object_permission(self.request, self, args[0])
+            OrgInfPermission.has_object_permission(self.request, self, args[0])
             or self.request.method=="POST"):
             serializer_class = OrgPermSerializer
         else:

@@ -8,15 +8,31 @@ from django.contrib.auth import get_user_model
 User = get_user_model()
 
 
-class OrgPermission(BasePermission):
+class OrgTaskPermission(BasePermission):
     """
-    Разрешает просмотр доп. инф про организацию,
-    изменение и просмотр задач организации
-    только пользователям, которые состоят в 
-    данной орг.
+    Разрешает изменение и просмотр задач организации.
     """
 
     message = "Вы не состоите в организации."
+
+    def has_permission(self, request, view):
+        username = request.user.username
+        staff = view.organizataion.staff.all()
+        if staff.filter(username=username):
+            return True
+        return False
+
+    def has_object_permission(self, request, view, obj):
+        username = request.user.username
+        staff = view.organizataion.staff.all()
+        if staff.filter(username=username):
+            return True
+        return False
+
+class OrgInfPermission(BasePermission):
+    """
+    Разрешает просмотр доп. инф про организацию
+    """
 
     def has_object_permission(request, view, obj):
         username = request.user.username
