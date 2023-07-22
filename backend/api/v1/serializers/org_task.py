@@ -95,13 +95,22 @@ class OrgTaskSerializer(serializers.ModelSerializer):
         return super().update(instance, validated_data)
 
 
-class HistorySerializer(serializers.ModelSerializer):
+class HistorySerializer(serializers.Serializer):
     """Сериализатор истории изменений задч."""
-    history = serializers.SerializerMethodField(read_only=True)
+    author = serializers.SerializerMethodField(read_only=True)
+    datetime = serializers.SerializerMethodField(read_only=True)
+    name = serializers.SerializerMethodField(read_only=True)
+    action = serializers.SerializerMethodField(read_only=True)
 
-    class Meta:
-        model = OrgTaskModel
-        fields = ("id", "name", "history",)
+    def get_author(self, obj):
+        serializer = UserSerializer(obj.author)
+        return serializer.data
 
-    def get_history(self, obj):
-        return None
+    def get_datetime(self, obj):
+        return obj.history_date.isoformat()
+    
+    def get_name(self, obj):
+        return obj.instance.name
+    
+    def get_action(self, obj):
+        return obj.get_history_type_display()

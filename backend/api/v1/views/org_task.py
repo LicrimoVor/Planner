@@ -5,7 +5,6 @@ from rest_framework.viewsets import ModelViewSet
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework.pagination import LimitOffsetPagination
-from simple_history.models import HistoricalRecords
 
 from task.models import OrgTaskModel, SubOrgTasksM2M
 from organizations.models import OrgModel
@@ -111,12 +110,13 @@ class HistoryView(APIView, LimitOffsetPagination):
         #                  to_attr='ordered_histories')
         #     ).all()
         queryset = OrgTaskModel.objects.filter(organization=self.organizataion)
-        histoty_queryset = None
-        for int, quer in enumerate(queryset):
-            if not histoty_queryset:
-                histoty_queryset = quer.log.all()
-            else:
-                histoty_queryset = histoty_queryset.union(quer.log.all())
+        # Q_list = []
+        # for int, quer in enumerate(queryset):
+        #     if not histoty_queryset:
+        #         histoty_queryset = quer.log.all()
+        #     else:
+        #         histoty_queryset = histoty_queryset.union(quer.log.all())
+        # histoty_queryset = histoty_queryset.order_by('-history_date')
         return queryset
 
     def get(self, request, *args, **kwargs):
@@ -136,19 +136,25 @@ class HistoryView(APIView, LimitOffsetPagination):
         return super().initial(request, *args, **kwargs)
 
 
-class HistoryTaskView(APIView):
+class HistoryTaskView(APIView, LimitOffsetPagination):
     """View истории изменений одной задачи."""
     permission_classes = [IsAuthenticated&OrgTaskPermission]
 
-    def get(self, request, *args, **kwargs):
-        """Выдает список изменений задачи."""
+    def get_queryset(self):
+        task_id = self.kwargs.get("task_id")
+        queryset = get_object_or_404(OrgTaskModel, id=task_id).log.all().order_by('-history_date')
+        return queryset
 
-        user = request.user
-        # queryset = self.get_queryset(user)
-        # serializer = OrgPermSerializer(queryset,
-        #                                context={"request": request})
-        # return Response(serializer.data,
-        #                 status=status.HTTP_201_CREATED)
+    def get(self, request, *args, **kwargs):
+        """Выдает список всех изменений."""
+        queryset = self.get_queryset()
+        result = self.paginate_queryset(queryset, request, view=self)
+        serializer = HistorySerializer(
+            result,
+            context={"request": request},
+            many=True,
+        )
+        return self.get_paginated_response(serializer.data)
 
     def initial(self, request, *args, **kwargs):
         org_id = self.kwargs.get("org_id")
