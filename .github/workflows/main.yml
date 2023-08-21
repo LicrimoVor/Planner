@@ -41,7 +41,7 @@ jobs:
       with:
         host: ${{ secrets.HOST }}
         username: ${{ secrets.USER }}
-        passphrase: ${{ secrets.SSH_PASSPHRASE }}
+        password: ${{ secrets.PASSWORD }}
         source: "infra/docker-compose.production.yml"
         strip_components: 1
         target: "planner"
@@ -50,7 +50,7 @@ jobs:
       with:
         host: ${{ secrets.HOST }}
         username: ${{ secrets.USER }}
-        passphrase: ${{ secrets.SSH_PASSPHRASE }}
+        password: ${{ secrets.PASSWORD }}
 
         script: |
           cd planner
