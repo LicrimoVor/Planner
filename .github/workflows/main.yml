@@ -42,9 +42,10 @@ jobs:
         host: ${{ secrets.HOST }}
         username: ${{ secrets.USER }}
         password: ${{ secrets.PASSWORD }}
-        source: "infra/docker-compose.production.yml"
+        source: "infra/docker-compose.production.yml, infra/nginx.conf"
         strip_components: 1
         target: "planner"
+    
     - name: Executing remote ssh commands to deploy
       uses: appleboy/ssh-action@master
       with:
