@@ -27,7 +27,7 @@ jobs:
         with:
           context: ./backend/
           push: true
-          tags: ${{ secrets.DOCKER_USERNAME }}/planner_backend:latest 
+          tags: licrimovor/planner_backend:latest 
 
   deploy:
     runs-on: ubuntu-latest
