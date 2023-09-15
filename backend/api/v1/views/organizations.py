@@ -3,6 +3,8 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.views import APIView
 from rest_framework.viewsets import ModelViewSet
 from rest_framework.pagination import LimitOffsetPagination
+from rest_framework import status
+from rest_framework.response import Response
 
 from organizations.models import OrgModel
 from ..permissions import OrgAdminPermission, OrgInfPermission
@@ -20,14 +22,17 @@ class OrganizationSet(ModelViewSet):
 
     def get_serializer(self, *args, **kwargs):
         """Возвращает эксзпляр сериализатора, в зависимости от прав perm_flag"""
-        if (self.kwargs.get("pk") and
-            OrgInfPermission.has_object_permission(self.request, self, args[0])
+        if (self.kwargs.get("pk") 
+            and OrgInfPermission.has_object_permission(self.request, self, args[0])
             or self.request.method=="POST"):
             serializer_class = OrgPermSerializer
         else:
             serializer_class = self.get_serializer_class()
         kwargs.setdefault('context', self.get_serializer_context())
         return serializer_class(*args, **kwargs)
+
+    def list(self, request, *args, **kwargs):
+        return Response(status=status.HTTP_405_METHOD_NOT_ALLOWED)
 
 
 class OrganizationMeView(APIView, LimitOffsetPagination):
