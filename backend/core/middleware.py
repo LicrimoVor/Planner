@@ -12,8 +12,8 @@ class CustomMiddleware(object):
         """
         response = self.get_response(request)
         response["Access-Control-Allow-Origin"] = "*"
-        response["Access-Control-Allow-Methods"] = "GET, POST, DELETE"
-        response["Access-Control-Allow-Headers"] = "81.90.180.165"
+        response["Access-Control-Allow-Methods"] = "POST, PUT, PATCH, GET, DELETE, OPTIONS"
+        response["Access-Control-Allow-Headers"] = "Origin, X-Api-Key, X-Requested-With, Content-Type, Accept, Authorization"
         return response
 
     def process_view(self, request, view_func, view_args, view_kwargs):
