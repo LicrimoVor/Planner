@@ -1,9 +1,9 @@
 from django.urls import path, include
 from rest_framework.routers import DefaultRouter
 
-from api.v1.views.org_task import OrgTaskSet, OrgSubTaskView, HistoryTaskView, HistoryView
+from api.v1.views.space_task import OrgTaskSet, OrgSubTaskView, HistoryTaskView, HistoryView
 from api.v1.views.personal_task import PersonalTaskSet, OrganizationTaskMeView, PersonalSubTaskView
-from api.v1.views.organizations import OrganizationMeView, OrganizationSet
+from api.v1.views.spaces import OrganizationMeView, OrganizationSet
 from api.v1.views.status import StatusSet
 from api.v1.views.tag import TagSet
 

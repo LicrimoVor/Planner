@@ -27,7 +27,7 @@ INSTALLED_APPS = [
     'users.apps.UsersConfig',
     'core.apps.CoreConfig',
     'task.apps.TaskConfig',
-    'organizations.apps.OrganizationsConfig',
+    'space.apps.SpaceConfig',
     'api.apps.ApiConfig',
 ]
 

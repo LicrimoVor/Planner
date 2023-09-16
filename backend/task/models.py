@@ -1,10 +1,9 @@
 from django.contrib.auth import get_user_model
-from django.core.validators import MinValueValidator
 from django.db import models
 
 from simple_history.models import HistoricalRecords
 
-from organizations.models import OrgModel
+from space.models import SpaceModel
 from .abstract_models import TaskModel, NameColorModel
 
 User = get_user_model()
@@ -100,18 +99,18 @@ class TagPersonalTaskModel(models.Model):
         return f'{self.task} {self.tag}'
 
 
-class OrgTaskModel(TaskModel):
+class SpaceTaskModel(TaskModel):
     """Модель  задачи."""
 
     author = models.ForeignKey(
         User,
         on_delete=models.CASCADE,
-        related_name="author_task_org",
+        related_name="author_task_space",
     )
     subtasks = models.ManyToManyField(
         "self", symmetrical=False,
         verbose_name="Подзадачи",
-        through="SubOrgTasksM2M",
+        through="SubSpaceTasksM2M",
         related_name="subtasks+",
     )
     status = models.ForeignKey(
@@ -124,62 +123,62 @@ class OrgTaskModel(TaskModel):
     tags = models.ManyToManyField(
         TagModel,
         verbose_name="Теги",
-        through="TagOrgTaskModel",
+        through="TagSpaceTaskModel",
         related_name="tags+"
     )
-    organization = models.ForeignKey(
-        OrgModel,
+    space = models.ForeignKey(
+        SpaceModel,
         on_delete=models.CASCADE,
-        related_name='organization',
+        related_name='space',
     )
     responsibles = models.ManyToManyField(
         User,
         verbose_name="Ответственные",
-        through="ResponsibleOrgTasks",
+        through="ResponsibleSpaceTasks",
         related_name="responsibles",
     )
     log = HistoricalRecords(related_name='history')
 
     class Meta:
-        verbose_name = "Задача организации"
-        verbose_name_plural = "Задачи организации"
-        db_table = "OrgTask"
+        verbose_name = "Задача пространства"
+        verbose_name_plural = "Задачи пространства"
+        db_table = "SpaceTask"
 
 
-class TagOrgTaskModel(models.Model):
+class TagSpaceTaskModel(models.Model):
     """Модель связи тегов и задач."""
 
     tag = models.ForeignKey(
         TagModel,
         verbose_name="Тег (id)",
         on_delete=models.CASCADE,
-        related_name='tag_org+',
+        related_name='tag_space+',
         to_field='slug',
     )
     task = models.ForeignKey(
-        OrgTaskModel,
+        SpaceTaskModel,
         verbose_name="Задача (id)",
         on_delete=models.CASCADE,
-        related_name='task_org+',
+        related_name='task_space+',
     )
 
     def __str__(self) -> str:
         return f'{self.task} {self.tag}'
 
 
-class SubOrgTasksM2M(models.Model):
+class SubSpaceTasksM2M(models.Model):
     """Модель М2М для подзадач."""
     
     task = models.ForeignKey(
-        OrgTaskModel,
+        SpaceTaskModel,
         on_delete=models.CASCADE,
         verbose_name="Main задача",
-        related_name="main_task_org",
+        related_name="main_task_space",
     )
     subtask = models.ForeignKey(
-        OrgTaskModel,
+        SpaceTaskModel,
         verbose_name="Sub задача",
-        related_name="sub_task_org",
+        related_name="sub_task_space",
         on_delete=models.CASCADE,
     )
 
@@ -187,19 +186,19 @@ class SubOrgTasksM2M(models.Model):
         unique_together = ["task", "subtask"]
 
 
-class ResponsibleOrgTasks(models.Model):
+class ResponsibleSpaceTasks(models.Model):
     """Модель М2М ответственных."""
-    
+
     task = models.ForeignKey(
-        OrgTaskModel,
+        SpaceTaskModel,
         on_delete=models.CASCADE,
         verbose_name="Main задача",
-        related_name="task_org",
+        related_name="task_space",
     )
     user = models.ForeignKey(
         User,
         verbose_name="Ответственный",
-        related_name="resp_user_org",
+        related_name="resp_user_space",
         on_delete=models.CASCADE,
     )
 

@@ -23,12 +23,12 @@ services:
       - media:/app/media
       - ../data:/data
 
-  frontend:
-    build:
-      context: ../frontend
-      dockerfile: Dockerfile
-    volumes:
-      - static:/app/result_build/build
+  # frontend:
+  #   build:
+  #     context: ../frontend
+  #     dockerfile: Dockerfile
+  #   volumes:
+  #     - static:/app/result_build/build
 
   nginx:
     image: nginx:1.19.3

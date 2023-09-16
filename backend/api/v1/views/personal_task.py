@@ -12,7 +12,7 @@ from ..filters import (TagTaskFilter, StatusTaskFilter,
                        ActualTaskFilter, MainPersonalTaskFilter,
                        OrganizationTaskFilter)
 from ..serializers.personal_task import PersonalTaskSerializer
-from ..serializers.org_task import OrgTaskSerializer
+from ..serializers.space_task import OrgTaskSerializer
 
 
 class PersonalTaskSet(ModelViewSet):

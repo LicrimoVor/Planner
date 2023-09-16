@@ -2,12 +2,10 @@ from rest_framework import serializers
 from rest_framework import exceptions
 from django.contrib.auth import get_user_model
 
-from task.models import (OrgTaskModel, TagModel,
-                         StatusModel,)
-from organizations.models import OrgModel
+from task.models import (TagModel, StatusModel, SpaceTaskModel)
 from .user import UserSerializer
 from .tag import TagsField
-from .organizations import OrgNotPermSerializer
+from .space import SpaceNotPermSerializer
 
 User = get_user_model()
 
@@ -19,12 +17,12 @@ class ResponsibleFiled(serializers.PrimaryKeyRelatedField):
 
 
 class SubRespSerializer(serializers.ModelSerializer):
-    """Сериализатор подзадач организации."""
+    """Сериализатор подзадач пространств."""
     author = UserSerializer(read_only=True)
     responsibles = ResponsibleFiled(queryset=User.objects.all(), many=True)
 
     class Meta:
-        model = OrgTaskModel
+        model = SpaceTaskModel
         fields = ("id", "name", "discription",
                   "author", "status", "deadline",
                   "tags", "responsibles")
@@ -36,12 +34,12 @@ class SubTasksField(serializers.PrimaryKeyRelatedField):
         return serializer.data
 
 
-class OrgTaskSerializer(serializers.ModelSerializer):
-    """Сериализатор задач организации."""
+class SpaceTaskSerializer(serializers.ModelSerializer):
+    """Сериализатор задач пространств."""
     author = UserSerializer(User.objects.all(), read_only=True)
     responsibles = ResponsibleFiled(queryset=User.objects.all(),
                                     many=True, required=False)
-    subtasks = SubTasksField(queryset=OrgTaskModel.objects.all(),
+    subtasks = SubTasksField(queryset=SpaceTaskModel.objects.all(),
                              many=True, required=False,)
     tags = TagsField(queryset=TagModel.objects.all(),
                      many=True, required=False,)
@@ -49,36 +47,38 @@ class OrgTaskSerializer(serializers.ModelSerializer):
         queryset=StatusModel.objects.all()
     )
     deadline = serializers.DateTimeField(required=False,)
-    organization = OrgNotPermSerializer(read_only=True)
+    space = SpaceNotPermSerializer(read_only=True)
 
     class Meta:
-        model = OrgTaskModel
+        model = SpaceTaskModel
         fields = ("id", "name", "discription",
                   "author", "status", "deadline",
                   "subtasks", "tags", "responsibles",
-                  "organization",)
+                  "space",)
 
     def validate_subtasks(self, attrs):
         for subtask in attrs:
             if self.instance is not None:
                 if self.instance.id == subtask.id:
-                    raise exceptions.ValidationError(f"Не возможно задачу {subtask.id} сделать подзадачей {subtask.id}!")
+                    raise exceptions.ValidationError(f"Не возможно задачу {subtask.id}\
+                                                      сделать подзадачей {subtask.id}!")
         return super().validate(attrs)
 
     def validate_responsibles(self, attrs):
-        staff = self.context["organization_model"].staff.all()
+        staff = self.context["space_model"].staff.all()
         for user in attrs:
             if user not in staff:
-                raise exceptions.ValidationError(f"Пользователь {user.id} не состоит в организации.")
+                raise exceptions.ValidationError(f"Пользователь {user.id}\
+                                                  не состоит в пространстве.")
         return super().validate(attrs)
 
     def create(self, validated_data):
         author = self.context["request"].user
-        organization = self.context["organization_model"]
+        space = self.context["space_model"]
         tags = validated_data.pop("tags") if validated_data.get("tags") is not None else []
         subtasks = validated_data.pop("subtasks") if validated_data.get("subtasks") is not None else []
         responsibles = validated_data.pop("responsibles") if validated_data.get("responsibles") is not None else []
-        model = OrgTaskModel.objects.create(organization=organization,
+        model = SpaceTaskModel.objects.create(space=space,
                                             author=author, **validated_data)
         model.responsibles.set(responsibles)
         model.tags.set(tags)

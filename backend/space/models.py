@@ -4,8 +4,8 @@ from django.contrib.auth import get_user_model
 User = get_user_model()
 
 
-class OrgModel(models.Model):
-    """Модель организаций"""
+class SpaceModel(models.Model):
+    """Модель пространства"""
     name = models.CharField(
         verbose_name="Название",
         max_length=200
@@ -19,29 +19,29 @@ class OrgModel(models.Model):
     staff = models.ManyToManyField(
         User,
         verbose_name="Персонал",
-        through="UserOrgModel",
+        through="UserSpaceModel",
         related_name="staff",
     )
 
     class Meta:
-        db_table = "Organizations"
-        verbose_name = "Организация"
-        verbose_name_plural = "Организации"
+        db_table = "Spaces"
+        verbose_name = "Пространство"
+        verbose_name_plural = "Пространства"
 
 
-class UserOrgModel(models.Model):
+class UserSpaceModel(models.Model):
     """Модель персонала M2M"""
 
-    organization = models.ForeignKey(
-        OrgModel,
+    space = models.ForeignKey(
+        SpaceModel,
         on_delete=models.CASCADE,
-        related_name="org_org",
+        related_name="space_space",
     )
     user = models.ForeignKey(
         User,
         on_delete=models.CASCADE,
-        related_name="user_org",
+        related_name="user_space",
     )
 
     class Meta:
-        unique_together = ["organization", "user"]
+        unique_together = ["space", "user"]

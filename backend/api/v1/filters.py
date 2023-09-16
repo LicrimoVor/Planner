@@ -1,8 +1,8 @@
 from django.utils import timezone
 from rest_framework.filters import BaseFilterBackend
 
-from organizations.models import OrgModel
-from task.models import SubPersonalTasksM2M, SubOrgTasksM2M
+from space.models import SpaceModel
+from task.models import SubPersonalTasksM2M, SubSpaceTasksM2M
 
 
 class TagTaskFilter(BaseFilterBackend):
@@ -26,12 +26,12 @@ class StatusTaskFilter(BaseFilterBackend):
         return queryset
 
 
-class MainOrgTaskFilter(BaseFilterBackend):
+class MainspaceTaskFilter(BaseFilterBackend):
     """Фильтрация главных задач."""
 
     def filter_queryset(self, request, queryset, view):
         if request.query_params.get('main'):
-            queryset_id = SubOrgTasksM2M.objects.values_list("subtask", flat=True).distinct()
+            queryset_id = SubSpaceTasksM2M.objects.values_list("subtask", flat=True).distinct()
             queryset = queryset.exclude(id__in=queryset_id)
         return queryset
 
@@ -56,14 +56,14 @@ class ResponsibleTaskFilter(BaseFilterBackend):
         return queryset
 
 
-class OrganizationTaskFilter(BaseFilterBackend):
-    """Фильтрация задач по организациям."""
+class SpaceTaskFilter(BaseFilterBackend):
+    """Фильтрация задач по пространствам."""
 
     def filter_queryset(self, request, queryset, view):
-        if request.query_params.get('organization'):
-            org_list = request.query_params.getlist('organization')
-            org_list = list(map(int, org_list))
-            queryset = queryset.filter(organization__id__in=org_list).distinct()
+        if request.query_params.get('space'):
+            space_list = request.query_params.getlist('space')
+            space_list = list(map(int, space_list))
+            queryset = queryset.filter(space__id__in=space_list).distinct()
         return queryset
 
 
