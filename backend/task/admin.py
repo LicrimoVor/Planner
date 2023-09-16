@@ -2,14 +2,14 @@ from django.contrib import admin
 from simple_history.admin import SimpleHistoryAdmin
 
 from task.models import (TagModel, PersonalTaskModel,
-                         StatusModel, SubOrgTasksM2M,
-                         SubPersonalTasksM2M, ResponsibleOrgTasks,
-                         OrgTaskModel, TagOrgTaskModel,
+                         StatusModel, SubSpaceTasksM2M,
+                         SubPersonalTasksM2M, ResponsibleSpaceTasks,
+                         SpaceTaskModel, TagSpaceTaskModel,
                          TagPersonalTaskModel,)
 
 
-class TagOrgTaskInline(admin.TabularInline):
-    model = TagOrgTaskModel
+class TagSpaceTaskInline(admin.TabularInline):
+    model = TagSpaceTaskModel
     extra = 0
     verbose_name_plural = "Теги"
 
@@ -20,8 +20,8 @@ class TagPersonalTaskInline(admin.TabularInline):
     verbose_name_plural = "Теги"
 
 
-class SubOrgTaskInline(admin.TabularInline):
-    model = SubOrgTasksM2M
+class SubSpaceTaskInline(admin.TabularInline):
+    model = SubSpaceTasksM2M
     extra = 0
     verbose_name_plural = "Подзадачи"
     fk_name = "task"
@@ -34,8 +34,8 @@ class SubPersonalTaskInline(admin.TabularInline):
     fk_name = "task"
 
 
-class ResponsibleOrgTasksAdmin(admin.TabularInline):
-    model = ResponsibleOrgTasks
+class ResponsibleSpaceTasksAdmin(admin.TabularInline):
+    model = ResponsibleSpaceTasks
     extra = 0
     verbose_name_plural = "Ответственные"
 
@@ -69,12 +69,12 @@ class PersonalTaskAdmin(admin.ModelAdmin):
     inlines = [TagPersonalTaskInline, SubPersonalTaskInline ]
 
 
-class OrgTaskAdmin(SimpleHistoryAdmin):
-    """Отображение задач организации в админ-панеле."""
+class SpaceTaskAdmin(SimpleHistoryAdmin):
+    """Отображение задач простравства в админ-панеле."""
     list_display = ("id", "name", "author", "status", "deadline")
     list_filter = ("name", "author", "status", "deadline")
     history_list_display = ["status"]
-    inlines = [TagOrgTaskInline, ResponsibleOrgTasksAdmin, SubOrgTaskInline,]
+    inlines = [TagSpaceTaskInline, ResponsibleSpaceTasksAdmin, SubSpaceTaskInline,]
     search_fields = ['name', 'author__username']
 
 
@@ -82,4 +82,4 @@ class OrgTaskAdmin(SimpleHistoryAdmin):
 admin.site.register(TagModel, TagAdmin)
 admin.site.register(StatusModel, StatusAdmin)
 admin.site.register(PersonalTaskModel, PersonalTaskAdmin)
-admin.site.register(OrgTaskModel, OrgTaskAdmin)
+admin.site.register(SpaceTaskModel, SpaceTaskAdmin)

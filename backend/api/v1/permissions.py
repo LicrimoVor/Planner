@@ -30,7 +30,7 @@ class SpaceStaffPermission(BasePermission):
         return False
 
 
-class StaffAdminPermission(BasePermission):
+class SpaceAdminPermission(BasePermission):
     """
     Разрешает особые действия в пространстве
     только администратору этом пространстве.

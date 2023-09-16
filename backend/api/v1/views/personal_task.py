@@ -1,18 +1,15 @@
 from rest_framework import filters, status
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.viewsets import ModelViewSet
-from rest_framework.generics import ListAPIView
 from rest_framework.views import APIView
 from rest_framework.pagination import LimitOffsetPagination
 from rest_framework.response import Response
 
-from task.models import PersonalTaskModel, OrgTaskModel, SubPersonalTasksM2M
+from task.models import PersonalTaskModel, SubPersonalTasksM2M
 from ..permissions import AuthorPermission
 from ..filters import (TagTaskFilter, StatusTaskFilter,
-                       ActualTaskFilter, MainPersonalTaskFilter,
-                       OrganizationTaskFilter)
+                       ActualTaskFilter, MainPersonalTaskFilter,)
 from ..serializers.personal_task import PersonalTaskSerializer
-from ..serializers.space_task import OrgTaskSerializer
 
 
 class PersonalTaskSet(ModelViewSet):
@@ -33,31 +30,6 @@ class PersonalTaskSet(ModelViewSet):
     def get_queryset(self):
         author = self.request.user
         queryset = PersonalTaskModel.objects.filter(author=author)
-        return queryset
-
-
-class OrganizationTaskMeView(ListAPIView):
-    """
-    ViewSet задач организаций,
-    в которых пользователь отмечен, как ответственный
-    """
-
-    queryset = OrgTaskModel.objects.all()
-    serializer_class = OrgTaskSerializer
-    permission_classes = [IsAuthenticated,]
-    filter_backends = (filters.SearchFilter,
-                       filters.OrderingFilter,
-                       TagTaskFilter,
-                       StatusTaskFilter,
-                       ActualTaskFilter,
-                       MainPersonalTaskFilter,
-                       OrganizationTaskFilter)
-    search_fields = ("name", )
-    ordering_fields = ("deadline",)
-
-    def get_queryset(self):
-        user = self.request.user
-        queryset = OrgTaskModel.objects.filter(responsibles=user)
         return queryset
 
 

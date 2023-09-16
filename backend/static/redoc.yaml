@@ -4,7 +4,7 @@ info:
   description: |
     # Введение
     Данная документация API приведена для проекта [Planner o_0](ссылочка**). Проект назначен на
-    создание плана для организаций и личного плана работников без высокого уровня
+    создание плана для пространств и личного плана работников без высокого уровня
     вхождения (с минимальным интерфейсом и без перегружения функционала). 
 
     # OpenAPI-спецификация
@@ -30,16 +30,16 @@ tags:
   - name: Пользователи
   - name: Теги
   - name: Статусы
-  - name: Организации
-  - name: Задачи организации
+  - name: пространства
+  - name: Задачи пространства
     description: |
-      Фильтрация по тегам: http://127.0.0.1:8000/api/organization/{id}/task/?tags=hard&tags=normal <br>
-      Фильтрация по статусу: http://127.0.0.1:8000/api/organization/{id}/task/?status=1 <br>
-      Фильтрация по акутальным задачам: http://127.0.0.1:8000/api/organization/{id}/task/?actual=true <br>
-      Фильтрация по main задачам (исключает выборку подзадач): http://127.0.0.1:8000/api/organization/{id}/task/?main=true <br>
-      Фильтрация по ответственным: http://127.0.0.1:8000/api/organization/{id}/task/?responsible=1 <br>
-      Поиск по названию задачи: http://127.0.0.1:8000/api/organization/{id}/task/?search=Планне <br>
-      Сортировка по дедлайну: http://127.0.0.1:8000/api/organization/{id}/task/?ordering=deadline <br>
+      Фильтрация по тегам: http://127.0.0.1:8000/api/space/{id}/task/?tags=hard&tags=normal <br>
+      Фильтрация по статусу: http://127.0.0.1:8000/api/space/{id}/task/?status=1 <br>
+      Фильтрация по акутальным задачам: http://127.0.0.1:8000/api/space/{id}/task/?actual=true <br>
+      Фильтрация по main задачам (исключает выборку подзадач): http://127.0.0.1:8000/api/space/{id}/task/?main=true <br>
+      Фильтрация по ответственным: http://127.0.0.1:8000/api/space/{id}/task/?responsible=1 <br>
+      Поиск по названию задачи: http://127.0.0.1:8000/api/space/{id}/task/?search=Планне <br>
+      Сортировка по дедлайну: http://127.0.0.1:8000/api/space/{id}/task/?ordering=deadline <br>
   - name: Персональные задачи
     description: |
       Фильтрация по тегам: http://127.0.0.1:8000/api/task_me/?tags=hard&tags=normal <br>
@@ -61,18 +61,18 @@ tags:
     x-displayName: Модель статуса
     description: |
       <SchemaDefinition schemaRef="#/components/models/Status" />
-  - name: Модель задачи организации
-    x-displayName: Модель задачи организации
+  - name: Модель задачи пространства
+    x-displayName: Модель задачи пространства
     description: |
-      <SchemaDefinition schemaRef="#/components/models/TaskOrganization" />
+      <SchemaDefinition schemaRef="#/components/models/Taskspace" />
   - name: Модель персональной задачи
     x-displayName: Модель персональной задачи
     description: |
       <SchemaDefinition schemaRef="#/components/models/TaskPersonal" />
-  - name: Модель организации
-    x-displayName: Модель организации
+  - name: Модель пространства
+    x-displayName: Модель пространства
     description: |
-      <SchemaDefinition schemaRef="#/components/models/Organization" />
+      <SchemaDefinition schemaRef="#/components/models/space" />
 
 paths:
   /api/users/:
@@ -525,10 +525,10 @@ paths:
       tags:
         - Статусы
   
-  /api/organization/:
+  /api/space/:
     get:
-      operationId: Cписок организаций
-      description: Получение списка всех организаций. Подключен пагинатор с 10 элементами на выводе
+      operationId: Cписок пространств
+      description: Получение списка всех пространств. Подключен пагинатор с 10 элементами на выводе
       parameters: []
       security:
         - Token: [ ]
@@ -547,58 +547,58 @@ paths:
                     type: string
                     nullable: true
                     format: uri
-                    example: http://127.0.0.1:8000/api/organization/?page=4
+                    example: http://127.0.0.1:8000/api/space/?page=4
                     description: 'Ссылка на следующую страницу'
                   previous:
                     type: string
                     nullable: true
                     format: uri
-                    example: http://127.0.0.1:8000/api/organization/?page=2
+                    example: http://127.0.0.1:8000/api/space/?page=2
                     description: 'Ссылка на предыдущую страницу'
                   results:
                     type: array
                     items:
-                      $ref: '#/components/schemas/OrganizationList'
+                      $ref: '#/components/schemas/spaceList'
                     description: 'Список объектов текущей страницы'
           description: ''
         '401':
           $ref: '#/components/responses/AuthenticationError'
       tags:
-        - Организации
+        - пространства
     post:
-      operationId: Создание организации
-      description: Создание организации
+      operationId: Создание пространства
+      description: Создание пространства
       security:
         - Token: [ ]
       requestBody:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/OrganizationCreate'
+              $ref: '#/components/schemas/spaceCreate'
       responses:
         '201':
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Organization'
-          description: 'Организация успешно создана'
+                $ref: '#/components/schemas/space'
+          description: 'пространство успешно создана'
         '400':
           $ref: '#/components/responses/ValidationError'
         '401':
           $ref: '#/components/responses/AuthenticationError'
       tags:
-        - Организации
-  /api/organization/{id}/:
+        - пространства
+  /api/space/{id}/:
     get:
-      operationId: Получение организации
-      description: Получение организации по её id. Доступно только участникам организации.
+      operationId: Получение пространства
+      description: Получение пространства по её id. Доступно только участникам пространства.
       security:
         - Token: [ ]
       parameters:
         - name: id
           in: path
           required: true
-          description: "Уникальный идентификатор этой организации"
+          description: "Уникальный идентификатор этой пространства"
           schema:
             type: string
       responses:
@@ -606,7 +606,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Organization'
+                $ref: '#/components/schemas/space'
           description: ''
         '401':
           $ref: '#/components/responses/AuthenticationError'
@@ -615,31 +615,31 @@ paths:
         '404':
           $ref: '#/components/responses/NotFound'
       tags:
-        - Организации
+        - пространства
     put:
-      operationId: Обновление организации
+      operationId: Обновление пространства
       security:
         - Token: [ ]
-      description: 'Обновление полей организации (Доступно так же Patch). Доступно только администратору организации'
+      description: 'Обновление полей пространства (Доступно так же Patch). Доступно только администратору пространства'
       parameters:
         - name: id
           in: path
           required: true
-          description: "Уникальный идентификатор этой организации."
+          description: "Уникальный идентификатор этой пространства."
           schema:
             type: string
       requestBody:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/OrganizationCreate'
+              $ref: '#/components/schemas/spaceCreate'
       responses:
         '200':
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Organization'
-          description: 'Организация успешна обновлена'
+                $ref: '#/components/schemas/space'
+          description: 'пространство успешна обновлена'
         '401':
           $ref: '#/components/responses/AuthenticationError'
         '403':
@@ -647,22 +647,22 @@ paths:
         '404':
           $ref: '#/components/responses/NotFound'
       tags:
-        - Организации
+        - пространства
     delete:
-      operationId: Удаление организации
-      description: Удаление организации. Доступно только администратору организации
+      operationId: Удаление пространства
+      description: Удаление пространства. Доступно только администратору пространства
       security:
         - Token: [ ]
       parameters:
         - name: id
           in: path
           required: true
-          description: "Уникальный идентификатор этой организации"
+          description: "Уникальный идентификатор этой пространства"
           schema:
             type: string
       responses:
         '204':
-          description: 'Организация успешна удалена'
+          description: 'пространство успешна удалена'
         '401':
           $ref: '#/components/responses/AuthenticationError'
         '403':
@@ -670,11 +670,11 @@ paths:
         '404':
           $ref: '#/components/responses/NotFound'
       tags:
-        - Организации
-  /api/organization/me/:
+        - пространства
+  /api/space/me/:
     get:
-      operationId: Список моих организаций
-      description: Получение организаций, в которых отмечен текущий пользователь. <br>
+      operationId: Список моих пространств
+      description: Получение пространств, в которых отмечен текущий пользователь. <br>
                    Подключен пагинатор с 10 элементами на выводе
       security:
         - Token: [ ]
@@ -682,7 +682,7 @@ paths:
         - name: id
           in: path
           required: true
-          description: "Уникальный идентификатор этой организации."
+          description: "Уникальный идентификатор этой пространства."
           schema:
             type: string
       responses:
@@ -700,33 +700,33 @@ paths:
                     type: string
                     nullable: true
                     format: uri
-                    example: http://127.0.0.1:8000/api/organization/?page=4
+                    example: http://127.0.0.1:8000/api/space/?page=4
                     description: 'Ссылка на следующую страницу'
                   previous:
                     type: string
                     nullable: true
                     format: uri
-                    example: http://127.0.0.1:8000/api/organization/?page=2
+                    example: http://127.0.0.1:8000/api/space/?page=2
                     description: 'Ссылка на предыдущую страницу'
                   results:
                     type: array
                     items:
-                      $ref: '#/components/schemas/OrganizationList'
+                      $ref: '#/components/schemas/spaceList'
                     description: 'Список объектов текущей страницы'
           description: ''
         '401':
           $ref: '#/components/responses/AuthenticationError'
       tags:
-        - Организации
+        - пространства
   
-  /api/organization/{id}/task/:
+  /api/space/{id}/task/:
     get:
       operationId: Cписок задач
       security:
         - Token: [ ]
       description: |
-       Получение списка задач текущей организации. <br>
-       Доступно только участникам организации <br>
+       Получение списка задач текущей пространства. <br>
+       Доступно только участникам пространства <br>
        Подключен пагинатор с 10 элементами на выводе <br>
 
       parameters: []
@@ -745,18 +745,18 @@ paths:
                     type: string
                     nullable: true
                     format: uri
-                    example: http://127.0.0.1:8000/api/organization/{id}/task/?page=4
+                    example: http://127.0.0.1:8000/api/space/{id}/task/?page=4
                     description: 'Ссылка на следующую страницу'
                   previous:
                     type: string
                     nullable: true
                     format: uri
-                    example: http://127.0.0.1:8000/api/organization/{id}/task/?page=2
+                    example: http://127.0.0.1:8000/api/space/{id}/task/?page=2
                     description: 'Ссылка на предыдущую страницу'
                   results:
                     type: array
                     items:
-                      $ref: '#/components/schemas/TaskOrg'
+                      $ref: '#/components/schemas/TaskSpace'
                     description: 'Список объектов текущей страницы'
           description: ''
         '401':
@@ -766,7 +766,7 @@ paths:
         '404':
           $ref: '#/components/responses/NotFound'
       tags:
-        - Задачи организации 
+        - Задачи пространства 
     post:
       operationId: Создание задачи
       description: Создание задачи
@@ -776,13 +776,13 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/TaskOrgCreate'
+              $ref: '#/components/schemas/TaskSpaceCreate'
       responses:
         '201':
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/TaskOrgCreateResp'
+                $ref: '#/components/schemas/TaskSpaceCreateResp'
           description: 'Статус успешно создан'
         '400':
           $ref: '#/components/responses/ValidationError'
@@ -793,8 +793,8 @@ paths:
         '404':
           $ref: '#/components/responses/NotFound'
       tags:
-        - Задачи организации
-  /api/organization/{id}/task/{id}/:
+        - Задачи пространства
+  /api/space/{id}/task/{id}/:
     get:
       security:
         - Token: [ ]
@@ -812,7 +812,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/TaskOrg'
+                $ref: '#/components/schemas/TaskSpace'
           description: ''
         '401':
           $ref: '#/components/responses/AuthenticationError'
@@ -821,7 +821,7 @@ paths:
         '404':
           $ref: '#/components/responses/NotFound'
       tags:
-        - Задачи организации
+        - Задачи пространства
     put:
       operationId: Обновление задачи
       security:
@@ -838,13 +838,13 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/TaskOrgUpdate'
+              $ref: '#/components/schemas/TaskSpaceUpdate'
       responses:
         '200':
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/TaskOrgUpdateResp'
+                $ref: '#/components/schemas/TaskSpaceUpdateResp'
           description: 'Задача успешна обновлена'
         '401':
           $ref: '#/components/responses/AuthenticationError'
@@ -853,7 +853,7 @@ paths:
         '404':
           $ref: '#/components/responses/NotFound'
       tags:
-        - Задачи организации
+        - Задачи пространства
     delete:
       operationId: Удаление задачи
       description: Удаление задачи (Так же применяется и для подзадач)
@@ -876,15 +876,15 @@ paths:
         '404':
           $ref: '#/components/responses/NotFound'
       tags:
-        - Задачи организации
-  /api/organization/{id}/task/{id}/subtasks/:
+        - Задачи пространства
+  /api/space/{id}/task/{id}/subtasks/:
     get:
       operationId: Cписок подзадач
       security:
         - Token: [ ]
       description: |
        Получение списка подзадач этой задачи. <br>
-       Доступно только участникам организации <br>
+       Доступно только участникам пространства <br>
        Подключен пагинатор с 10 элементами на выводе <br>
 
       parameters: []
@@ -903,18 +903,18 @@ paths:
                     type: string
                     nullable: true
                     format: uri
-                    example: http://127.0.0.1:8000/api/organization/{id}/task/{id}/subtasks/{id}?page=4
+                    example: http://127.0.0.1:8000/api/space/{id}/task/{id}/subtasks/{id}?page=4
                     description: 'Ссылка на следующую страницу'
                   previous:
                     type: string
                     nullable: true
                     format: uri
-                    example: http://127.0.0.1:8000/api/organization/{id}/task/{id}/subtasks/?page=2
+                    example: http://127.0.0.1:8000/api/space/{id}/task/{id}/subtasks/?page=2
                     description: 'Ссылка на предыдущую страницу'
                   results:
                     type: array
                     items:
-                      $ref: '#/components/schemas/SubTaskOrgList'
+                      $ref: '#/components/schemas/SubTaskSpaceList'
                     description: 'Список объектов текущей страницы'
           description: ''
         '401':
@@ -924,7 +924,7 @@ paths:
         '404':
           $ref: '#/components/responses/NotFound'
       tags:
-        - Задачи организации
+        - Задачи пространства
     post:
       operationId: Создание подзадачи
       description: Создание подзадачи
@@ -934,13 +934,13 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/SubTaskOrgCreate'
+              $ref: '#/components/schemas/SubTaskSpaceCreate'
       responses:
         '201':
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/SubTaskOrgCreateResp'
+                $ref: '#/components/schemas/SubTaskSpaceCreateResp'
           description: 'Статус успешно создан'
         '400':
           $ref: '#/components/responses/ValidationError'
@@ -951,8 +951,8 @@ paths:
         '404':
           $ref: '#/components/responses/NotFound'
       tags:
-        - Задачи организации
-  # /api/organization/{id}/task/{id}/subtasks/{id}/:
+        - Задачи пространства
+  # /api/space/{id}/task/{id}/subtasks/{id}/:
   #   get:
   #     security:
   #       - Token: [ ]
@@ -970,7 +970,7 @@ paths:
   #         content:
   #           application/json:
   #             schema:
-  #               $ref: '#/components/schemas/SubTaskOrgCreateResp'
+  #               $ref: '#/components/schemas/SubTaskSpaceCreateResp'
   #         description: ''
   #       '401':
   #         $ref: '#/components/responses/AuthenticationError'
@@ -979,7 +979,7 @@ paths:
   #       '404':
   #         $ref: '#/components/responses/NotFound'
   #     tags:
-  #       - Задачи организации
+  #       - Задачи пространства
   #   put:
   #     operationId: Обновление подзадачи
   #     security:
@@ -996,13 +996,13 @@ paths:
   #       content:
   #         application/json:
   #           schema:
-  #             $ref: '#/components/schemas/SubTaskOrgUpdate'
+  #             $ref: '#/components/schemas/SubTaskSpaceUpdate'
   #     responses:
   #       '200':
   #         content:
   #           application/json:
   #             schema:
-  #               $ref: '#/components/schemas/SubTaskOrgUpdateResp'
+  #               $ref: '#/components/schemas/SubTaskSpaceUpdateResp'
   #         description: 'Задача успешна обновлена'
   #       '401':
   #         $ref: '#/components/responses/AuthenticationError'
@@ -1011,7 +1011,7 @@ paths:
   #       '404':
   #         $ref: '#/components/responses/NotFound'
   #     tags:
-  #       - Задачи организации
+  #       - Задачи пространства
   #   delete:
   #     operationId: Удаление подадачи
   #     description: Удаление подадачи
@@ -1034,16 +1034,16 @@ paths:
   #       '404':
   #         $ref: '#/components/responses/NotFound'
   #     tags:
-  #       - Задачи организации
+  #       - Задачи пространства
 
-  /api/organization/{id}/task/history/:
+  /api/space/{id}/task/history/:
     get:
       operationId: История всех задач
       security:
         - Token: [ ]
       description: |
-        Получение списка изменений задач текущей организации. <br>
-        Доступно только участникам организации <br>
+        Получение списка изменений задач текущей пространства. <br>
+        Доступно только участникам пространства <br>
         Подключен пагинатор с 10 элементами на выводе <br>
       parameters: []
       responses:
@@ -1061,13 +1061,13 @@ paths:
                     type: string
                     nullable: true
                     format: uri
-                    example: http://127.0.0.1:8000/api/organization/{id}/task/history/?page=4
+                    example: http://127.0.0.1:8000/api/space/{id}/task/history/?page=4
                     description: 'Ссылка на следующую страницу'
                   previous:
                     type: string
                     nullable: true
                     format: uri
-                    example: http://127.0.0.1:8000/api/organization/{id}/task/history/?page=2
+                    example: http://127.0.0.1:8000/api/space/{id}/task/history/?page=2
                     description: 'Ссылка на предыдущую страницу'
                   results:
                     type: array
@@ -1082,15 +1082,15 @@ paths:
         '404':
           $ref: '#/components/responses/NotFound'
       tags:
-        - Задачи организации
-  /api/organization/{id}/task/{id}/history/:
+        - Задачи пространства
+  /api/space/{id}/task/{id}/history/:
     get:
       operationId: История задачи
       security:
         - Token: [ ]
       description: |
-        Получение списка изменений задачи текущей организации. <br>
-        Доступно только участникам организации <br>
+        Получение списка изменений задачи текущей пространства. <br>
+        Доступно только участникам пространства <br>
         Подключен пагинатор с 10 элементами на выводе <br>
       parameters: []
       responses:
@@ -1108,13 +1108,13 @@ paths:
                     type: string
                     nullable: true
                     format: uri
-                    example: http://127.0.0.1:8000/api/organization/{id}/task/{id}/history/?page=4
+                    example: http://127.0.0.1:8000/api/space/{id}/task/{id}/history/?page=4
                     description: 'Ссылка на следующую страницу'
                   previous:
                     type: string
                     nullable: true
                     format: uri
-                    example: http://127.0.0.1:8000/api/organization/{id}/task/{id}/history/?page=2
+                    example: http://127.0.0.1:8000/api/space/{id}/task/{id}/history/?page=2
                     description: 'Ссылка на предыдущую страницу'
                   results:
                     type: array
@@ -1129,15 +1129,15 @@ paths:
         '404':
           $ref: '#/components/responses/NotFound'
       tags:
-        - Задачи организации
-  # /api/organization/{id}/task/{id}/subtasks/{id}/history/:
+        - Задачи пространства
+  # /api/space/{id}/task/{id}/subtasks/{id}/history/:
   #   get:
   #     operationId: История подзадачи
   #     security:
   #       - Token: [ ]
   #     description: |
-  #       Получение списка изменений подзадачи текущей организации. <br>
-  #       Доступно только участникам организации <br>
+  #       Получение списка изменений подзадачи текущей пространства. <br>
+  #       Доступно только участникам пространства <br>
   #       Подключен пагинатор с 10 элементами на выводе <br>
   #     parameters: []
   #     responses:
@@ -1155,13 +1155,13 @@ paths:
   #                   type: string
   #                   nullable: true
   #                   format: uri
-  #                   example: http://127.0.0.1:8000/api/organization/{id}/task/{id}/subtasks/{id}/history/?page=4
+  #                   example: http://127.0.0.1:8000/api/space/{id}/task/{id}/subtasks/{id}/history/?page=4
   #                   description: 'Ссылка на следующую страницу'
   #                 previous:
   #                   type: string
   #                   nullable: true
   #                   format: uri
-  #                   example: http://127.0.0.1:8000/api/organization/{id}/task/{id}/subtasks/{id}/history/?page=2
+  #                   example: http://127.0.0.1:8000/api/space/{id}/task/{id}/subtasks/{id}/history/?page=2
   #                   description: 'Ссылка на предыдущую страницу'
   #                 results:
   #                   type: array
@@ -1176,7 +1176,7 @@ paths:
   #       '404':
   #         $ref: '#/components/responses/NotFound'
   #     tags:
-  #       - Задачи организации
+  #       - Задачи пространства
 
   /api/task_me/:
     get:
@@ -1250,15 +1250,15 @@ paths:
           $ref: '#/components/responses/NotFound'
       tags:
         - Персональные задачи
-  /api/task_me/organizations/:
+  /api/task_me/spaces/:
     get:
       operationId: Cписок задач орагнизаций
       security:
         - Token: [ ]
       description: |
-       Получение списка задач организаций, в которых пользователь отмечен, как ответственный. <br>
+       Получение списка задач пространств, в которых пользователь отмечен, как ответственный. <br>
        Подключен пагинатор с 10 элементами на выводе <br>
-       Фильтрация по организации: http://127.0.0.1:8000/api/task_me/organizations/?organization=1 <br>
+       Фильтрация по пространства: http://127.0.0.1:8000/api/task_me/spaces/?space=1 <br>
 
       parameters: []
       responses:
@@ -1562,40 +1562,40 @@ components:
     Status:
       type: object
       $ref: '#/components/models/Status'
-    Organization:
+    space:
       type: object
-      $ref: '#/components/models/Organization'
-    OrganizationList:
+      $ref: '#/components/models/space'
+    spaceList:
       properties:
         id:
           externalDocs:
-            description: Id организации
-          description: Id организации
+            description: Id пространства
+          description: Id пространства
           type: integer
           readOnly: true
           example: 1
         name:
-          description: Название организации
+          description: Название пространства
           maxLength: 200
           type: string
           example: Planner o_0
         admin:
-          description: Администратор организации
+          description: Администратор пространства
           allOf:
             - $ref: '#/components/schemas/User'
       type: object
-    OrganizationCreate:
+    spaceCreate:
       type: object
       required:
         - name
       properties:
         name:
-          description: Название организации
+          description: Название пространства
           maxLength: 200
           type: string
           example: Planner o_0
         staff:
-          description: Сотрудники организации (id)
+          description: Сотрудники пространства (id)
           minItems: 0
           xml:
             name: tag
@@ -1605,12 +1605,12 @@ components:
           items:
             type: integer
 
-    TaskOrg:
+    TaskSpace:
       type: object
       required:
         - name
         - author
-        - organization
+        - space
       properties:
         id:
           externalDocs:
@@ -1636,10 +1636,10 @@ components:
           description: Автор задачи
           allOf:
             - $ref: '#/components/schemas/User'
-        organization:
-          description: Организация, в которой находится задача
+        space:
+          description: пространство, в которой находится задача
           allOf:
-            - $ref: '#/components/schemas/OrganizationList'
+            - $ref: '#/components/schemas/spaceList'
         responsible:
           description: Исполнители задачи
           minItems: 0
@@ -1655,7 +1655,7 @@ components:
         subtasks:
           description: Подзадачи
           allOf:
-            - $ref: '#/components/schemas/SubTaskOrgList'
+            - $ref: '#/components/schemas/SubTaskSpaceList'
         tags:
           description: Теги задачи
           minItems: 0
@@ -1664,12 +1664,12 @@ components:
             wrapped: true
           items:
             $ref: '#/components/models/Tag'
-    TaskOrgCreate:
+    TaskSpaceCreate:
       required:
         - name
         - discription
         - status
-        - organization
+        - space
       type: object
       properties:
         name:
@@ -1684,8 +1684,8 @@ components:
         status:
           description: Статус задачи
           example: 1
-        organization:
-          description: Организация, в которой находится задача
+        space:
+          description: пространство, в которой находится задача
           example: 1
         responsible:
           description: Исполнители задачи
@@ -1711,7 +1711,7 @@ components:
           example: [1, ]
           items:
             type: integer
-    TaskOrgCreateResp:
+    TaskSpaceCreateResp:
       type: object
       properties:
         id:
@@ -1738,10 +1738,10 @@ components:
           description: Автор задачи
           allOf:
             - $ref: '#/components/schemas/User'
-        organization:
-          description: Организация, в которой находится задача
+        space:
+          description: пространство, в которой находится задача
           allOf:
-            - $ref: '#/components/schemas/OrganizationList'
+            - $ref: '#/components/schemas/spaceList'
         responsible:
           description: Исполнители задачи
           minItems: 0
@@ -1765,11 +1765,11 @@ components:
             wrapped: true
           items:
             $ref: '#/components/models/Tag'
-    TaskOrgUpdate:
+    TaskSpaceUpdate:
       required:
         - name
         - author
-        - organization
+        - space
       type: object
       properties:
         name:
@@ -1785,8 +1785,8 @@ components:
         status:
           description: Статус задачи
           example: 1
-        organization:
-          description: Организация, в которой находится задача
+        space:
+          description: пространство, в которой находится задача
           example: 1
         responsible:
           description: Исполнители задачи
@@ -1812,7 +1812,7 @@ components:
           example: [1, ]
           items:
             type: integer
-    TaskOrgUpdateResp:
+    TaskSpaceUpdateResp:
       type: object
       properties:
         id:
@@ -1840,10 +1840,10 @@ components:
           description: Автор задачи
           allOf:
             - $ref: '#/components/schemas/User'
-        organization:
-          description: Организация, в которой находится задача
+        space:
+          description: пространство, в которой находится задача
           allOf:
-            - $ref: '#/components/schemas/OrganizationList'
+            - $ref: '#/components/schemas/spaceList'
         responsible:
           description: Исполнители задачи
           minItems: 0
@@ -1867,7 +1867,7 @@ components:
             wrapped: true
           items:
             $ref: '#/components/models/Tag'
-    SubTaskOrgList:
+    SubTaskSpaceList:
       type: object
       properties:
         id:
@@ -1914,7 +1914,7 @@ components:
             wrapped: true
           items:
             $ref: '#/components/models/Tag'
-    SubTaskOrgCreate:
+    SubTaskSpaceCreate:
       required:
         - name
       type: object
@@ -1931,8 +1931,8 @@ components:
         status:
           description: Статус задачи
           example: 1
-        organization:
-          description: Организация, в которой находится задача
+        space:
+          description: пространство, в которой находится задача
           example: 1
         responsible:
           description: Исполнители задачи
@@ -1956,7 +1956,7 @@ components:
             wrapped: true
           type: array
           example: [1, ]
-    SubTaskOrgCreateResp:
+    SubTaskSpaceCreateResp:
       type: object
       properties:
         id:
@@ -1983,10 +1983,10 @@ components:
           description: Автор задачи
           allOf:
             - $ref: '#/components/schemas/User'
-        organization:
-          description: Организация, в которой находится задача
+        space:
+          description: пространство, в которой находится задача
           allOf:
-            - $ref: '#/components/schemas/OrganizationList'
+            - $ref: '#/components/schemas/spaceList'
         responsible:
           description: Исполнители задачи
           minItems: 0
@@ -2010,7 +2010,7 @@ components:
             wrapped: true
           items:
             $ref: '#/components/models/Tag'
-    SubTaskOrgUpdate:
+    SubTaskSpaceUpdate:
       required:
         - name
       type: object
@@ -2028,8 +2028,8 @@ components:
         status:
           description: Статус задачи
           example: 1
-        organization:
-          description: Организация, в которой находится задача
+        space:
+          description: пространство, в которой находится задача
           example: 1
         responsible:
           description: Исполнители задачи
@@ -2053,7 +2053,7 @@ components:
             wrapped: true
           type: array
           example: [1, ]
-    SubTaskOrgUpdateResp:
+    SubTaskSpaceUpdateResp:
       type: object
       properties:
         id:
@@ -2081,10 +2081,10 @@ components:
           description: Автор задачи
           allOf:
             - $ref: '#/components/schemas/User'
-        organization:
-          description: Организация, в которой находится задача
+        space:
+          description: пространство, в которой находится задача
           allOf:
-            - $ref: '#/components/schemas/OrganizationList'
+            - $ref: '#/components/schemas/spaceList'
         responsible:
           description: Исполнители задачи
           minItems: 0
@@ -2114,7 +2114,7 @@ components:
       required:
         - name
         - author
-        - organization
+        - space
       properties:
         id:
           externalDocs:
@@ -2783,7 +2783,7 @@ components:
           maxLength: 7
           description: Цвет статуса в HEX-формате
           example: '#00F154'
-    Organization:
+    space:
       type: object
       required:
         - name
@@ -2792,36 +2792,36 @@ components:
       properties:
         id:
           externalDocs:
-            description: Id организации
-          description: Id организации
+            description: Id пространства
+          description: Id пространства
           type: integer
           readOnly: true
           example: 1
         name:
-          description: Название организации
+          description: Название пространства
           maxLength: 200
           type: string
           example: Planner o_0
         admin:
-          description: Администратор организации
+          description: Администратор пространства
           allOf:
             - $ref: '#/components/schemas/User'
         staff:
-          description: Сотрудники организации
+          description: Сотрудники пространства
           minItems: 1
           xml:
             name: user
             wrapped: true
           items:
             $ref: '#/components/schemas/User'  
-    TaskOrganization:
+    Taskspace:
       type: object
       required:
         - name
         - discription
         - status
         - author
-        - organization
+        - space
       properties:
         id:
           externalDocs:
@@ -2847,10 +2847,10 @@ components:
           description: Автор задачи
           allOf:
             - $ref: '#/components/schemas/User'
-        organization:
-          description: Организация, в которой находится задача
+        space:
+          description: пространство, в которой находится задача
           allOf:
-            - $ref: '#/components/models/Organization'
+            - $ref: '#/components/models/space'
         responsible:
           description: Исполнители задачи
           minItems: 0
@@ -2866,7 +2866,7 @@ components:
         subtasks:
           description: Подзадачи
           allOf:
-            - $ref: '#/components/models/TaskOrganization'
+            - $ref: '#/components/models/Taskspace'
         tags:
           description: Теги задачи
           minItems: 0
@@ -2878,7 +2878,7 @@ components:
         history:
           description: История изменения задачи
           example: пока хз)
-          type: <HistoricalTaskOrganization>
+          type: <HistoricalTaskspace>
           readOnly: true
     TaskPersonal:
       type: object
@@ -2969,15 +2969,15 @@ x-tagGroups:
       - Пользователи
       - Теги
       - Статусы
-      - Организации
-      - Задачи организации
-      - История задач организации
+      - пространства
+      - Задачи пространства
+      - История задач пространства
       - Персональные задачи
   - name: Models
     tags:
       - Модель пользователя
       - Модель тега
       - Модель статуса      
-      - Модель организации
-      - Модель задачи организации
+      - Модель пространства
+      - Модель задачи пространства
       - Модель персональной задачи

@@ -5,13 +5,14 @@ from rest_framework.viewsets import ModelViewSet
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework.pagination import LimitOffsetPagination
+from rest_framework.generics import ListAPIView
 
 from task.models import SpaceTaskModel, SubSpaceTasksM2M
 from space.models import SpaceModel
-from ..permissions import SpaceTaskPermission
+from ..permissions import SpaceStaffPermission
 from ..filters import (TagTaskFilter, StatusTaskFilter,
                        ActualTaskFilter, MainSpaceTaskFilter,
-                       ResponsibleTaskFilter)
+                       ResponsibleTaskFilter, SpaceTaskFilter)
 from ..serializers.space_task import SpaceTaskSerializer, HistorySerializer
 
 
@@ -20,7 +21,7 @@ class SpaceTaskSet(ModelViewSet):
 
     queryset = SpaceTaskModel.objects.all()
     serializer_class = SpaceTaskSerializer
-    permission_classes = [IsAuthenticated&SpaceTaskPermission]
+    permission_classes = [IsAuthenticated&SpaceStaffPermission]
     filter_backends = (filters.SearchFilter,
                        filters.OrderingFilter,
                        TagTaskFilter,
@@ -32,35 +33,35 @@ class SpaceTaskSet(ModelViewSet):
     ordering_fields = ("deadline",)
 
     def get_queryset(self):
-        queryset = SpaceTaskModel.objects.filter(Spaceanization=self.Spaceanizataion)
+        queryset = SpaceTaskModel.objects.filter(space=self.space)
         return queryset
 
     def get_serializer_context(self):
         return {
-            'Spaceanization_model': self.Spaceanizataion,
+            'space_model': self.space,
             'request': self.request,
             'format': self.format_kwarg,
             'view': self
         }
 
     def initial(self, request, *args, **kwargs):
-        Space_id = self.kwargs.get("Space_id")
-        self.Spaceanizataion = get_object_or_404(SpaceModel, id=Space_id)
+        space_id = self.kwargs.get("space_id")
+        self.space = get_object_or_404(SpaceModel, id=space_id)
         return super().initial(request, *args, **kwargs)
 
 
 class SpaceSubTaskView(APIView, LimitOffsetPagination):
     """ViewSet подзадач пространств."""
-    permission_classes = [IsAuthenticated&SpaceTaskPermission]
+    permission_classes = [IsAuthenticated&SpaceStaffPermission]
 
     def get_queryset(self, task_id):
-        queryset_id = SpaceTaskModel.objects.filter(id=task_id).values_list("main_task_Space__subtask", flat=True)
+        queryset_id = SpaceTaskModel.objects.filter(id=task_id).values_list("main_task_space__subtask", flat=True)
         queryset = SpaceTaskModel.objects.filter(id__in=queryset_id)
         return queryset
 
     def get_serializer_context(self):
         return {
-            'Spaceanization_model': self.Spaceanizataion,
+            'space_model': self.space,
             'request': self.request,
             'format': self.format_kwarg,
             'view': self
@@ -90,33 +91,17 @@ class SpaceSubTaskView(APIView, LimitOffsetPagination):
         return Response(serializer.data, status=status.HTTP_201_CREATED)
 
     def initial(self, request, *args, **kwargs):
-        Space_id = self.kwargs.get("Space_id")
-        self.Spaceanizataion = get_object_or_404(SpaceModel, id=Space_id)
+        space_id = self.kwargs.get("space_id")
+        self.space = get_object_or_404(SpaceModel, id=space_id)
         return super().initial(request, *args, **kwargs)
 
 
 class HistoryView(APIView, LimitOffsetPagination):
     """View истории всех изменений."""
-    permission_classes = [IsAuthenticated&SpaceTaskPermission]
+    permission_classes = [IsAuthenticated&SpaceStaffPermission]
 
     def get_queryset(self):
-        # queryset = SpaceTaskModel.objects.filter(Spaceanization=self.Spaceanizataion).values_list("history", flat=True).all().order_by('-history_date')
-        # queryset = SpaceTaskModel.objects.filter(history__history_Spaceanization=self.Spaceanizataion.id)
-        # queryset = SpaceTaskModel.objects.filter(Spaceanization=self.Spaceanizataion).history
-        # queryset = SpaceTaskModel.objects.filter(
-        #     Spaceanization=self.Spaceanizataion).prefetch_related(
-        #         Prefetch('history',
-        #                  queryset=SpaceTaskModel.history,
-        #                  to_attr='ordered_histories')
-        #     ).all()
-        queryset = SpaceTaskModel.objects.filter(Spaceanization=self.Spaceanizataion)
-        # Q_list = []
-        # for int, quer in enumerate(queryset):
-        #     if not histoty_queryset:
-        #         histoty_queryset = quer.log.all()
-        #     else:
-        #         histoty_queryset = histoty_queryset.union(quer.log.all())
-        # histoty_queryset = histoty_queryset.order_by('-history_date')
+        queryset = SpaceTaskModel.objects.filter(space=self.space)
         return queryset
 
     def get(self, request, *args, **kwargs):
@@ -131,14 +116,14 @@ class HistoryView(APIView, LimitOffsetPagination):
         return self.get_paginated_response(serializer.data)
 
     def initial(self, request, *args, **kwargs):
-        Space_id = self.kwargs.get("Space_id")
-        self.Spaceanizataion = get_object_or_404(SpaceModel, id=Space_id)
+        space_id = self.kwargs.get("space_id")
+        self.space = get_object_or_404(SpaceModel, id=space_id)
         return super().initial(request, *args, **kwargs)
 
 
 class HistoryTaskView(APIView, LimitOffsetPagination):
     """View истории изменений одной задачи."""
-    permission_classes = [IsAuthenticated&SpaceTaskPermission]
+    permission_classes = [IsAuthenticated&SpaceStaffPermission]
 
     def get_queryset(self):
         task_id = self.kwargs.get("task_id")
@@ -157,6 +142,32 @@ class HistoryTaskView(APIView, LimitOffsetPagination):
         return self.get_paginated_response(serializer.data)
 
     def initial(self, request, *args, **kwargs):
-        Space_id = self.kwargs.get("Space_id")
-        self.Spaceanizataion = get_object_or_404(SpaceModel, id=Space_id)
+        space_id = self.kwargs.get("space_id")
+        self.space = get_object_or_404(SpaceModel, id=space_id)
         return super().initial(request, *args, **kwargs)
+
+
+
+class SpaceTaskMeView(ListAPIView):
+    """
+    ViewSet задач пространств,
+    в которых пользователь отмечен, как ответственный
+    """
+
+    queryset = SpaceTaskModel.objects.all()
+    serializer_class = SpaceTaskSerializer
+    permission_classes = [IsAuthenticated,]
+    filter_backends = (filters.SearchFilter,
+                       filters.OrderingFilter,
+                       TagTaskFilter,
+                       StatusTaskFilter,
+                       ActualTaskFilter,
+                       MainSpaceTaskFilter,
+                       SpaceTaskFilter)
+    search_fields = ("name", )
+    ordering_fields = ("deadline",)
+
+    def get_queryset(self):
+        user = self.request.user
+        queryset = SpaceTaskModel.objects.filter(responsibles=user)
+        return queryset

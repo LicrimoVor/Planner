@@ -26,7 +26,7 @@ class StatusTaskFilter(BaseFilterBackend):
         return queryset
 
 
-class MainspaceTaskFilter(BaseFilterBackend):
+class MainSpaceTaskFilter(BaseFilterBackend):
     """Фильтрация главных задач."""
 
     def filter_queryset(self, request, queryset, view):

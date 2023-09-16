@@ -28,19 +28,12 @@ class SubRespSerializer(serializers.ModelSerializer):
                   "tags", "responsibles")
 
 
-class SubTasksField(serializers.PrimaryKeyRelatedField):
-    def to_representation(self, value):
-        serializer = SubRespSerializer(value)
-        return serializer.data
-
-
 class SpaceTaskSerializer(serializers.ModelSerializer):
     """Сериализатор задач пространств."""
     author = UserSerializer(User.objects.all(), read_only=True)
     responsibles = ResponsibleFiled(queryset=User.objects.all(),
                                     many=True, required=False)
-    subtasks = SubTasksField(queryset=SpaceTaskModel.objects.all(),
-                             many=True, required=False,)
+    subtasks = SubRespSerializer(many=True, required=False,)
     tags = TagsField(queryset=TagModel.objects.all(),
                      many=True, required=False,)
     status = serializers.PrimaryKeyRelatedField(

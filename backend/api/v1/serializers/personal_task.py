@@ -21,18 +21,10 @@ class SubRespSerializer(serializers.ModelSerializer):
                   "tags")
 
 
-class SubTasksField(serializers.PrimaryKeyRelatedField):
-    def to_representation(self, value):
-        serializer = SubRespSerializer(value)
-        return serializer.data
-
-
 class PersonalTaskSerializer(serializers.ModelSerializer):
     """Сериализатор персональных задач."""
     author = UserSerializer(User.objects.all(), read_only=True)
-    subtasks = SubTasksField(queryset=PersonalTaskModel.objects.all(),
-                             many=True, required=False,
-                             )
+    subtasks = SubRespSerializer(many=True, required=False,)
     tags = TagsField(queryset=TagModel.objects.all(),
                      many=True, required=False,)
     status = serializers.PrimaryKeyRelatedField(
