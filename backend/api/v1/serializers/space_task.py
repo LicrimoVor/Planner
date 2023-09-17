@@ -94,21 +94,29 @@ class SpaceTaskSerializer(serializers.ModelSerializer):
 
 
 class HistorySerializer(serializers.Serializer):
-    """Сериализатор истории изменений задч."""
+    """Сериализатор истории изменений задач."""
     author = serializers.SerializerMethodField(read_only=True)
     datetime = serializers.SerializerMethodField(read_only=True)
-    name = serializers.SerializerMethodField(read_only=True)
+    name_task = serializers.SerializerMethodField(read_only=True)
+    id_task = serializers.SerializerMethodField(read_only=True)
     action = serializers.SerializerMethodField(read_only=True)
+    change_reason = serializers.SerializerMethodField(read_only=True)
 
     def get_author(self, obj):
-        serializer = UserSerializer(obj.author)
+        serializer = UserSerializer(obj.history_user)
         return serializer.data
 
     def get_datetime(self, obj):
         return obj.history_date.isoformat()
     
-    def get_name(self, obj):
+    def get_name_task(self, obj):
         return obj.instance.name
     
+    def get_id_task(self, obj):
+        return obj.instance.id
+
     def get_action(self, obj):
         return obj.get_history_type_display()
+
+    def get_change_reason(self, obj):
+        return obj.history_change_reason

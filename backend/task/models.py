@@ -137,7 +137,7 @@ class SpaceTaskModel(TaskModel):
         through="ResponsibleSpaceTasks",
         related_name="responsibles",
     )
-    log = HistoricalRecords(related_name='history')
+    logs = HistoricalRecords(related_name='history')
 
     class Meta:
         verbose_name = "Задача пространства"

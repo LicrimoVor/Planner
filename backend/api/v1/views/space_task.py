@@ -101,7 +101,7 @@ class HistoryView(APIView, LimitOffsetPagination):
     permission_classes = [IsAuthenticated&SpaceStaffPermission]
 
     def get_queryset(self):
-        queryset = SpaceTaskModel.objects.filter(space=self.space)
+        queryset = SpaceTaskModel.logs.filter(space_id=self.space).order_by('-history_date')
         return queryset
 
     def get(self, request, *args, **kwargs):
@@ -127,7 +127,7 @@ class HistoryTaskView(APIView, LimitOffsetPagination):
 
     def get_queryset(self):
         task_id = self.kwargs.get("task_id")
-        queryset = get_object_or_404(SpaceTaskModel, id=task_id).log.all().order_by('-history_date')
+        queryset = SpaceTaskModel.logs.filter(id=task_id).order_by('-history_date')
         return queryset
 
     def get(self, request, *args, **kwargs):
