@@ -1,4 +1,5 @@
 from rest_framework import serializers
+from django.shortcuts import get_object_or_404
 
 from task.models import StatusModel
 
@@ -9,3 +10,6 @@ class StatusSerializer(serializers.ModelSerializer):
     class Meta:
         model = StatusModel
         fields = ("id", "name", "slug", "color")
+
+    def to_internal_value(self, id):
+        return get_object_or_404(StatusModel, id=id)

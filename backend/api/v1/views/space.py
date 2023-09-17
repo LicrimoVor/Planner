@@ -33,6 +33,10 @@ class SpaceSet(ModelViewSet):
         kwargs.setdefault('context', self.get_serializer_context())
         return serializer_class(*args, **kwargs)
 
+    def create(self, request, *args, **kwargs):
+        request.data["staff"] = request.user.id
+        return super().create(request, *args, **kwargs)
+
 
 class SpaceMeView(APIView, LimitOffsetPagination):
     """View для get-запрос получения своих организаций."""

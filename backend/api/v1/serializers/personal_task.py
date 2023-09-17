@@ -5,7 +5,7 @@ from django.contrib.auth import get_user_model
 from task.models import (PersonalTaskModel, TagModel,
                          StatusModel, )
 from .user import UserSerializer
-from .tag import TagsField
+# from .tag import TagsField
 
 User = get_user_model()
 
@@ -25,7 +25,8 @@ class PersonalTaskSerializer(serializers.ModelSerializer):
     """Сериализатор персональных задач."""
     author = UserSerializer(User.objects.all(), read_only=True)
     subtasks = SubRespSerializer(many=True, required=False,)
-    tags = TagsField(queryset=TagModel.objects.all(),
+    tags = serializers.PrimaryKeyRelatedField(
+                     queryset=TagModel.objects.all(),
                      many=True, required=False,)
     status = serializers.PrimaryKeyRelatedField(
         queryset=StatusModel.objects.all()

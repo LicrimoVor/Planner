@@ -1,4 +1,5 @@
 from rest_framework import serializers
+from django.shortcuts import get_object_or_404
 
 from task.models import TagModel
 
@@ -10,8 +11,5 @@ class TagSerializer(serializers.ModelSerializer):
         model = TagModel
         fields = ("id", "name", "slug", "color")
 
-
-class TagsField(serializers.PrimaryKeyRelatedField):
-    def to_representation(self, value):
-        serializer = TagSerializer(value)
-        return serializer.data
+    def to_internal_value(self, id):
+        return get_object_or_404(TagModel, id=id)

@@ -3,7 +3,7 @@ from rest_framework.permissions import (
     BasePermission,
 )
 from django.contrib.auth import get_user_model
-
+from task.models import SpaceTaskModel
 
 User = get_user_model()
 
@@ -22,9 +22,13 @@ class SpaceStaffPermission(BasePermission):
             return True
         return False
 
-    def has_object_permission(self, request, view, obj):
+    @classmethod
+    def has_object_permission(cls, request, view, obj):
         username = request.user.username
-        staff = view.space.staff.all()
+        if isinstance(obj, SpaceTaskModel):
+            staff = view.space.staff.all()
+        else:
+            staff = obj.staff.all()
         if staff.filter(username=username):
             return True
         return False

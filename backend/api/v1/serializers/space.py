@@ -21,6 +21,7 @@ class SpaceNotPermSerializer(serializers.ModelSerializer):
     def create(self, validated_data):
         admin = self.context["request"].user
         model = SpaceModel.objects.create(admin=admin, **validated_data)
+        model.staff.set([admin.id])
         return model
 
 
@@ -42,7 +43,7 @@ class SpacePermSerializer(serializers.ModelSerializer):
             staff_list = validated_data.pop("staff")
         else:
             staff_list = []
-        if admin not in staff_list:
+        if admin.id not in staff_list:
             staff_list.append(admin)
         instance.staff.set(staff_list)
         return super().update(instance, validated_data)
