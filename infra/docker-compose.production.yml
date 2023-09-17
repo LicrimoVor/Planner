@@ -29,9 +29,9 @@ services:
     container_name: planner_frontend
     image: licrimovor/planner_frontend
     env_file: .env
-    command: cp -r /app/static. /static/
+    command: cp -r /app/static/. /static/
     volumes:
-      - static:/static
+      - static:/app/static/
 
   nginx:
     container_name: planner_nginx
