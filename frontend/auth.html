@@ -1,49 +1,65 @@
 <!DOCTYPE html>
 <html lang="ru">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Авторизация</title>
 
-    <link rel="stylesheet" href="../frontend/content/main.css">
-    <link rel="stylesheet" href="../frontend/content/colors.css">
+    <link rel="stylesheet" href="./content/main.css" />
+    <link rel="stylesheet" href="./content/colors.css" />
 
-    <link rel="stylesheet" href="../frontend/content/flex-box/flex-box.css">
-    <link rel="stylesheet" href="../frontend/content/text/text.css">
-    <link rel="stylesheet" href="../frontend/content/input/input.css">
-    <link rel="stylesheet" href="../frontend/content/button/button.css">
+    <link rel="stylesheet" href="./content/flex-box/flex-box.css" />
+    <link rel="stylesheet" href="./content/text/text.css" />
+    <link rel="stylesheet" href="./content/input/input.css" />
+    <link rel="stylesheet" href="./content/button/button.css" />
 
-    <script src="../frontend/utils/code.jquery.com_jquery-3.7.1.min.js"></script>
-</head>
-<body>
+    <script src="./utils/code.jquery.com_jquery-3.7.1.min.js"></script>
+  </head>
+  <body>
     <div class="flex-box bg-gray flex-box_fullscreen">
-        <div class="flex-box bg-white flex-box_centered flex-box_shadow flex-box_rounded flex-box_padding-1">
-            <p class="text_center text_large">Авторизация</p>
-            <div class="br"></div>
-            <div class="flex-box flex-box_centered flex-box_margin-1">
-                <p class="text_light-gray text_small">Нет аккаунта?</p>
-                <a class="text_small" href="register.html">Регистрация</a>
-            </div>
-            <div class="br br_2"></div>
-
-            <form class="auth-form full-width">
-                <p class="text_small text_light-gray">Логин пользователя</p>
-                <input required class="auth-form__username full-width input_border-1 input_padding-1 input_margin-1 input_rounded text_small2" type="text" placeholder="Введите логин...">
-                
-                <div class="br br_2"></div>
-
-                <p class="text_small text_light-gray">Пароль</p>
-                <input required class="auth-form__password full-width input_border-1 input_padding-1 input_margin-1 input_rounded text_small2" type="text" placeholder="Введите пароль...">
-
-                <p class="auth-form__error text_small text_error"></p>
-
-                <div class="br br_2"></div>
-                
-                <input class="full-width text_center button-hover button_blue text_white rounded button_height-1" type="submit" value="Вход">
-            </form>
+      <div
+        class="flex-box bg-white flex-box_centered flex-box_shadow flex-box_rounded flex-box_padding-1"
+      >
+        <p class="text_center text_large">Авторизация</p>
+        <div class="br"></div>
+        <div class="flex-box flex-box_centered flex-box_margin-1">
+          <p class="text_light-gray text_small">Нет аккаунта?</p>
+          <a class="text_small" href="register.html">Регистрация</a>
         </div>
+        <div class="br br_2"></div>
+
+        <form class="auth-form full-width">
+          <p class="text_small text_light-gray">Логин пользователя</p>
+          <input
+            required
+            class="auth-form__username full-width input_border-1 input_padding-1 input_margin-1 input_rounded text_small2"
+            type="text"
+            placeholder="Введите логин..."
+          />
+
+          <div class="br br_2"></div>
+
+          <p class="text_small text_light-gray">Пароль</p>
+          <input
+            required
+            class="auth-form__password full-width input_border-1 input_padding-1 input_margin-1 input_rounded text_small2"
+            type="text"
+            placeholder="Введите пароль..."
+          />
+
+          <p class="auth-form__error text_small text_error"></p>
+
+          <div class="br br_2"></div>
+
+          <input
+            class="full-width text_center button-hover button_blue text_white rounded button_height-1"
+            type="submit"
+            value="Вход"
+          />
+        </form>
+      </div>
     </div>
 
-    <script src="../frontend/scripts/auth.js" type="module"></script>
-</body>
+    <script src="./scripts/auth.js" type="module"></script>
+  </body>
 </html>
