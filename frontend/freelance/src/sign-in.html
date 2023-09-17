@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Авторизация</title>
+    <link href="./css/output.css" rel="stylesheet" />
+    <link rel="stylesheet" href="./css/style.css" />
+  </head>
+  <body class="bg-gray-100">
+    <div class="flex items-center justify-center h-screen">
+      <div class="bg-white w-[715px] p-8 rounded-xl shadow-md">
+        <div class="text-center text-zinc-800 text-3xl font-normal">
+          Авторизация
+        </div>
+        <div class="text-center text-stone-500 font-normal mt-[2px] mb-8">
+          Нет аккаунта?
+          <a href="./register.html" class="text-neutral-900 underline"
+            >Регистрация</a
+          >
+        </div>
+        <div class="mb-6">
+          <label class="text-stone-500 text-base font-normal block mb-1">
+            Логин пользователя
+          </label>
+          <input
+            id="usernameInput"
+            type="text"
+            class="w-full h-12 rounded-xl border border-stone-500 border-opacity-30 pl-4 focus:outline-none"
+            placeholder="Введите логин..."
+          />
+        </div>
+        <div class="mb-6">
+          <label class="text-stone-500 text-base font-normal block mb-1">
+            Пароль
+          </label>
+          <input
+            id="passwordInput"
+            type="password"
+            class="w-full h-12 rounded-xl border border-stone-500 border-opacity-30 pl-4 focus:outline-none"
+            placeholder="Введите пароль"
+          />
+        </div>
+        <div id="messages" class="mb-2"></div>
+        <button
+          id="submitButton"
+          class="w-full h-12 bg-blue-500 hover:bg-blue-600 text-white text-lg font-normal rounded-xl transition-opacity duration-300 cursor-pointer"
+        >
+          Вход
+        </button>
+      </div>
+    </div>
+    <script src="./js/sign-in.js"></script>
+  </body>
+</html>

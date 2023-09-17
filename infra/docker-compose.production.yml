@@ -25,6 +25,13 @@ services:
       - ./data:/data
       - ./.env:/.env
 
+  frontend:
+    container_name: planner_frontend
+    image: licrimovor/planner_frontend
+    env_file: .env
+    volumes:
+      - static:/app/static
+
   nginx:
     container_name: planner_nginx
     image: nginx:1.22.1

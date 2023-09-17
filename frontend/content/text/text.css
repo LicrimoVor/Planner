@@ -1,0 +1,39 @@
+
+.text_center {
+    text-align: center;
+    margin: 0 auto;
+}
+
+.text_large {
+    font-size: 1.5vw;
+}
+
+.text_small {
+    font-size: 0.85vw;
+}
+
+.text_small2 {
+    font-size: 0.95vw;
+}
+
+.text_error {
+    color: var(--color-error);
+    font-weight: 500;
+}
+
+.text_weight-500 {
+    font-weight: 500;
+}
+
+.text_padding-1 {
+    padding: 0.25vw;
+}
+
+.text_padding-2 {
+    padding: 0.5vw;
+}
+
+.text_hover-1:hover {
+    cursor: pointer;
+    background-color: rgb(236, 236, 236);
+}

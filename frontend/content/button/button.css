@@ -1,0 +1,15 @@
+
+
+.button_blue {
+    --btn-color: rgb(59 130 246);
+    background-color: var(--btn-color);
+}
+
+.button-hover:hover {
+    background-color: color-mix(in srgb, var(--btn-color) 100%, black 15%);
+    cursor: pointer;
+}
+
+.button_height-1 {
+    height: 2.5vw;
+}
