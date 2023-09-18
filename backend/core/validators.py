@@ -10,4 +10,4 @@ def validate_hex(hex_string: str) -> None:
             message=f"Цвет должен быть в формате HEX! Строка {hex_string}\
                      не является строкой HEX-формата",
             params={"color": hex_string},
-        )
+            )
