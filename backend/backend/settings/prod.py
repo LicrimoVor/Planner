@@ -10,7 +10,7 @@ if DEBUG:
 
     THIRD_PARTY_MIDDLEWARE = ["debug_toolbar.middleware.DebugToolbarMiddleware"]
     MIDDLEWARE += THIRD_PARTY_MIDDLEWARE
-    INTERNAL_IPS = os.getenv('INTERNAL_IPS', "127.0.0.1").split(" ")
+    INTERNAL_IPS = os.getenv('ALLOWED_HOSTS', "127.0.0.1").split(" ")
 
 DATABASES = {
     "default": {
@@ -24,4 +24,5 @@ DATABASES = {
     } 
 }
 
-CSRF_TRUSTED_ORIGINS = os.getenv('CSRF_TRUSTED_ORIGINS', "http://127.0.0.1").split(" ")
+
+CSRF_TRUSTED_ORIGINS = ["http://"+x for x in os.getenv('ALLOWED_HOSTS', "127.0.0.1").split(" ")]

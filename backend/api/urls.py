@@ -6,5 +6,6 @@ urlpatterns = [
          template_name='redoc.html',), name='redoc'),
     path('', include("api.v1.urls")),
     path('', include('djoser.urls')),
+    path('auth/', include('rest_framework_social_oauth2.urls')),
     re_path(r'^auth/', include('djoser.urls.authtoken')),
 ]

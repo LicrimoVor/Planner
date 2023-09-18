@@ -42,7 +42,7 @@ MIDDLEWARE = [
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     'simple_history.middleware.HistoryRequestMiddleware',
-    # 'core.middleware.CheckAuthorizationMiddleWare',
+    'core.middleware.CheckAuthorizationMiddleWare',
 ]
 
 CORS_ALLOW_ALL_ORIGINS = True
@@ -134,4 +134,8 @@ DJOSER = {
         'current_user': 'api.v1.serializers.user.UserSerializer',
     },
     'HIDE_USERS': False,
+    'SEND_ACTIVATION_EMAIL': True,
+    'ACTIVATION_URL': 'api/activate/{uid}/{token}',
+    'PASSWORD_RESET_CONFIRM_URL': 'api/password/reset/confirm/{uid}/{token}',
+    'USERNAME_RESET_CONFIRM_URL': 'username/reset/confirm/{uid}/{token}',
 }
