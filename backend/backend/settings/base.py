@@ -42,7 +42,7 @@ MIDDLEWARE = [
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     'simple_history.middleware.HistoryRequestMiddleware',
-    # 'core.middleware.CustomMiddleware',
+    # 'core.middleware.CheckAuthorizationMiddleWare',
 ]
 
 CORS_ALLOW_ALL_ORIGINS = True
@@ -132,10 +132,6 @@ DJOSER = {
     'SERIALIZERS': {
         'user': 'api.v1.serializers.user.UserSerializer',
         'current_user': 'api.v1.serializers.user.UserSerializer',
-    },
-    'PERMISSIONS': {
-        'user_list': ['rest_framework.permissions.IsAuthenticatedOrReadOnly', ],
-        'user': ['rest_framework.permissions.IsAuthenticatedOrReadOnly', ],
     },
     'HIDE_USERS': False,
 }
