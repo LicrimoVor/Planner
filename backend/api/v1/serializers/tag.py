@@ -10,6 +10,7 @@ class TagSerializer(serializers.ModelSerializer):
     class Meta:
         model = TagModel
         fields = ("id", "name", "slug", "color")
+        read_only_fields = ("id", )
 
     def to_internal_value(self, id):
         return get_object_or_404(TagModel, id=id)
