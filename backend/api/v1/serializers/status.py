@@ -12,5 +12,10 @@ class StatusSerializer(serializers.ModelSerializer):
         fields = ("id", "name", "slug", "color")
         read_only_fields = ("id", )
 
-    def to_internal_value(self, id):
-        return get_object_or_404(StatusModel, id=id)
+    def to_internal_value(self, data):
+        print("!"*50)
+        if isinstance(data, int):
+            return get_object_or_404(StatusModel, id=data)
+        else:
+            return super().to_internal_value(data)
+        
