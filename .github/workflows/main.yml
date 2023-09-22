@@ -63,7 +63,7 @@ jobs:
           host: ${{ secrets.HOST }}
           username: ${{ secrets.USER }}
           password: ${{ secrets.PASSWORD }}
-          source: "infra/docker-compose.production.yml, infra/nginx.conf, data/*"
+          source: "infra/docker-compose.production.yml, infra/nginx.conf, data"
           strip_components: 1
           target: "planner"
 
