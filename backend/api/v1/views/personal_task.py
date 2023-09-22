@@ -10,6 +10,7 @@ from ..permissions import AuthorPermission
 from ..filters import (TagTaskFilter, StatusTaskFilter,
                        ActualTaskFilter, MainPersonalTaskFilter,)
 from ..serializers.personal_task import PersonalTaskSerializer
+from core.collections import Queue
 
 
 class PersonalTaskSet(ModelViewSet):
@@ -63,3 +64,20 @@ class PersonalSubTaskView(APIView, LimitOffsetPagination):
         task = PersonalTaskModel.objects.get(id=task_id)
         SubPersonalTasksM2M.objects.create(task=task, subtask=serializer.instance)
         return Response(serializer.data, status=status.HTTP_201_CREATED)
+
+
+class PersonalTaskTreeView(APIView, LimitOffsetPagination):
+    """View дерева персональной задачи."""
+    permission_classes = [IsAuthenticated&AuthorPermission]
+
+    def delete(self, request, *args, **kwargs):
+        queue = Queue()
+        queue.put(kwargs.get("task_id"))
+        tasks_id = []
+        while not queue.empty():
+            id_task = queue.get()
+            tasks_id.append(id_task)
+            subtasks_id = SubPersonalTasksM2M.objects.filter(task__id=id_task).values_list("subtask", flat=True)
+            queue.put_list(subtasks_id)
+        PersonalTaskModel.objects.filter(id__in=tasks_id).delete()
+        return Response(status=status.HTTP_204_NO_CONTENT)

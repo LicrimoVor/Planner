@@ -46,8 +46,8 @@ class PersonalTaskModel(TaskModel):
         StatusModel,
         on_delete=models.SET_NULL,
         related_name="status+",
-        to_field='slug',
-        null=True
+        null=True,
+        blank=True,
     )
     author = models.ForeignKey(
         User,
@@ -86,7 +86,6 @@ class TagPersonalTaskModel(models.Model):
         verbose_name="Тег (id)",
         on_delete=models.CASCADE,
         related_name='tag_pers',
-        to_field='slug',
     )
     task = models.ForeignKey(
         PersonalTaskModel,
@@ -117,14 +116,14 @@ class SpaceTaskModel(TaskModel):
         StatusModel,
         on_delete=models.SET_NULL,
         null=True,
+        blank=True,
         related_name="status+",
-        to_field="slug",
     )
     tags = models.ManyToManyField(
         TagModel,
         verbose_name="Теги",
         through="TagSpaceTaskModel",
-        related_name="tags+"
+        related_name="tags+",
     )
     space = models.ForeignKey(
         SpaceModel,
@@ -153,7 +152,6 @@ class TagSpaceTaskModel(models.Model):
         verbose_name="Тег (id)",
         on_delete=models.CASCADE,
         related_name='tag_space+',
-        to_field='slug',
     )
     task = models.ForeignKey(
         SpaceTaskModel,

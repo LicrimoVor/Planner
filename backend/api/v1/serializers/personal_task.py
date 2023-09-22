@@ -30,7 +30,7 @@ class PersonalTaskSerializer(serializers.ModelSerializer):
     author = UserSerializer(User.objects.all(), read_only=True)
     subtasks = SubRespSerializer(many=True, required=False,)
     tags = TagSerializer(many=True, required=False)
-    status = StatusSerializer()
+    status = StatusSerializer(required=False)
     deadline = serializers.DateTimeField(required=False,)
 
     class Meta:

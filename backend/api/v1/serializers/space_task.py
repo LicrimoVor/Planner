@@ -35,7 +35,7 @@ class SpaceTaskSerializer(serializers.ModelSerializer):
     responsibles = UserSerializer(many=True, required=False)
     subtasks = SubRespSerializer(many=True, required=False,)
     tags = TagSerializer(many=True, required=False)
-    status = StatusSerializer()
+    status = StatusSerializer(required=False)
     deadline = serializers.DateTimeField(required=False,)
     space = SpaceNotPermSerializer(read_only=True)
 

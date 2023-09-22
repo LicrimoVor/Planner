@@ -12,14 +12,18 @@ class TaskModel(models.Model):
     name = models.CharField(
         verbose_name="Имя",
         max_length=255,
+        null=True,
+        blank=True,
     )
     discription = models.TextField(
         verbose_name="Описание",
+        null=True,
+        blank=True,
     )
     deadline = models.DateTimeField(
         verbose_name="Дедлайн",
         null=True,
-        blank=True
+        blank=True,
     )
     
     class Meta:
@@ -36,19 +40,16 @@ class NameColorModel(models.Model):
         verbose_name="Название",
         help_text="Название тега",
         max_length=200,
-        unique=True,
     )
     color = models.CharField(
         verbose_name="Цвет",
         help_text="Цвет в HEX-формате",
         max_length=7,
-        unique=True,
         validators=[validate_hex],
     )
     slug = models.SlugField(
         verbose_name="Slug",
         help_text="Краткое имя",
-        unique=True,
     )
 
     class Meta:

@@ -1,7 +1,7 @@
 from django.utils import timezone
 from rest_framework.filters import BaseFilterBackend
 
-from space.models import SpaceModel
+# from space.models import SpaceModel
 from task.models import SubPersonalTasksM2M, SubSpaceTasksM2M
 
 
@@ -11,8 +11,7 @@ class TagTaskFilter(BaseFilterBackend):
     def filter_queryset(self, request, queryset, view):
         if request.query_params.get('tags'):
             tags_list = request.query_params.getlist('tags')
-            for tag in tags_list:
-                queryset = queryset.filter(tags__slug=tag).distinct()
+            queryset = queryset.filter(tags__id__in=tags_list).distinct()
         return queryset
 
 
@@ -22,25 +21,25 @@ class StatusTaskFilter(BaseFilterBackend):
     def filter_queryset(self, request, queryset, view):
         if request.query_params.get('status'):
             status_list = request.query_params.getlist('status')
-            queryset = queryset.filter(status__slug__in=status_list).distinct()
+            queryset = queryset.filter(status__id__in=status_list).distinct()
         return queryset
 
 
 class MainSpaceTaskFilter(BaseFilterBackend):
-    """Фильтрация главных задач."""
+    """Фильтрация задач простравнства на главные."""
 
     def filter_queryset(self, request, queryset, view):
-        if request.query_params.get('main'):
+        if not request.query_params.get('main'):
             queryset_id = SubSpaceTasksM2M.objects.values_list("subtask", flat=True).distinct()
             queryset = queryset.exclude(id__in=queryset_id)
         return queryset
 
 
 class MainPersonalTaskFilter(BaseFilterBackend):
-    """Фильтрация главных задач."""
+    """Фильтрация персональных задач на главные."""
 
     def filter_queryset(self, request, queryset, view):
-        if request.query_params.get('main'):
+        if not request.query_params.get('main'):
             queryset_id = SubPersonalTasksM2M.objects.values_list("subtask", flat=True).distinct()
             queryset = queryset.exclude(id__in=queryset_id)
         return queryset
@@ -68,7 +67,7 @@ class SpaceTaskFilter(BaseFilterBackend):
 
 
 class ActualTaskFilter(BaseFilterBackend):
-    """Фильтрация задач по организациям."""
+    """Фильтрация задач по актальным."""
 
     def filter_queryset(self, request, queryset, view):
         if request.query_params.get('actual'):
