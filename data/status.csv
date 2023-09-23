@@ -1,7 +1,7 @@
 name,slug,color
-Не начато,not_started,#DCDCDC
-В процессе,in_process,#D2691E
-Требует проверки,verification,#98FB98
-Завершено,completed,#FFFFE0
-Все сложно,all_difficult,#C45959
-Архив,archive, #808080
+Не начато,not_started,#D7D2D2
+В процессе,in_process,#BED7EB
+Требует проверки,verification,#FAE6C8
+Завершено,completed,#DCF0BE
+Все сложно,all_difficult,#FFC8C8
+Архив,archive,#808080

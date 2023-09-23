@@ -14,6 +14,8 @@ User = get_user_model()
 class SubRespSerializer(serializers.ModelSerializer):
     """Сериализатор персональных подзадач."""
     author = UserSerializer(read_only=True)
+    status = StatusSerializer(rread_only=True)
+    tags = TagSerializer(many=True, read_only=True)
 
     class Meta:
         model = PersonalTaskModel
