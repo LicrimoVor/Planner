@@ -15,7 +15,7 @@ class TaskModel(models.Model):
         null=True,
         blank=True,
     )
-    discription = models.TextField(
+    description = models.TextField(
         verbose_name="Описание",
         null=True,
         blank=True,

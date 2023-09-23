@@ -17,7 +17,7 @@ class SubRespSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = PersonalTaskModel
-        fields = ("id", "name", "discription",
+        fields = ("id", "name", "description",
                   "author", "status", "deadline",
                   "tags")
 
@@ -35,7 +35,7 @@ class PersonalTaskSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = PersonalTaskModel
-        fields = ("id", "name", "discription",
+        fields = ("id", "name", "description",
                   "author", "status", "deadline",
                   "subtasks", "tags")
 

@@ -1437,7 +1437,7 @@ components:
           maxLength: 200
           type: string
           example: Планнер
-        discription:
+        description:
           description: Описание задачи
           type: string
           example: Создание собственного сервиса по созданию плана
@@ -1480,7 +1480,7 @@ components:
     TaskSpaceCreate:
       required:
         - name
-        - discription
+        - description
         - status
         - space
       type: object
@@ -1490,7 +1490,7 @@ components:
           maxLength: 200
           type: string
           example: Планнер
-        discription:
+        description:
           description: Описание задачи
           type: string
           example: Создание собственного сервиса по созданию плана
@@ -1539,7 +1539,7 @@ components:
           maxLength: 200
           type: string
           example: Планнер
-        discription:
+        description:
           description: Описание задачи
           type: string
           example: Создание собственного сервиса по созданию плана
@@ -1590,7 +1590,7 @@ components:
           maxLength: 200
           type: string
           example: Планнер
-        discription:
+        description:
           description: Описание задачи
           type: string
           example: Создание собственного сервиса по созданию плана,
@@ -1640,7 +1640,7 @@ components:
           maxLength: 200
           type: string
           example: Планнер
-        discription:
+        description:
           description: Описание задачи
           type: string
           example: Создание собственного сервиса по созданию плана,
@@ -1695,7 +1695,7 @@ components:
           maxLength: 200
           type: string
           example: Разработка бэкенда
-        discription:
+        description:
           description: Описание задачи
           type: string
           example: Разработать бэкенд-часть планнера на Django
@@ -1737,7 +1737,7 @@ components:
           maxLength: 200
           type: string
           example: Разработка бэкенда
-        discription:
+        description:
           description: Описание задачи
           type: string
           example: Разработать бэкенд-часть планнера на Django
@@ -1784,7 +1784,7 @@ components:
           maxLength: 200
           type: string
           example: Разработка бэкенда
-        discription:
+        description:
           description: Описание задачи
           type: string
           example: Разработать бэкенд-часть планнера на Django
@@ -1833,7 +1833,7 @@ components:
           maxLength: 200
           type: string
           example: Разработка бэкенда и фротенда
-        discription:
+        description:
           description: Описание задачи
           type: string
           example: Разработать бэкенд-часть планнера на Django,
@@ -1881,7 +1881,7 @@ components:
           maxLength: 200
           type: string
           example: Разработка бэкенда и фротенда
-        discription:
+        description:
           description: Описание задачи
           type: string
           example: Разработать бэкенд-часть планнера на Django,
@@ -1941,7 +1941,7 @@ components:
           maxLength: 200
           type: string
           example: Сессия
-        discription:
+        description:
           description: Описание задачи
           type: string
           example: Успешная сдача сессии. Подготовка к сессии
@@ -1972,7 +1972,7 @@ components:
     TaskPersonalCreate:
       required:
         - name
-        - discription
+        - description
         - status
       type: object
       properties:
@@ -1981,7 +1981,7 @@ components:
           maxLength: 200
           type: string
           example: Сессия
-        discription:
+        description:
           description: Описание задачи
           type: string
           example: Успешная сдача сессии. Подготовка к сессии
@@ -2017,7 +2017,7 @@ components:
           maxLength: 200
           type: string
           example: Сессия
-        discription:
+        description:
           description: Описание задачи
           type: string
           example: Успешная сдача сессии. Подготовка к сессии
@@ -2054,7 +2054,7 @@ components:
           maxLength: 200
           type: string
           example: Сессия
-        discription:
+        description:
           description: Описание задачи
           type: string
           example: Успешная сдача сессии. Подготовка к сессии.
@@ -2091,7 +2091,7 @@ components:
           maxLength: 200
           type: string
           example: Сессия
-        discription:
+        description:
           description: Описание задачи
           type: string
           example: Успешная сдача сессии. Подготовка к сессии.
@@ -2134,7 +2134,7 @@ components:
           maxLength: 200
           type: string
           example: Изучение математики
-        discription:
+        description:
           description: Описание задачи
           type: string
           example: Изучение тер-вера, ДУ и линейной алгебры
@@ -2164,7 +2164,7 @@ components:
           maxLength: 200
           type: string
           example: Изучение математики
-        discription:
+        description:
           description: Описание задачи
           type: string
           example: Изучение тер-вера, ДУ и линейной алгебры
@@ -2200,7 +2200,7 @@ components:
           maxLength: 200
           type: string
           example: Изучение математики
-        discription:
+        description:
           description: Описание задачи
           type: string
           example: Изучение тер-вера, ДУ и линейной алгебры
@@ -2237,7 +2237,7 @@ components:
           maxLength: 200
           type: string
           example: Изучение математики
-        discription:
+        description:
           description: Описание задачи
           type: string
           example: Изучение тер-вера, ДУ, линейной алгебры и интегрирования
@@ -2273,7 +2273,7 @@ components:
           maxLength: 200
           type: string
           example: Изучение математики
-        discription:
+        description:
           description: Описание задачи
           type: string
           example: Изучение тер-вера, ДУ, линейной алгебры и интегрирования
@@ -2315,7 +2315,7 @@ components:
           maxLength: 200
           type: string
           example: Изучение математики
-        discription:
+        description:
           description: Описание задачи
           type: string
           example: Изучение тер-вера, ДУ, линейной алгебры и интегрирования
@@ -2645,7 +2645,7 @@ components:
           maxLength: 200
           type: string
           example: Планнер
-        discription:
+        description:
           description: Описание задачи
           type: string
           example: Создание собственного сервиса по созданию плана
@@ -2707,7 +2707,7 @@ components:
           maxLength: 200
           type: string
           example: Сессия
-        discription:
+        description:
           description: Описание задачи
           type: string
           example: Успешная сдача сессии. Подготовка к сессии

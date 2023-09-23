@@ -21,7 +21,7 @@ class SubRespSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = SpaceTaskModel
-        fields = ("id", "name", "discription",
+        fields = ("id", "name", "description",
                   "author", "status", "deadline",
                   "tags", "responsibles")
 
@@ -41,7 +41,7 @@ class SpaceTaskSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = SpaceTaskModel
-        fields = ("id", "name", "discription",
+        fields = ("id", "name", "description",
                   "author", "status",
                   "deadline","subtasks",
                   "tags", "responsibles",
