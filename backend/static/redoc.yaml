@@ -36,7 +36,7 @@ tags:
       Фильтрация по тегам: http://127.0.0.1:8000/api/space/{id}/task/?tags=1&tags=2 <br>
       Фильтрация по статусу: http://127.0.0.1:8000/api/space/{id}/task/?status=1 <br>
       Фильтрация по акутальным задачам: http://127.0.0.1:8000/api/space/{id}/task/?actual=true <br>
-      Фильтрация по main задачам (!!!включает выборку подзадач): http://127.0.0.1:8000/api/space/{id}/task/?main=true <br>
+      Фильтрация по main задачам (!!!выключает выборку подзадач!!!): http://127.0.0.1:8000/api/space/{id}/task/?main=true <br>
       Фильтрация по ответственным: http://127.0.0.1:8000/api/space/{id}/task/?responsible=1 <br>
       Поиск по названию задачи: http://127.0.0.1:8000/api/space/{id}/task/?search=Планне <br>
       Сортировка по дедлайну: http://127.0.0.1:8000/api/space/{id}/task/?ordering=deadline <br>
@@ -45,7 +45,7 @@ tags:
       Фильтрация по тегам: http://127.0.0.1:8000/api/task_me/?tags=hard&tags=normal <br>
       Фильтрация по статусу: http://127.0.0.1:8000/api/task_me/?status=not_started <br>
       Фильтрация по акутальным задачам: http://127.0.0.1:8000/api/task_me/?actual=true <br>
-      Фильтрация по main задачам (!!!включает выборку подзадач): http://127.0.0.1:8000/api/task_me/?main=true <br>
+      Фильтрация по main задачам (!!!выключает выборку подзадач!!!): http://127.0.0.1:8000/api/task_me/?main=true <br>
       Поиск по названию задачи: http://127.0.0.1:8000/api/task_me/?search=Планне <br>
       Сортировка по дедлайну: http://127.0.0.1:8000/api/task_me/?ordering=deadline <br>
 

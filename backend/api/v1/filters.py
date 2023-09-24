@@ -29,7 +29,7 @@ class MainSpaceTaskFilter(BaseFilterBackend):
     """Фильтрация задач простравнства на главные."""
 
     def filter_queryset(self, request, queryset, view):
-        if not request.query_params.get('main'):
+        if request.query_params.get('main'):
             queryset_id = SubSpaceTasksM2M.objects.values_list("subtask", flat=True).distinct()
             queryset = queryset.exclude(id__in=queryset_id)
         return queryset
@@ -39,7 +39,7 @@ class MainPersonalTaskFilter(BaseFilterBackend):
     """Фильтрация персональных задач на главные."""
 
     def filter_queryset(self, request, queryset, view):
-        if not request.query_params.get('main'):
+        if request.query_params.get('main'):
             queryset_id = SubPersonalTasksM2M.objects.values_list("subtask", flat=True).distinct()
             queryset = queryset.exclude(id__in=queryset_id)
         return queryset
