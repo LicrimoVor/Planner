@@ -33,7 +33,7 @@ class SpaceTaskSet(ModelViewSet):
     ordering_fields = ("deadline",)
 
     def get_queryset(self):
-        queryset = SpaceTaskModel.objects.filter(space=self.space)
+        queryset = SpaceTaskModel.objects.filter(space=self.space).order_by("-id")
         return queryset
 
     def get_serializer_context(self):
@@ -56,7 +56,7 @@ class SpaceSubTaskView(APIView, LimitOffsetPagination):
 
     def get_queryset(self, task_id):
         queryset_id = SpaceTaskModel.objects.filter(id=task_id).values_list("main_task_space__subtask", flat=True)
-        queryset = SpaceTaskModel.objects.filter(id__in=queryset_id)
+        queryset = SpaceTaskModel.objects.filter(id__in=queryset_id).order_by("-id")
         return queryset
 
     def get_serializer_context(self):
@@ -169,5 +169,5 @@ class SpaceTaskMeView(ListAPIView):
 
     def get_queryset(self):
         user = self.request.user
-        queryset = SpaceTaskModel.objects.filter(responsibles=user)
+        queryset = SpaceTaskModel.objects.filter(responsibles=user).order_by("-id")
         return queryset

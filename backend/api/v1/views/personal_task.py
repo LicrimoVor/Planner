@@ -30,7 +30,7 @@ class PersonalTaskSet(ModelViewSet):
 
     def get_queryset(self):
         author = self.request.user
-        queryset = PersonalTaskModel.objects.filter(author=author)
+        queryset = PersonalTaskModel.objects.filter(author=author).order_by("-id")
         return queryset
 
 
@@ -40,7 +40,7 @@ class PersonalSubTaskView(APIView, LimitOffsetPagination):
 
     def get_queryset(self, task_id):
         queryset_id = PersonalTaskModel.objects.filter(id=task_id).values_list("main_task_pers__subtask", flat=True)
-        queryset = PersonalTaskModel.objects.filter(id__in=queryset_id)
+        queryset = PersonalTaskModel.objects.filter(id__in=queryset_id).order_by("-id")
         return queryset
 
     def get(self, request, *args, **kwargs):
