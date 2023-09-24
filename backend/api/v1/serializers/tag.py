@@ -13,7 +13,6 @@ class TagSerializer(serializers.ModelSerializer):
         read_only_fields = ("id", )
 
     def to_internal_value(self, data):
-        print("!"*50)
         if isinstance(data, int):
             return get_object_or_404(TagModel, id=data)
         else:

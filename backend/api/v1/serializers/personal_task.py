@@ -57,20 +57,27 @@ class PersonalTaskSerializer(serializers.ModelSerializer):
     def create(self, validated_data):
         author = self.context["request"].user
         tags = validated_data.pop("tags") if validated_data.get("tags") is not None else []
-        subtasks = validated_data.pop("subtasks") if validated_data.get("subtasks") is not None else []
+        subtasks = validated_data.pop("subtasks") if validated_data.get("tags") is not None else []
         model = PersonalTaskModel.objects.create(author=author, **validated_data)
         model.tags.set(tags)
         model.subtasks.set(subtasks)
         return model
 
     def update(self, instance, validated_data):
-        tags = validated_data.pop("tags") if validated_data.get("tags") is not None else []
-        subtasks = validated_data.pop("subtasks") if validated_data.get("subtasks") is not None else []
+        if self.context['request'].method == "PUT":
+            for field in ["name", "description","status", "deadline",
+                          "subtasks", "tags"]:
+                validated_data.setdefault(field, None)
         
+        for m2m_filed in ["subtasks", "tags"]:
+            if validated_data.get(m2m_filed, 0) != 0:
+                values_field = validated_data.pop(m2m_filed)
+                if values_field is None:
+                    values_field = []
+                getattr(instance, m2m_filed).set(values_field)
+
         for name, value in validated_data.items():
             setattr(instance, name, value)
 
-        instance.tags.set(tags)
-        instance.subtasks.set(subtasks)
         instance.save()
         return instance

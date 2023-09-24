@@ -78,17 +78,21 @@ class SpaceTaskSerializer(serializers.ModelSerializer):
         return model
 
     def update(self, instance, validated_data):
-        tags = validated_data.pop("tags") if validated_data.get("tags") is not None else []
-        subtasks = validated_data.pop("subtasks") if validated_data.get("subtasks") is not None else []
-        responsibles = validated_data.pop("responsibles") if validated_data.get("responsibles") is not None else []
+        if self.context['request'].method == "PUT":
+            for field in ["name", "description","status", "deadline",
+                          "subtasks", "tags", "responsibles"]:
+                validated_data.setdefault(field, None)
         
+        for m2m_filed in ["subtasks", "tags", "responsibles"]:
+            if validated_data.get(m2m_filed, 0) != 0:
+                values_field = validated_data.pop(m2m_filed)
+                if values_field is None:
+                    values_field = []
+                getattr(instance, m2m_filed).set(values_field)
+
         for name, value in validated_data.items():
             setattr(instance, name, value)
-        
-        instance.responsibles.set(responsibles)
-        instance.tags.set(tags)
-        instance.subtasks.set(subtasks)
-        
+
         instance.save()
         return instance
 
