@@ -1,0 +1,24 @@
+.task-table-row {
+    display: flex;
+    align-items: center;
+
+    max-width: 100%;
+    width: fit-content;
+
+    user-select: none;
+}
+
+.task-table-row_header {
+    border-top: var(--table-border);
+}
+
+.task-table-row {
+    border-bottom: var(--table-border);
+}
+
+.task-table-row:not(.task-table-row_header):not(:has(.task-table-cell *:active)):active:hover {    
+    transition: outline 45ms ease;
+    outline: solid 3px rgb(0, 127, 211);
+    /* opacity: 0.65; */
+    z-index: 99;
+}

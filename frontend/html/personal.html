@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Персональные задачи</title>
+
+    <link rel="stylesheet" href="/frontend/html/content/main.css">
+
+    <link rel="stylesheet" href="/frontend/html/content/main-container/main-container.css">
+
+    <link rel="stylesheet" href="/frontend/html/content/action-menu/action-menu.css">
+    <link rel="stylesheet" href="/frontend/html/content/action-menu/__item/action-menu__item.css">
+
+    <link rel="stylesheet" href="/frontend/html/content/view-block/view-block.css">
+    <link rel="stylesheet" href="/frontend/html/content/view-block/__label/view-block__label.css">
+
+    <link rel="stylesheet" href="/frontend/html/content/task-wrapper/task-wrapper.css">
+    <link rel="stylesheet" href="/frontend/html/content/task-wrapper/task-table/task-table.css">
+    <link rel="stylesheet" href="/frontend/html/content/task-wrapper/task-table/task-table-row/task-table-row.css">
+    <link rel="stylesheet" href="/frontend/html/content/task-wrapper/task-table/task-table-row/task-table-cell/task-table-cell.css">
+    <link rel="stylesheet" href="/frontend/html/content/task-wrapper/task-table/task-table-row/task-table-cell/__label/task-table-cell__label.css">
+    <link rel="stylesheet" href="/frontend/html/content/task-wrapper/task-table/task-table-row/task-table-cell/__resize/task-table-cell__resize.css">
+    <link rel="stylesheet" href="/frontend/html/content/task-wrapper/task-table/task-table-row/task-table-cell/__img/task-table-cell__img.css">
+    <link rel="stylesheet" href="/frontend/html/content/task-wrapper/task-table/task-table-row/task-table-cell/__input/task-table-cell__input.css">
+
+    <link rel="stylesheet" href="/frontend/html/content/trait/trait.css">
+
+    <script src="/frontend/utils/code.jquery.com_jquery-3.7.1.min.js"></script>
+</head>
+<body>
+    <div class="main-container">
+        <div data-include="header"></div>
+
+        <div class="view-block">
+            <p class="view-block__label view-block__label_active">Табличный вид</p>
+            <p class="view-block__label">Блочный вид</p>
+        </div>
+
+        <div class="task-wrapper">
+            <!-- <table class="task-table">
+                <tr class="task-table-row task-table-row_header">
+                    <td class="task-table-cell task-table-cell_name" data-name="name">
+                        <div class="task-table-cell__resize"></div>
+                        <p class="task-table-cell__label">Название</p>
+                    </td>
+                    <td class="task-table-cell task-table-cell_status" data-name="status">
+                        <div class="task-table-cell__resize"></div>
+                        <p class="task-table-cell__label">Статус</p>
+                    </td>
+                    <td class="task-table-cell task-table-cell_tags" data-name="tags">
+                        <div class="task-table-cell__resize"></div>
+                        <p class="task-table-cell__label">Теги</p>
+                    </td>
+                    <td class="task-table-cell task-table-cell_deadline" data-name="deadline">
+                        <div class="task-table-cell__resize"></div>
+                        <p class="task-table-cell__label">Дедлайн</p>
+                    </td>
+                    <td class="task-table-cell task-table-cell_description" data-name="description">
+                        <div class="task-table-cell__resize"></div>
+                        <p class="task-table-cell__label">Описание</p>
+                    </td>
+                </tr>
+                
+                <tr class="task-table-row">
+                    <td class="task-table-cell">
+                        <p class="task-table-cell__label">Задача №1</p>
+                    </td>
+                    <td class="task-table-cell">
+                        <p class="task-table-cell__label">В процессе</p>
+                    </td>
+                    <td class="task-table-cell">
+                        <p class="task-table-cell__label">Легко</p>
+                    </td>
+                    <td class="task-table-cell">
+                        <p class="task-table-cell__label">15.05.2025</p>
+                    </td>
+                    <td class="task-table-cell">
+                        <p class="task-table-cell__label">Какая то хрень</p>
+                    </td>
+                </tr>
+                <tr class="task-table-row">
+                    <td class="task-table-cell">
+                        <div style="width: 25px;"></div>
+                        <p class="task-table-cell__label">Задача №1</p>
+                    </td>
+                    <td class="task-table-cell">
+                        <p class="task-table-cell__label">В процессе</p>
+                    </td>
+                    <td class="task-table-cell">
+                        <p class="task-table-cell__label">Легко</p>
+                    </td>
+                    <td class="task-table-cell">
+                        <p class="task-table-cell__label">15.05.2025</p>
+                    </td>
+                    <td class="task-table-cell">
+                        <p class="task-table-cell__label">Какая то хрень</p>
+                    </td>
+                </tr>
+            </table> -->
+        </div>
+
+        
+
+        <!-- <div class="action-menu">
+            <p class="action-menu__item">Профиль</p>
+            <p class="action-menu__item">Настройки</p>
+            <p class="action-menu__item">Какой то длинный параметр</p>
+            <p class="action-menu__item">Выход</p>
+        </div> -->
+    </div>
+
+    <script type="module" src="/frontend/dist/scripts/init.js"></script>
+    <!-- <script type="module" src="/frontend/dist/scripts/personal/visual.js"></script> -->
+    <script type="module" src="/frontend/dist/scripts/personal/init.js"></script>
+</body>
+</html>

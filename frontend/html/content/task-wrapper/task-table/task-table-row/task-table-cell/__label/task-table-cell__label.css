@@ -1,0 +1,29 @@
+.task-table-cell__label {
+    
+
+    color: black;
+    font-size: 1.1rem;
+    white-space: nowrap;
+    overflow: hidden;
+}
+
+.task-table-row_header .task-table-cell__label {
+    font-weight: 600;
+    font-size: 1.25rem;
+}
+
+.task-table-cell_name:has(.task-table-cell__input) .task-table-cell__label {
+    display: none;
+}
+
+.task-table-row:not(.task-table-row_header) .task-table-cell_name .task-table-cell__label {
+    flex: 1 0 auto;
+    /* height: 90%; */
+    /* padding-bottom: 2px; */
+}
+
+
+.task-table-row:not(.task-table-row_header) .task-table-cell_name .task-table-cell__label:hover {
+    /* border-bottom: var(--table-border);
+    background-clip: content-box; */
+}

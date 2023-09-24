@@ -1,0 +1,12 @@
+.trait {
+    font-size: 0.95rem;
+    font-weight: 500;
+    background-color: var(--trait-bg-color);
+    color: color-mix(in srgb, var(--trait-bg-color) 50%, black 100%);
+    border-radius: 100dvw;
+
+    height: fit-content;
+    padding: 2px 16px;
+    text-align: center;
+    white-space: nowrap;
+}

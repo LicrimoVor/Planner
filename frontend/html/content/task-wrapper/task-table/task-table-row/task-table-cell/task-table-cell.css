@@ -1,0 +1,89 @@
+.task-table-cell {
+    display: flex;
+    align-items: center;
+
+    padding: 8px 10px;
+
+    align-self: stretch;
+
+    min-width: 175px;
+}
+
+.task-table-cell:not(:last-child) {
+    border-right: var(--table-border);
+}
+
+
+
+.task-table-row:not(.task-table-row_header) .task-table-cell {
+    cursor: pointer;
+}
+
+/* Header */
+
+.task-table-row_header .task-table-cell {
+    justify-content: center;
+
+    user-select: none;
+}
+
+/* References */
+
+.task-table-cell_name {
+    width: var(--table-cell-name);
+}
+.task-table-row:not(.task-table-row_header) .task-table-cell_name {
+    overflow: hidden;
+    /* padding: 0; */
+}
+.task-table-row:not(.task-table-row_header) .task-table-cell_name * {
+    margin-right: 10px;
+}
+.task-table-row:not(.task-table-row_header) .task-table-cell_name .task-table-cell__label {
+    /* margin-right: 30px; */
+}
+
+.task-table-cell_status {
+    width: var(--table-cell-status);
+    justify-content: center;
+}
+
+.task-table-cell_tags { 
+    width: var(--table-cell-tags);
+}
+.task-table-row:not(.task-table-row_header) .task-table-cell_tags {
+    flex-wrap: wrap;
+    max-height: 70px;
+    overflow: auto;
+    gap: 6px;
+    padding: 0 10px;
+    border-top: solid 8px transparent;
+    border-bottom: solid 8px transparent;
+}
+.task-table-row:not(.task-table-row_header) .task-table-cell_tags::-webkit-scrollbar {
+    /* display: none; */
+    /* background-color: blue; */
+    width: 12px;
+}
+.task-table-row:not(.task-table-row_header) .task-table-cell_tags::-webkit-scrollbar-thumb {
+    background-color: rgb(184, 184, 184);
+    border-radius: 100dvw;
+    background-clip: content-box;
+    border: 4px solid transparent;
+}
+.task-table-row:not(.task-table-row_header) .task-table-cell_tags * {
+    margin-right: 8px;
+    /* margin-bottom: 6px; */
+}   
+
+.task-table-cell_deadline {
+    width: var(--table-cell-deadline);
+    justify-content: center;
+}
+.task-table-row:not(.task-table-row_header) .task-table-cell_deadline *:not(:last-child) {
+    margin-right: 10px;
+}
+
+.task-table-cell_description {
+    width: var(--table-cell-description);
+}

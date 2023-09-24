@@ -77,6 +77,9 @@ class SubPersonalTasksM2M(models.Model):
         on_delete=models.CASCADE
     )
 
+    class Meta:
+        unique_together = ["subtask", "task"]
+
 
 class TagPersonalTaskModel(models.Model):
     """Модель связи тегов и задач."""
@@ -93,6 +96,9 @@ class TagPersonalTaskModel(models.Model):
         on_delete=models.CASCADE,
         related_name='task_pers',
     )
+
+    class Meta:
+        unique_together = ["task", "tag"]
 
     def __str__(self) -> str:
         return f'{self.task} {self.tag}'
@@ -159,6 +165,9 @@ class TagSpaceTaskModel(models.Model):
         on_delete=models.CASCADE,
         related_name='task_space+',
     )
+
+    class Meta:
+        unique_together = ["task", "tag"]
 
     def __str__(self) -> str:
         return f'{self.task} {self.tag}'
