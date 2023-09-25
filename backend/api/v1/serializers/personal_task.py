@@ -59,7 +59,7 @@ class PersonalTaskSerializer(serializers.ModelSerializer):
     def create(self, validated_data):
         author = self.context["request"].user
         tags = validated_data.pop("tags") if validated_data.get("tags") is not None else []
-        subtasks = validated_data.pop("subtasks") if validated_data.get("tags") is not None else []
+        subtasks = validated_data.pop("subtasks") if validated_data.get("subtasks") is not None else []
         model = PersonalTaskModel.objects.create(author=author, **validated_data)
         model.tags.set(tags)
         model.subtasks.set(subtasks)
