@@ -1,10 +1,8 @@
 from rest_framework.viewsets import GenericViewSet
 from rest_framework import mixins
 
-class NotListSet(mixins.RetrieveModelMixin,
+class GetPostSet(mixins.ListModelMixin,
                  mixins.CreateModelMixin,
-                 mixins.UpdateModelMixin,
-                 mixins.DestroyModelMixin,
                  GenericViewSet):
-    """Viewset без обработки get-list запросов (без id)"""
+    """Viewset, обрабатывающий post и get-list запросы"""
     pass

@@ -11,7 +11,7 @@ from ..filters import (TagTaskFilter, StatusTaskFilter,
                        ActualTaskFilter, MainPersonalTaskFilter,)
 from ..serializers.personal_task import PersonalTaskSerializer
 from core.collections import Queue
-
+from ..viewsets import GetPostSet
 
 class PersonalTaskSet(ModelViewSet):
     """ViewSet персональных задач."""
@@ -34,39 +34,43 @@ class PersonalTaskSet(ModelViewSet):
         return queryset
 
 
-class PersonalSubTaskView(APIView, LimitOffsetPagination):
+class PersonalSubTaskSet(GetPostSet):
     """View персональных подзадач."""
+    queryset = PersonalTaskModel.objects.all()
+    serializer_class = PersonalTaskSerializer
     permission_classes = [IsAuthenticated&AuthorPermission]
+    filter_backends = (filters.SearchFilter,
+                       filters.OrderingFilter,
+                       TagTaskFilter,
+                       StatusTaskFilter,
+                       ActualTaskFilter,
+                       MainPersonalTaskFilter)
+    search_fields = ("name", )
+    ordering_fields = ("deadline",)
 
-    def get_queryset(self, task_id):
+    def get_queryset(self):
+        task_id = self.kwargs["task_id"]
         queryset_id = PersonalTaskModel.objects.filter(id=task_id).values_list("main_task_pers__subtask", flat=True)
         queryset = PersonalTaskModel.objects.filter(id__in=queryset_id).order_by("-id")
         return queryset
 
-    def get(self, request, *args, **kwargs):
-        task_id = kwargs.get("task_id")
-        queryset = self.get_queryset(task_id)
-        result = self.paginate_queryset(queryset, request, view=self)
-        serializer = PersonalTaskSerializer(
-            result,
-            context={"request": request},
-            many=True
-        )
-        return self.get_paginated_response(serializer.data)
-
-    def post(self, request, *args, **kwargs):
-        task_id = kwargs.get("task_id")
-        serializer = PersonalTaskSerializer(
-            data=request.data, context={"request": request, "task_id":task_id},
-        )
+    def create(self, request, *args, **kwargs):
+        serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
-        serializer.save()
+        self.perform_create(serializer)
+        headers = self.get_success_headers(serializer.data)
+        task_id = self.kwargs["task_id"]
         task = PersonalTaskModel.objects.get(id=task_id)
         SubPersonalTasksM2M.objects.create(task=task, subtask=serializer.instance)
-        return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(serializer.data, status=status.HTTP_201_CREATED, headers=headers)
+
+    def get_serializer_context(self):
+        data = super().get_serializer_context()
+        data["task_id"] = self.kwargs["task_id"]
+        return data
 
 
-class PersonalTaskTreeView(APIView, LimitOffsetPagination):
+class PersonalTaskTreeView(APIView):
     """View дерева персональной задачи."""
     permission_classes = [IsAuthenticated&AuthorPermission]
 

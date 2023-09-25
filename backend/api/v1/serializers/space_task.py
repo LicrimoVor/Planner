@@ -1,7 +1,6 @@
 from rest_framework import serializers
 from rest_framework import exceptions
 from django.contrib.auth import get_user_model
-from django.shortcuts import get_object_or_404
 
 from task.models import SpaceTaskModel
 from .user import UserSerializer
@@ -12,28 +11,14 @@ from .space import SpaceNotPermSerializer
 User = get_user_model()
 
 
-class SubRespSerializer(serializers.ModelSerializer):
-    """Сериализатор подзадач пространств."""
-    author = UserSerializer(read_only=True)
-    responsibles = UserSerializer(many=True)
-    tags = TagSerializer(many=True, required=False)
-    status = StatusSerializer()
-
-    class Meta:
-        model = SpaceTaskModel
-        fields = ("id", "name", "description",
-                  "author", "status", "deadline",
-                  "tags", "responsibles")
-
-    def to_internal_value(self, id):
-        return get_object_or_404(SpaceTaskModel, id=id)
-
-
 class SpaceTaskSerializer(serializers.ModelSerializer):
     """Сериализатор задач пространств."""
     author = UserSerializer(read_only=True)
     responsibles = UserSerializer(many=True, required=False)
-    subtasks = SubRespSerializer(many=True, required=False,)
+    subtasks = serializers.PrimaryKeyRelatedField(
+        queryset = SpaceTaskModel.objects.all(),
+        many=True, required=False,
+    )
     tags = TagSerializer(many=True, required=False)
     status = StatusSerializer(required=False)
     deadline = serializers.DateTimeField(required=False,)

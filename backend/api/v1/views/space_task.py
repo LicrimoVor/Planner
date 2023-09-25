@@ -14,7 +14,7 @@ from ..filters import (TagTaskFilter, StatusTaskFilter,
                        ActualTaskFilter, MainSpaceTaskFilter,
                        ResponsibleTaskFilter, SpaceTaskFilter)
 from ..serializers.space_task import SpaceTaskSerializer, HistorySerializer
-
+from ..viewsets import GetPostSet
 
 class SpaceTaskSet(ModelViewSet):
     """ViewSet задач пространств."""
@@ -50,11 +50,12 @@ class SpaceTaskSet(ModelViewSet):
         return super().initial(request, *args, **kwargs)
 
 
-class SpaceSubTaskView(APIView, LimitOffsetPagination):
+class SpaceSubTaskSet(GetPostSet):
     """ViewSet подзадач пространств."""
     permission_classes = [IsAuthenticated&SpaceStaffPermission]
 
-    def get_queryset(self, task_id):
+    def get_queryset(self,):
+        task_id = self.kwargs["task_id"]
         queryset_id = SpaceTaskModel.objects.filter(id=task_id).values_list("main_task_space__subtask", flat=True)
         queryset = SpaceTaskModel.objects.filter(id__in=queryset_id).order_by("-id")
         return queryset
@@ -67,28 +68,15 @@ class SpaceSubTaskView(APIView, LimitOffsetPagination):
             'view': self
         }
 
-    def get(self, request, *args, **kwargs):
-        task_id = kwargs.get("task_id")
-        queryset = self.get_queryset(task_id)
-        result = self.paginate_queryset(queryset, request, view=self)
-        serializer = SpaceTaskSerializer(
-            result,
-            context=self.get_serializer_context(),
-            many=True
-        )
-        return self.get_paginated_response(serializer.data)
-
     def post(self, request, *args, **kwargs):
-        task_id = kwargs.get("task_id")
-        serializer = SpaceTaskSerializer(
-            data=request.data,
-            context=self.get_serializer_context(),
-        )
+        serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
-        serializer.save()
+        self.perform_create(serializer)
+        headers = self.get_success_headers(serializer.data)
+        task_id = self.kwargs["task_id"]
         task = SpaceTaskModel.objects.get(id=task_id)
         SubSpaceTasksM2M.objects.create(task=task, subtask=serializer.instance)
-        return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(serializer.data, status=status.HTTP_201_CREATED, headers=headers)
 
     def initial(self, request, *args, **kwargs):
         space_id = self.kwargs.get("space_id")
