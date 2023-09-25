@@ -13,8 +13,8 @@ class StatusSerializer(serializers.ModelSerializer):
         read_only_fields = ("id", )
 
     def to_internal_value(self, data):
+        print(data)
         if isinstance(data, int):
-            return get_object_or_404(StatusModel, id=data)
+            return get_object_or_404(StatusModel, id=int(data))
         else:
             return super().to_internal_value(data)
-        
