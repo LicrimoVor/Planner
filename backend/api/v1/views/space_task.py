@@ -52,7 +52,17 @@ class SpaceTaskSet(ModelViewSet):
 
 class SpaceSubTaskSet(GetPostSet):
     """ViewSet подзадач пространств."""
+    queryset = SpaceTaskModel.objects.all()
+    serializer_class = SpaceTaskSerializer
     permission_classes = [IsAuthenticated&SpaceStaffPermission]
+    filter_backends = (filters.SearchFilter,
+                       filters.OrderingFilter,
+                       TagTaskFilter,
+                       StatusTaskFilter,
+                       ActualTaskFilter,
+                       ResponsibleTaskFilter,)
+    search_fields = ("name", )
+    ordering_fields = ("deadline",)
 
     def get_queryset(self,):
         task_id = self.kwargs["task_id"]
