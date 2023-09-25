@@ -40,7 +40,7 @@ class PersonalTaskSet(ModelViewSet):
         return queryset
 
     def update(self, request, *args, **kwargs):
-        logging.info(args, kwargs)
+        logging.info(request.data)
         return super().update(request, *args, **kwargs)
 
 
