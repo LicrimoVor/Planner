@@ -1,3 +1,5 @@
+import logging
+
 from rest_framework import filters, status
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.viewsets import ModelViewSet
@@ -12,6 +14,10 @@ from ..filters import (TagTaskFilter, StatusTaskFilter,
 from ..serializers.personal_task import PersonalTaskSerializer
 from core.collections import Queue
 from ..viewsets import GetPostSet
+
+
+logger = logging.getLogger(__name__)
+
 
 class PersonalTaskSet(ModelViewSet):
     """ViewSet персональных задач."""
@@ -32,6 +38,10 @@ class PersonalTaskSet(ModelViewSet):
         author = self.request.user
         queryset = PersonalTaskModel.objects.filter(author=author).order_by("-id")
         return queryset
+
+    def update(self, request, *args, **kwargs):
+        logging.info(args, kwargs)
+        return super().update(request, *args, **kwargs)
 
 
 class PersonalSubTaskSet(GetPostSet):

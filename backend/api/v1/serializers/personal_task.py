@@ -1,4 +1,5 @@
 from core.collections import Queue
+import logging
 
 from rest_framework import serializers
 from rest_framework import exceptions
@@ -10,6 +11,9 @@ from .tag import TagSerializer
 from .status import StatusSerializer
 
 User = get_user_model()
+
+
+logger = logging.getLogger(__name__)
 
 
 class PersonalTaskSerializer(serializers.ModelSerializer):
@@ -78,7 +82,7 @@ class PersonalTaskSerializer(serializers.ModelSerializer):
                     values_field = []
                 getattr(instance, m2m_filed).set(values_field)
 
-        print(validated_data)
+        logger.info(validated_data)
         for name, value in validated_data.items():
             setattr(instance, name, value)
 

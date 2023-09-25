@@ -10,3 +10,4 @@ elif work_mode == "dev":
     from .dev import *
 
 # from .social import *
+from .logger import *
