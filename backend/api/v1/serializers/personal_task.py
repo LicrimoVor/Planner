@@ -78,6 +78,7 @@ class PersonalTaskSerializer(serializers.ModelSerializer):
                     values_field = []
                 getattr(instance, m2m_filed).set(values_field)
 
+        print(validated_data)
         for name, value in validated_data.items():
             setattr(instance, name, value)
 
