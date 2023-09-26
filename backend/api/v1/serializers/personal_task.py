@@ -21,7 +21,7 @@ class PersonalTaskSerializer(serializers.ModelSerializer):
     author = UserSerializer(User.objects.all(), read_only=True)
     subtasks = serializers.PrimaryKeyRelatedField(
         queryset = PersonalTaskModel.objects.all(),
-        many=True, required=False,
+        many=True, required=False, write_only=True,
     )
     tags = TagSerializer(many=True, required=False)
     status = StatusSerializer(required=False)
@@ -55,9 +55,9 @@ class PersonalTaskSerializer(serializers.ModelSerializer):
                     raise exceptions.ValidationError(f"Не возможно задачу {subtask.id} "
                                                       + f"сделать подзадачей {self.instance.id}!")
         
-            if SubPersonalTasksM2M.objects.get(subtask__id=subtask.id):
+            if SubPersonalTasksM2M.objects.filter(subtask__id=subtask.id):
                 raise exceptions.ValidationError(f"У задачи {subtask.id} уже есть родитель!")
-            
+
         return super().validate(attrs)
 
     def create(self, validated_data):
