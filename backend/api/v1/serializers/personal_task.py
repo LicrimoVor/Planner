@@ -50,13 +50,13 @@ class PersonalTaskSerializer(serializers.ModelSerializer):
             if author != author_task:
                 raise exceptions.ValidationError(f"Данная задача - {subtask.id}, " 
                                                  + "не принадлежит вам!")
-            if self.instance is not None:
-                if subtask.id in tasks_id:
-                    raise exceptions.ValidationError(f"Не возможно задачу {subtask.id} "
-                                                      + f"сделать подзадачей {self.instance.id}!")
+            # if self.instance is not None:
+            #     if subtask.id in tasks_id:
+            #         raise exceptions.ValidationError(f"Не возможно задачу {subtask.id} "
+            #                                           + f"сделать подзадачей {self.instance.id}!")
         
-            if SubPersonalTasksM2M.objects.filter(subtask__id=subtask.id):
-                raise exceptions.ValidationError(f"У задачи {subtask.id} уже есть родитель!")
+            # if SubPersonalTasksM2M.objects.filter(subtask__id=subtask.id):
+            #     raise exceptions.ValidationError(f"У задачи {subtask.id} уже есть родитель!")
 
         return super().validate(attrs)
 
