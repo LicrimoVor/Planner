@@ -10,8 +10,11 @@ class UserSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = User
-        fields = ['id', 'email', 'username', 'last_name', 'first_name']
-        read_only_fields = ['email', 'username', 'last_name', 'first_name']
+        fields = ['id', 'email', 'username', 'last_name', 'first_name', "telegram_id"]
+        # read_only_fields = ['email', 'username', 'last_name', 'first_name']
 
-    def to_internal_value(self, id):
-        return get_object_or_404(User, id=id)
+    def to_internal_value(self, data):
+        if isinstance(data, int):
+            return get_object_or_404(User, id=data)
+        else:
+            return super().to_internal_value(data)
