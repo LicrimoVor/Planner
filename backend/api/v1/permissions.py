@@ -79,7 +79,8 @@ class AuthorPermission(BasePermission):
     def has_permission(self, request, view):
         user = request.user
         for id_task in view.kwargs.values():
-            author = get_object_or_404(PersonalTaskModel, id=id_task).author
-            if user!= author:
-                return False
+            if id_task != 0:
+                author = get_object_or_404(PersonalTaskModel, id=id_task).author
+                if user!= author:
+                    return False
         return True
