@@ -116,7 +116,7 @@ class PersonalSubTaskChangeView(APIView):
         while not queue.empty():
             sub_task_id = queue.get()
             tasks_id.append(sub_task_id)
-            m_tasks_id = list(SubPersonalTasksM2M.objects.filter(subtask__id=sub_task_id).values_list("task", flat=True))
+            m_tasks_id = list(SubPersonalTasksM2M.objects.filter(task__id=sub_task_id).values_list("task", flat=True))
             queue.put_list(m_tasks_id)
 
         if kwargs["task_to"] in tasks_id:
