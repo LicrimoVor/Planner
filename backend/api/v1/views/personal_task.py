@@ -6,6 +6,8 @@ from rest_framework.viewsets import ModelViewSet
 from rest_framework.views import APIView
 from rest_framework.pagination import LimitOffsetPagination
 from rest_framework.response import Response
+from rest_framework import exceptions
+from django.shortcuts import get_object_or_404
 
 from task.models import PersonalTaskModel, SubPersonalTasksM2M
 from ..permissions import AuthorPermission
@@ -95,3 +97,37 @@ class PersonalTaskTreeView(APIView):
             queue.put_list(subtasks_id)
         PersonalTaskModel.objects.filter(id__in=tasks_id).delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
+
+
+class PersonalSubTaskChangeView(APIView):
+    permission_classes = [IsAuthenticated&AuthorPermission]
+      
+    def get(self, request, *args, **kwargs):
+        if kwargs.get("task_to", 0) == 0:
+            SubPersonalTasksM2M.objects.get(subtask__id=kwargs["task_from"]).delete()
+            return Response(status=status.HTTP_200_OK)
+
+        subtask = get_object_or_404(PersonalTaskModel, id=kwargs["task_from"])
+        main_task = get_object_or_404(PersonalTaskModel, id=kwargs["task_to"])
+
+        queue = Queue()
+        queue.put(kwargs["task_from"])
+        tasks_id = []
+        while not queue.empty():
+            sub_task_id = queue.get()
+            tasks_id.append(sub_task_id)
+            m_tasks_id = list(SubPersonalTasksM2M.objects.filter(subtask__id=sub_task_id).values_list("task", flat=True))
+            queue.put_list(m_tasks_id)
+
+        if kwargs["task_to"] in tasks_id:
+            raise exceptions.ValidationError(f"Не возможно задачу {subtask.id} "
+                                             + f"сделать подзадачей {main_task.id}!")
+
+        try:
+            SubPersonalTasksM2M.objects.get(subtask=kwargs["task_from"]).delete()
+        except SubPersonalTasksM2M.DoesNotExist:
+            pass
+
+        SubPersonalTasksM2M.objects.create(subtask=subtask, task=main_task)
+
+        return Response(status=status.HTTP_200_OK)

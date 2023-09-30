@@ -3,7 +3,9 @@ from rest_framework.permissions import (
     BasePermission,
 )
 from django.contrib.auth import get_user_model
-from task.models import SpaceTaskModel
+from django.shortcuts import get_object_or_404
+
+from task.models import SpaceTaskModel, PersonalTaskModel
 
 User = get_user_model()
 
@@ -73,3 +75,11 @@ class AuthorPermission(BasePermission):
         user = request.user
         author = obj.author
         return user==author
+
+    def has_permission(self, request, view):
+        user = request.user
+        for id_task in view.kwargs.values():
+            author = get_object_or_404(PersonalTaskModel, id=id_task).author
+            if user!= author:
+                return False
+        return True

@@ -46,6 +46,7 @@ MIDDLEWARE = [
 ]
 
 CORS_ALLOW_ALL_ORIGINS = True
+DJANGO_ALLOW_ASYNC_UNSAFE = True
 
 ROOT_URLCONF = 'backend.urls'
 
@@ -134,8 +135,4 @@ DJOSER = {
         'current_user': 'api.v1.serializers.user.UserSerializer',
     },
     'HIDE_USERS': False,
-    # 'SEND_ACTIVATION_EMAIL': True,
-    # 'ACTIVATION_URL': 'api/activate/{uid}/{token}',
-    # 'PASSWORD_RESET_CONFIRM_URL': 'api/password/reset/confirm/{uid}/{token}',
-    # 'USERNAME_RESET_CONFIRM_URL': 'username/reset/confirm/{uid}/{token}',
 }
