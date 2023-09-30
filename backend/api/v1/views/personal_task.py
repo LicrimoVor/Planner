@@ -104,7 +104,7 @@ class PersonalSubTaskChangeView(APIView):
       
     def get(self, request, *args, **kwargs):
         if kwargs.get("task_to", 0) == 0:
-            SubPersonalTasksM2M.objects.get(subtask__id=kwargs["task_from"]).delete()
+            SubPersonalTasksM2M.objects.get(subtask=kwargs["task_from"]).delete()
             return Response(status=status.HTTP_200_OK)
 
         subtask = get_object_or_404(PersonalTaskModel, id=kwargs["task_from"])
