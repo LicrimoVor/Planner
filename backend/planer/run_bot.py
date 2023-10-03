@@ -6,7 +6,7 @@ import django
 from telegram_django_bot.tg_dj_bot import TG_DJ_Bot
 from telegram_django_bot.routing import RouterCallbackMessageCommandHandler
 
-from backend.settings import TELEGRAM_TOKEN, TELEGRAM_LOG, DEBUG
+from planer.settings import TELEGRAM_TOKEN, TELEGRAM_LOG, DEBUG
 
 os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'bot_conf.settings')
 django.setup()

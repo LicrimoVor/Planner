@@ -4,7 +4,7 @@ import os
 from django.core.management.base import BaseCommand
 
 from task.models import StatusModel, TagModel
-from backend.settings import BASE_DIR
+from planer.settings import BASE_DIR
 
 
 PATH_DATA = BASE_DIR.parent.joinpath("data")

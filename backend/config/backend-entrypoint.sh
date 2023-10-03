@@ -11,9 +11,10 @@ do
     sleep 2
 done
 
-
-python manage.py collectstatic
+python manage.py makemigrations
 python manage.py migrate --noinput
+python manage.py collectstatic
+cp -r /app/backend/collected_static/. /backend_static/static/
 
 gunicorn backend.wsgi --bind 0.0.0.0:8000
 # gunicorn backend.wsgi --bind 0.0.0.0:8000 --workers 4 --threads 4

@@ -8,4 +8,4 @@ INSTALLED_APPS += [
 ]
 
 TELEGRAM_TOKEN = os.getenv("TELEGRAM_TOKEN")
-TELEGRAM_ROOT_UTRLCONF = 'backend.utrls'
+TELEGRAM_ROOT_UTRLCONF = 'planer.utrls'

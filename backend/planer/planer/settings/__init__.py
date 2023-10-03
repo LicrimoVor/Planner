@@ -13,10 +13,7 @@ elif work_mode == "dev":
 
 # from .social import *
 # from .email import *
-from .celery import app as celery_app
 from .tg_bot import *
 from .logger import *
 from .redis import *
-
-
-__all__ = ("celery_app",)
+from .celery import *

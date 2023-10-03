@@ -5,7 +5,7 @@ WORKDIR /app
 # RUN pip install --upgrade pip
 RUN pip install gunicorn==20.1.0 
 
-COPY ./backend/requirements.txt .
+COPY ./requirements.txt .
 
 RUN pip install -r requirements.txt --no-cache-dir
 RUN pip install psycopg2-binary

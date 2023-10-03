@@ -48,7 +48,7 @@ MIDDLEWARE = [
 CORS_ALLOW_ALL_ORIGINS = True
 DJANGO_ALLOW_ASYNC_UNSAFE = True
 
-ROOT_URLCONF = 'backend.urls'
+ROOT_URLCONF = 'planer.urls'
 AUTH_USER_MODEL = 'users.UserModel'
 TEMPLATES_DIR = BASE_DIR / 'templates'
 TEMPLATES = [
@@ -67,7 +67,7 @@ TEMPLATES = [
     },
 ]
 
-WSGI_APPLICATION = 'backend.wsgi.application'
+WSGI_APPLICATION = 'planer.wsgi.application'
 
 AUTH_PASSWORD_VALIDATORS = [
     {
