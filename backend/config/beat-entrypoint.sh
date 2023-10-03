@@ -7,4 +7,4 @@ done
 
 sleep 7
 
-celery -A planer_worker beat -l INFO
+celery -A planer beat -l INFO

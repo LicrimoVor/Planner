@@ -7,4 +7,4 @@ done
 
 sleep 7
 
-celery -A planer_worker worker -l INFO
+celery -A planer worker -l INFO

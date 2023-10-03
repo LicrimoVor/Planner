@@ -3,6 +3,7 @@ from django.contrib.auth import get_user_model
 from django.contrib.auth.models import Group
 from space.models import UserSpaceModel
 
+
 User = get_user_model()
 
 
@@ -21,3 +22,6 @@ class UserAdmin(admin.ModelAdmin):
 
 admin.site.unregister(Group)
 admin.site.register(User, UserAdmin)
+
+admin.site.site_title = "Lol"
+admin.site.index_title = "Типо админ-панелька"

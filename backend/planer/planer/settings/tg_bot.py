@@ -1,6 +1,13 @@
 import os
 
+from telegram_django_bot.apps import TelegramDjangoBotConfig
+
+
 from .base import INSTALLED_APPS
+
+
+TelegramDjangoBotConfig.verbose_name = "Телеграм-бот (опять не для Алеши)"
+
 
 INSTALLED_APPS += [
     'telegram_django_bot',
