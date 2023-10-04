@@ -10,6 +10,11 @@ telegram_id_max = 9*int("1"*discharge)
 class UserModel(AbstractUser):
     """Модель пользователя."""
 
+    it_user = models.BooleanField("Пользователь сайта", default=False)
+    is_staff = models.BooleanField(
+        "Администратор",
+        default=False,
+    )
     telegram_id = models.PositiveIntegerField(
         _('telegram_id'),
         validators=[MaxValueValidator(telegram_id_max)],
@@ -20,9 +25,16 @@ class UserModel(AbstractUser):
     email = models.EmailField(_('email address'), unique=True)
     REQUIRED_FIELDS = ['email', 'last_name', 'first_name', "password"]
     groups = None
+    id = None
 
     def __str__(self):
-        return self.username
+        if not isinstance(self.username, str):
+            print(123)
+        return str(self.username)
+
+    # @property
+    # def telegram_username(self):
+    #     return self.objects.prefetch_related()
 
     class Meta:
         ordering = ("id",)

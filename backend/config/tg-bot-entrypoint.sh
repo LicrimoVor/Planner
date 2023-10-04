@@ -1,10 +1,6 @@
 #!/bin/sh
+until cd /app/backend
 
-set -e
-
-sleep 7
-
-
-python manage.py migrate --noinput
+# sleep 2
 
 python ./run_bot.py

@@ -4,4 +4,4 @@ from django.apps import AppConfig
 class TaskConfig(AppConfig):
     default_auto_field = 'django.db.models.BigAutoField'
     name = 'task'
-    verbose_name = "Задачи (персональные и пространства)"
+    verbose_name = "Персональные задачи и весь хлам"

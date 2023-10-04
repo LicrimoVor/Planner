@@ -19,7 +19,6 @@ from .celery import *
 
 
 INSTALLED_APPS += [
-    'users.apps.UsersConfig',
     'core.apps.CoreConfig',
     'task.apps.TaskConfig',
     'space.apps.SpaceConfig',

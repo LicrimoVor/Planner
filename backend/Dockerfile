@@ -10,8 +10,10 @@ COPY ./requirements.txt .
 RUN pip install -r requirements.txt --no-cache-dir
 RUN pip install psycopg2-binary
 
-COPY ./backend/ /app/backend
+COPY ./planer/ /app/backend
 COPY ./config/ /app/docker
+
+RUN python hard_crutch.py
 
 RUN chmod +x /app/docker/backend-entrypoint.sh
 RUN chmod +x /app/docker/beat-entrypoint.sh

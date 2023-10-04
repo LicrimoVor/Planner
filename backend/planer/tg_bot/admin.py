@@ -2,8 +2,10 @@ from django.contrib import admin
 from telegram_django_bot.models import (Trigger, UserTrigger, ActionLog,
                                         TeleDeepLink, BotMenuElem, BotMenuElemAttrText)
 from django_celery_beat.models import (IntervalSchedule, CrontabSchedule,
-                                       SolarSchedule, ClockedSchedule)
+                                       SolarSchedule, ClockedSchedule, PeriodicTask)
 from django_celery_results.models import GroupResult, TaskResult
+
+from .models import TelegramUser
 
 
 Trigger._meta.verbose_name = "Триггер"
@@ -18,13 +20,17 @@ UserTrigger._meta.verbose_name_plural = "Пользовательские три
 IntervalSchedule._meta.verbose_name = "Цикличность"
 IntervalSchedule._meta.verbose_name_plural = "Цикличности"
 
-# admin.site.unregister(UserTrigger)
+admin.site.unregister(UserTrigger)
 admin.site.unregister(TeleDeepLink)
 admin.site.unregister(BotMenuElemAttrText)
 admin.site.unregister(BotMenuElem)
+admin.site.unregister(Trigger)
 
 admin.site.unregister(GroupResult)
 admin.site.unregister(TaskResult)
 admin.site.unregister(ClockedSchedule)
 admin.site.unregister(CrontabSchedule)
 admin.site.unregister(SolarSchedule)
+admin.site.unregister(IntervalSchedule)
+admin.site.register(TelegramUser)
+# class TelegramUserAdmin(admin.AdminSite)

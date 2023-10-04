@@ -1,15 +1,18 @@
+# flake8: noqa
 import os
 import logging
 
 from telegram.ext import Updater
 import django
+
+os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'planer.settings')
+django.setup()
+
 from telegram_django_bot.tg_dj_bot import TG_DJ_Bot
 from telegram_django_bot.routing import RouterCallbackMessageCommandHandler
 
 from planer.settings import TELEGRAM_TOKEN, TELEGRAM_LOG, DEBUG
 
-os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'bot_conf.settings')
-django.setup()
 
 
 def add_handlers(updater):
@@ -27,7 +30,8 @@ def main():
             level=logging.INFO
         )
 
-    updater = Updater(bot=TG_DJ_Bot(TELEGRAM_TOKEN), workers=8)
+    # updater = Updater(bot=TG_DJ_Bot(TELEGRAM_TOKEN), workers=8)
+    updater = Updater(bot=TG_DJ_Bot(TELEGRAM_TOKEN))
     add_handlers(updater)
     updater.start_polling()
     updater.idle()
@@ -35,4 +39,3 @@ def main():
 
 if __name__ == '__main__':
     main()
-

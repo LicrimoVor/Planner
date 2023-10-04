@@ -5,11 +5,37 @@
   "version": "0.2.0",
   "configurations": [
     {
+      "name": "Tg-bot",
+      "type": "python",
+      "request": "launch",
+      "program": "${workspaceFolder}\\backend\\planer\\run_bot.py",
+      "console": "integratedTerminal",
+      "justMyCode": false
+    },
+    {
       "name": "Python: Django",
       "type": "python",
       "request": "launch",
       "program": "${workspaceFolder}\\backend\\planer\\manage.py",
       "args": ["runserver"],
+      "django": true,
+      "justMyCode": true
+    },
+    {
+      "name": "Python: Мейки",
+      "type": "python",
+      "request": "launch",
+      "program": "${workspaceFolder}\\backend\\planer\\manage.py",
+      "args": ["makemigrations"],
+      "django": true,
+      "justMyCode": true
+    },
+    {
+      "name": "Python: Мигрейти",
+      "type": "python",
+      "request": "launch",
+      "program": "${workspaceFolder}\\backend\\planer\\manage.py",
+      "args": ["migrate"],
       "django": true,
       "justMyCode": true
     }

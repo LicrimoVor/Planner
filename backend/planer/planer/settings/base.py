@@ -25,6 +25,7 @@ INSTALLED_APPS = [
     'djoser',
     'django_filters',
     "corsheaders",
+    'users.apps.UsersConfig',
 ]
 
 MIDDLEWARE = [

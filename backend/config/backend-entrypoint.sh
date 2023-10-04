@@ -4,7 +4,6 @@ do
     echo "Waiting for server volume..."
 done
 
-
 until python manage.py migrate
 do
     echo "Waiting for db to be ready..."
@@ -16,5 +15,5 @@ python manage.py migrate --noinput
 python manage.py collectstatic
 cp -r /app/backend/collected_static/. /backend_static/static/
 
-gunicorn backend.wsgi --bind 0.0.0.0:8000
+gunicorn planer.wsgi --bind 0.0.0.0:8000
 # gunicorn backend.wsgi --bind 0.0.0.0:8000 --workers 4 --threads 4
