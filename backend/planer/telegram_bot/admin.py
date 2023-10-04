@@ -1,7 +1,7 @@
 from django.contrib import admin
 
 from django_celery_beat.models import (IntervalSchedule, CrontabSchedule,
-                                       SolarSchedule, ClockedSchedule, PeriodicTask)
+                                       SolarSchedule, ClockedSchedule)
 from django_celery_results.models import GroupResult, TaskResult
 
 from .models import TelegramUser

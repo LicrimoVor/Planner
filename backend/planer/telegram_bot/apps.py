@@ -1,7 +1,7 @@
 from django.apps import AppConfig
 
 
-class TgBotConfig(AppConfig):
+class TelegramBotConfig(AppConfig):
     default_auto_field = 'django.db.models.BigAutoField'
-    name = 'tg_bot'
+    name = 'telegram_bot'
     verbose_name = "Телеграм-бот (опять не для Алеши)"

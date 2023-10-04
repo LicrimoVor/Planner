@@ -13,15 +13,15 @@ elif work_mode == "dev":
 
 # from .social import *
 # from .email import *
-from .tg_bot import *
 from .logger import *
 from .celery import *
 
 
 INSTALLED_APPS += [
+    'users.apps.UsersConfig',
     'core.apps.CoreConfig',
     'task.apps.TaskConfig',
     'space.apps.SpaceConfig',
     'api.apps.ApiConfig',
-    "tg_bot.apps.TgBotConfig",
+    'telegram_bot.apps.TelegramBotConfig',
 ]

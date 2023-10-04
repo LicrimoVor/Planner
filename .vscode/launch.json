@@ -5,12 +5,13 @@
   "version": "0.2.0",
   "configurations": [
     {
-      "name": "Tg-bot",
+      "name": "Python: Telegram",
       "type": "python",
       "request": "launch",
-      "program": "${workspaceFolder}\\backend\\planer\\run_bot.py",
-      "console": "integratedTerminal",
-      "justMyCode": false
+      "program": "${workspaceFolder}\\backend\\planer\\manage.py",
+      "args": ["runtelegram"],
+      "django": true,
+      "justMyCode": true
     },
     {
       "name": "Python: Django",

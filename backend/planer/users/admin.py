@@ -19,11 +19,6 @@ class UserAdmin(admin.ModelAdmin):
     list_filter = ('email', 'username')
     inlines = [UserSpaceInline,]
     verbose_name_plural = "Пользователи"
-    # list_display = (
-    #     "id", "username", "first_name",
-    #     "last_name", "email", "telegram_id",
-    #     "it_user", "is_staff", "is_active"
-    # )
 
 
 admin.site.unregister(Group)

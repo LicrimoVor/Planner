@@ -25,7 +25,6 @@ INSTALLED_APPS = [
     'djoser',
     'django_filters',
     "corsheaders",
-    'users.apps.UsersConfig',
 ]
 
 MIDDLEWARE = [
@@ -129,3 +128,6 @@ DJOSER = {
     },
     'HIDE_USERS': False,
 }
+
+
+TELEGRAM_TOKEN = os.getenv("TELEGRAM_TOKEN")
