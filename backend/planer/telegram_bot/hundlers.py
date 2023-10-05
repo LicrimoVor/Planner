@@ -106,10 +106,13 @@ async def task_list(callback: types.CallbackQuery,
         deadline = "Его нет)"
         if task.deadline is not None:
             deadline = task.deadline.strftime('%H:%M - %d.%m.%Y')
+        status = "Его нет)"
+        if task.status is not None:
+            status = task.status.name
         text = (
             f"Задача {numb_task+1}\n"
             +f"Название: {task.name}\n"
-            +f"Статус: {task.status.name}\n"
+            +f"Статус: {status}\n"
             +f"Дедлайн: {deadline}"
         )
         builder.button(
