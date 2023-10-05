@@ -10,7 +10,7 @@ from planer.settings import TELEGRAM_TOKEN, REDIS_HOST, REDIS_PORT
 
 
 bot = Bot(TELEGRAM_TOKEN)
-db_redis = redis.StrictRedis(port=REDIS_PORT, db=2, decode_responses=True)
+db_redis = redis.StrictRedis(REDIS_HOST, port=REDIS_PORT, db=2, decode_responses=True)
 dp = Dispatcher()
 os.environ["DJANGO_ALLOW_ASYNC_UNSAFE"] = "true"
 
