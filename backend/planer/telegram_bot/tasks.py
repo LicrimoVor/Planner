@@ -1,15 +1,15 @@
-import asyncio
 import datetime
+import requests
 
 from celery import shared_task
-from aiogram import Bot
 from django.db.models import Q
 
 from task.models import PersonalTaskModel
 from planer.settings import TELEGRAM_TOKEN
 
-bot = Bot(TELEGRAM_TOKEN)
-
+URL_TELEGRAM = "https://api.telegram.org/bot"
+METHOD_1 = "/sendMessage?chat_id="
+METHOD_2 = "&text="
 
 
 @shared_task
@@ -36,9 +36,7 @@ def check_notification():
 
     return "ПроверОчка выполнена"
 
-
-
 @shared_task
 def send_notification(chat_id, message):
-    asyncio.run(bot.send_message(chat_id, message))
-    return f"Мы ему написали {chat_id}"
+    response = requests.get(URL_TELEGRAM+TELEGRAM_TOKEN+METHOD_1+str(chat_id)+METHOD_2+message)
+    return f"Мы ему написали: {chat_id}. Status: {response.status_code}"
