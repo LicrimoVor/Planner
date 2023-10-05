@@ -103,11 +103,14 @@ async def task_list(callback: types.CallbackQuery,
 
     for numb_task, task in enumerate(qyeryset):
         builder = InlineKeyboardBuilder()
+        deadline = "Его нет)"
+        if task.deadline is not None:
+            deadline = task.deadline.strftime('%H:%M - %d.%m.%Y')
         text = (
             f"Задача {numb_task+1}\n"
             +f"Название: {task.name}\n"
             +f"Статус: {task.status.name}\n"
-            +f"Дедлайн: {task.deadline.strftime('%H:%M - %d.%m.%Y')}"
+            +f"Дедлайн: {deadline}"
         )
         builder.button(
             text="✔️ Выполнить",
