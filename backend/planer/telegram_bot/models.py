@@ -9,9 +9,9 @@ class TelegramUser(models.Model):
     """Пользователь телеграмма"""
 
     telegram_id = models.BigIntegerField(primary_key=True)
-    first_name = models.CharField(max_length=64)
-    last_name = models.CharField(max_length=64)
-    user = models.OneToOneField(
+    first_name = models.CharField(max_length=64, null=True, blank=True)
+    last_name = models.CharField(max_length=64, null=True, blank=True)
+    user = models.ForeignKey(
         User,
         on_delete=models.CASCADE,
         null=True,

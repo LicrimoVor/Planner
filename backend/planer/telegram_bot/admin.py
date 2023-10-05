@@ -15,4 +15,8 @@ admin.site.unregister(ClockedSchedule)
 admin.site.unregister(CrontabSchedule)
 admin.site.unregister(SolarSchedule)
 admin.site.unregister(IntervalSchedule)
-admin.site.register(TelegramUser)
+
+TelegramUser._meta.app_label = 'users'
+@admin.register(TelegramUser)
+class TelegramAdmin(admin.ModelAdmin):
+    list_display = ("telegram_id", "first_name", "last_name", "user")

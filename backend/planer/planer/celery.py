@@ -21,4 +21,8 @@ app.conf.beat_schedule = {
         'task': 'planer.celery.debug',
         'schedule': crontab(minute='*/1')
     },
+    'task_notification': {
+        'task': 'telegram_bot.tasks.check_notification',
+        'schedule': crontab(minute='*/1')
+    },
 }

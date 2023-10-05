@@ -29,17 +29,17 @@ services:
       - media:/app/media
       - ../data:/data
 
-  # nginx:
-  #   image: nginx:1.19.3
-  #   ports:
-  #     - "80:80"
-  #   depends_on:
-  #     - backend
-  #   # - frontend
-  #   volumes:
-  #     - ./nginx.conf:/etc/nginx/conf.d/default.conf
-  #     - static:/usr/share/nginx/html/
-  #     - media:/media
+  nginx:
+    image: nginx:1.19.3
+    ports:
+      - "80:80"
+    depends_on:
+      - backend
+    # - frontend
+    volumes:
+      - ./nginx.conf:/etc/nginx/conf.d/default.conf
+      - static:/usr/share/nginx/html/
+      - media:/media
 
   worker:
     container_name: planner_celery_worker
@@ -66,7 +66,8 @@ services:
   tg_bot:
     container_name: planner_tg_bot
     build: ../backend/
-    entrypoint: /app/docker/tg-bot-entrypoint.sh
+    command: python backend/manage.py runtelegram
     env_file: .env
     depends_on:
       - backend
+      - redis

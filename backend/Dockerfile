@@ -13,9 +13,6 @@ RUN pip install psycopg2-binary
 COPY ./planer/ /app/backend
 COPY ./config/ /app/docker
 
-RUN python hard_crutch.py
-
 RUN chmod +x /app/docker/backend-entrypoint.sh
 RUN chmod +x /app/docker/beat-entrypoint.sh
 RUN chmod +x /app/docker/worker-entrypoint.sh
-RUN chmod +x /app/docker/tg-bot-entrypoint.sh

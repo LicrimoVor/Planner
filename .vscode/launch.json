@@ -18,7 +18,7 @@
       "type": "python",
       "request": "launch",
       "program": "${workspaceFolder}\\backend\\planer\\manage.py",
-      "args": ["runserver"],
+      "args": ["shell"],
       "django": true,
       "justMyCode": true
     },

@@ -17,15 +17,14 @@ def get_or_create_tg_user(user):
             defaults={
                 "first_name": user.first_name,
                 "last_name": user.last_name,
-            }
-        )
+            })[0]
 
 
 class IsUserFilter(Filter):
     async def __call__(self, *args, **kwargs) -> Union[bool, User]:
         user = kwargs.get("event_from_user")
-        tg_model, _ = await get_or_create_tg_user(user)
+        tg_model = await get_or_create_tg_user(user)
         if tg_model.user:
-            return True, tg_model.user
+            return {"user_model":tg_model.user}
 
         return False

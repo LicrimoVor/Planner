@@ -14,11 +14,6 @@ class UserModel(AbstractUser):
         "Администратор",
         default=False,
     )
-    telegram_id = models.PositiveIntegerField(
-        _('telegram_id'),
-        validators=[MaxValueValidator(telegram_id_max)],
-        null=True,
-    )
     first_name = models.CharField(_('first name'), max_length=150,)
     last_name = models.CharField(_('last name'), max_length=150,)
     email = models.EmailField(_('email address'), unique=True)
@@ -30,5 +25,5 @@ class UserModel(AbstractUser):
 
     class Meta:
         ordering = ("id",)
-        verbose_name = "Пользователь"
-        verbose_name_plural = "Пользователи"
+        verbose_name = "Пользователь сайта"
+        verbose_name_plural = "Пользователи сайта"
