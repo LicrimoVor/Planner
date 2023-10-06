@@ -1,36 +1,28 @@
 from django.shortcuts import get_object_or_404
-from rest_framework import filters, status
+from rest_framework import filters
 from rest_framework.permissions import IsAuthenticated
-from rest_framework.viewsets import ModelViewSet
 from rest_framework.views import APIView
-from rest_framework.response import Response
 from rest_framework.pagination import LimitOffsetPagination
 from rest_framework.generics import ListAPIView
+from rest_framework import exceptions
 
-from task.models import SpaceTaskModel, SubSpaceTasksM2M
+from task.models import SpaceTaskModel
 from space.models import SpaceModel
 from ..permissions import SpaceStaffPermission
 from ..filters import (TagTaskFilter, StatusTaskFilter,
-                       ActualTaskFilter, MainSpaceTaskFilter,
+                       ActualTaskFilter, MainTaskFilter,
                        ResponsibleTaskFilter, SpaceTaskFilter)
 from ..serializers.space_task import SpaceTaskSerializer, HistorySerializer
-from ..viewsets import GetPostSet
+from .abstract import TaskSet, SubTaskSet, SubTaskChangeView, TaskTreeView
 
-class SpaceTaskSet(ModelViewSet):
+
+class SpaceTaskSet(TaskSet):
     """ViewSet задач пространств."""
-
+    model_task = SpaceTaskModel
     queryset = SpaceTaskModel.objects.all()
     serializer_class = SpaceTaskSerializer
     permission_classes = [IsAuthenticated&SpaceStaffPermission]
-    filter_backends = (filters.SearchFilter,
-                       filters.OrderingFilter,
-                       TagTaskFilter,
-                       StatusTaskFilter,
-                       ActualTaskFilter,
-                       MainSpaceTaskFilter,
-                       ResponsibleTaskFilter,)
-    search_fields = ("name", )
-    ordering_fields = ("deadline",)
+    filter_backends = TaskSet.filter_backends + [ResponsibleTaskFilter, ]
 
     def get_queryset(self):
         queryset = SpaceTaskModel.objects.filter(space=self.space).order_by("-id")
@@ -50,25 +42,13 @@ class SpaceTaskSet(ModelViewSet):
         return super().initial(request, *args, **kwargs)
 
 
-class SpaceSubTaskSet(GetPostSet):
+class SpaceSubTaskSet(SubTaskSet):
     """ViewSet подзадач пространств."""
+    model_task = SpaceTaskModel
     queryset = SpaceTaskModel.objects.all()
     serializer_class = SpaceTaskSerializer
     permission_classes = [IsAuthenticated&SpaceStaffPermission]
-    filter_backends = (filters.SearchFilter,
-                       filters.OrderingFilter,
-                       TagTaskFilter,
-                       StatusTaskFilter,
-                       ActualTaskFilter,
-                       ResponsibleTaskFilter,)
-    search_fields = ("name", )
-    ordering_fields = ("deadline",)
-
-    def get_queryset(self,):
-        task_id = self.kwargs["task_id"]
-        queryset_id = SpaceTaskModel.objects.filter(id=task_id).values_list("main_task_space__subtask", flat=True)
-        queryset = SpaceTaskModel.objects.filter(id__in=queryset_id).order_by("-id")
-        return queryset
+    filter_backends = TaskSet.filter_backends + [ResponsibleTaskFilter, ]
 
     def get_serializer_context(self):
         return {
@@ -78,20 +58,32 @@ class SpaceSubTaskSet(GetPostSet):
             'view': self
         }
 
-    def post(self, request, *args, **kwargs):
-        serializer = self.get_serializer(data=request.data)
-        serializer.is_valid(raise_exception=True)
-        self.perform_create(serializer)
-        headers = self.get_success_headers(serializer.data)
-        task_id = self.kwargs["task_id"]
-        task = SpaceTaskModel.objects.get(id=task_id)
-        SubSpaceTasksM2M.objects.create(task=task, subtask=serializer.instance)
-        return Response(serializer.data, status=status.HTTP_201_CREATED, headers=headers)
-
     def initial(self, request, *args, **kwargs):
         space_id = self.kwargs.get("space_id")
         self.space = get_object_or_404(SpaceModel, id=space_id)
         return super().initial(request, *args, **kwargs)
+
+
+class SpaceTaskTreeView(TaskTreeView):
+    """View дерева персональной задачи."""
+    model_task = SpaceTaskModel
+    permission_classes = [IsAuthenticated&SpaceStaffPermission]
+
+
+class SpaceSubTaskChangeView(SubTaskChangeView):
+    model_task = SpaceTaskModel
+    permission_classes = [IsAuthenticated&SpaceStaffPermission]
+      
+    def get(self, request, *args, **kwargs):
+        space_id = self.kwargs.get("space_id")
+        subtask = get_object_or_404(SpaceTaskModel, id=kwargs["task_from"])
+        if subtask.space.id != space_id:
+            raise exceptions.ValidationError(f"Задача {subtask.id} не является задачей данного пространства!")
+        if kwargs.get("task_to", 0) != 0:
+            main_task = get_object_or_404(SpaceTaskModel, id=kwargs["task_to"])
+            if main_task.space.id != space_id:
+                raise exceptions.ValidationError(f"Задача {main_task.id} не является задачей данного пространства!")
+        return  super().get(request, *args, **kwargs)
 
 
 class HistoryView(APIView, LimitOffsetPagination):
@@ -145,7 +137,6 @@ class HistoryTaskView(APIView, LimitOffsetPagination):
         return super().initial(request, *args, **kwargs)
 
 
-
 class SpaceTaskMeView(ListAPIView):
     """
     ViewSet задач пространств,
@@ -160,7 +151,7 @@ class SpaceTaskMeView(ListAPIView):
                        TagTaskFilter,
                        StatusTaskFilter,
                        ActualTaskFilter,
-                       MainSpaceTaskFilter,
+                       MainTaskFilter,
                        SpaceTaskFilter)
     search_fields = ("name", )
     ordering_fields = ("deadline",)

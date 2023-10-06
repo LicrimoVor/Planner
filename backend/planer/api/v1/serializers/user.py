@@ -10,7 +10,7 @@ class UserSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = User
-        fields = ['id', 'email', 'username', 'last_name', 'first_name']
+        fields = ['id', 'email', 'username', 'last_name', 'first_name', 'color', 'time_zone']
         # read_only_fields = ['email', 'username', 'last_name', 'first_name']
 
     def to_internal_value(self, data):

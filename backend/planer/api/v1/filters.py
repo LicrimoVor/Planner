@@ -1,9 +1,6 @@
 from django.utils import timezone
 from rest_framework.filters import BaseFilterBackend
 
-# from space.models import SpaceModel
-from task.models import SubPersonalTasksM2M, SubSpaceTasksM2M
-
 ID_ARCHIVE = 6
 
 
@@ -17,42 +14,24 @@ class TagTaskFilter(BaseFilterBackend):
         return queryset
 
 
-class ArchiveFilter(BaseFilterBackend):
-    """Фильтрация задач по статусу архива."""
-
-    def filter_queryset(self, request, queryset, view):
-        if not request.query_params.get('archive'):
-            queryset = queryset.exclude(status__id=ID_ARCHIVE).distinct()
-        return queryset
-
-
 class StatusTaskFilter(BaseFilterBackend):
     """Фильтрация задач по статусу."""
 
     def filter_queryset(self, request, queryset, view):
         if request.query_params.get('status'):
             status_list = request.query_params.getlist('status')
+            if ID_ARCHIVE not in status_list:
+                queryset = queryset.exclude(status__id=ID_ARCHIVE).distinct()
             queryset = queryset.filter(status__id__in=status_list).distinct()
         return queryset
 
 
-class MainSpaceTaskFilter(BaseFilterBackend):
+class MainTaskFilter(BaseFilterBackend):
     """Фильтрация задач простравнства на главные."""
 
     def filter_queryset(self, request, queryset, view):
         if request.query_params.get('main'):
-            queryset_id = SubSpaceTasksM2M.objects.values_list("subtask", flat=True).distinct()
-            queryset = queryset.exclude(id__in=queryset_id)
-        return queryset
-
-
-class MainPersonalTaskFilter(BaseFilterBackend):
-    """Фильтрация персональных задач на главные."""
-
-    def filter_queryset(self, request, queryset, view):
-        if request.query_params.get('main'):
-            queryset_id = SubPersonalTasksM2M.objects.values_list("subtask", flat=True).distinct()
-            queryset = queryset.exclude(id__in=queryset_id)
+            queryset = queryset.exclude(parent__isnull=True)
         return queryset
 
 
@@ -60,8 +39,8 @@ class ResponsibleTaskFilter(BaseFilterBackend):
     """Фильтрация задач по ответственным."""
 
     def filter_queryset(self, request, queryset, view):
-        if request.query_params.get('responsible'):
-            responsible_list = request.query_params.getlist('responsible')
+        if request.query_params.get('responsibles'):
+            responsible_list = request.query_params.getlist('responsibles')
             queryset = queryset.filter(responsibles__id__in=responsible_list).distinct()
         return queryset
 

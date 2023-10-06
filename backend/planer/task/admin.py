@@ -2,8 +2,7 @@ from django.contrib import admin
 from simple_history.admin import SimpleHistoryAdmin
 
 from task.models import (TagModel, PersonalTaskModel,
-                         StatusModel, SubSpaceTasksM2M,
-                         SubPersonalTasksM2M, ResponsibleSpaceTasks,
+                         StatusModel, ResponsibleSpaceTasks,
                          SpaceTaskModel, TagSpaceTaskModel,
                          TagPersonalTaskModel,)
 
@@ -18,21 +17,6 @@ class TagPersonalTaskInline(admin.TabularInline):
     model = TagPersonalTaskModel
     extra = 0
     verbose_name_plural = "Теги"
-
-
-class SubSpaceTaskInline(admin.TabularInline):
-    model = SubSpaceTasksM2M
-    extra = 0
-    verbose_name_plural = "Подзадачи"
-    fk_name = "task"
-
-
-class SubPersonalTaskInline(admin.TabularInline):
-    model = SubPersonalTasksM2M
-    extra = 0
-    verbose_name_plural = "Подзадачи"
-    fk_name = "task"
-
 
 class ResponsibleSpaceTasksAdmin(admin.TabularInline):
     model = ResponsibleSpaceTasks
@@ -66,7 +50,7 @@ class PersonalTaskAdmin(admin.ModelAdmin):
     """Отображение персональных задач в админ-панеле."""
     list_display = ("id", "name", "author", "status", "deadline")
     list_filter = ("name", "author", "status", "deadline")
-    inlines = [TagPersonalTaskInline, SubPersonalTaskInline ]
+    inlines = [TagPersonalTaskInline, ]
 
 
 class SpaceTaskAdmin(SimpleHistoryAdmin):
@@ -74,7 +58,7 @@ class SpaceTaskAdmin(SimpleHistoryAdmin):
     list_display = ("id", "name", "author", "status", "deadline")
     list_filter = ("name", "author", "status", "deadline")
     history_list_display = ["status"]
-    inlines = [TagSpaceTaskInline, ResponsibleSpaceTasksAdmin, SubSpaceTaskInline,]
+    inlines = [TagSpaceTaskInline, ResponsibleSpaceTasksAdmin,]
     search_fields = ['name', 'author__username']
 
 

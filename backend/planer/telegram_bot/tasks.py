@@ -18,7 +18,8 @@ def check_notification():
     data_future = data + datetime.timedelta(hours=1)
     status_list = ["В процессе", "Не начато", "На проверке"]
     quaryset = PersonalTaskModel.objects.filter(
-        Q(deadline__gte=data) & Q(deadline__lte=data_future)
+          Q(deadline__gte=data) 
+        & Q(deadline__lte=data_future)
         & Q(author__tg_user__isnull=False)
         & Q(status__name__in=status_list)
     )

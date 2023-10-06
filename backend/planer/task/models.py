@@ -30,12 +30,6 @@ class StatusModel(NameColorModel):
 class PersonalTaskModel(TaskModel):
     """Модель персональной задачи."""
 
-    subtasks = models.ManyToManyField(
-        "self", symmetrical=False,
-        verbose_name="Подзадачи",
-        through="SubPersonalTasksM2M",
-        related_name="subtasks+",
-    )
     tags = models.ManyToManyField(
         TagModel,
         verbose_name="Теги",
@@ -49,36 +43,11 @@ class PersonalTaskModel(TaskModel):
         null=True,
         blank=True,
     )
-    author = models.ForeignKey(
-        User,
-        on_delete=models.CASCADE,
-        related_name="author_task_pers",
-    )
 
     class Meta:
         verbose_name = "Персональная задача"
         verbose_name_plural = "Персональные задачи"
         db_table = "PersonalTask"
-
-
-class SubPersonalTasksM2M(models.Model):
-    """Модель М2М для подзадач."""
-    
-    task = models.ForeignKey(
-        PersonalTaskModel,
-        on_delete=models.CASCADE,
-        verbose_name="Main задача",
-        related_name="main_task_pers",
-    )
-    subtask = models.OneToOneField(
-        PersonalTaskModel,
-        verbose_name="Sub задача",
-        related_name="sub_task_pers",
-        on_delete=models.CASCADE
-    )
-
-    class Meta:
-        unique_together = ["subtask", "task"]
 
 
 class TagPersonalTaskModel(models.Model):
@@ -88,13 +57,13 @@ class TagPersonalTaskModel(models.Model):
         TagModel,
         verbose_name="Тег (id)",
         on_delete=models.CASCADE,
-        related_name='tag_pers',
+        related_name='+',
     )
     task = models.ForeignKey(
         PersonalTaskModel,
         verbose_name="Задача (id)",
         on_delete=models.CASCADE,
-        related_name='task_pers',
+        related_name='+',
     )
 
     class Meta:
@@ -107,17 +76,6 @@ class TagPersonalTaskModel(models.Model):
 class SpaceTaskModel(TaskModel):
     """Модель  задачи."""
 
-    author = models.ForeignKey(
-        User,
-        on_delete=models.CASCADE,
-        related_name="author_task_space",
-    )
-    subtasks = models.ManyToManyField(
-        "self", symmetrical=False,
-        verbose_name="Подзадачи",
-        through="SubSpaceTasksM2M",
-        related_name="subtasks+",
-    )
     status = models.ForeignKey(
         StatusModel,
         on_delete=models.SET_NULL,
@@ -171,26 +129,6 @@ class TagSpaceTaskModel(models.Model):
 
     def __str__(self) -> str:
         return f'{self.task} {self.tag}'
-
-
-class SubSpaceTasksM2M(models.Model):
-    """Модель М2М для подзадач."""
-    
-    task = models.ForeignKey(
-        SpaceTaskModel,
-        on_delete=models.CASCADE,
-        verbose_name="Main задача",
-        related_name="main_task_space",
-    )
-    subtask = models.ForeignKey(
-        SpaceTaskModel,
-        verbose_name="Sub задача",
-        related_name="sub_task_space",
-        on_delete=models.CASCADE,
-    )
-
-    class Meta:
-        unique_together = ["task", "subtask"]
 
 
 class ResponsibleSpaceTasks(models.Model):

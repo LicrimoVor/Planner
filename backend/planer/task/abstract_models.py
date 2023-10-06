@@ -25,6 +25,20 @@ class TaskModel(models.Model):
         null=True,
         blank=True,
     )
+    parent = models.ForeignKey(
+        "self",
+        verbose_name="Родитель",
+        related_name="subtasks",
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+    )
+    author = models.ForeignKey(
+        User,
+        on_delete=models.CASCADE,
+        related_name="+",
+    )
+    
     
     class Meta:
         abstract = True
