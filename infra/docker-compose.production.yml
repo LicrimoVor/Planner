@@ -94,8 +94,8 @@ services:
 
     mosquitto:
       container_name: MQTT_server
-      image: mosquitto 
-      ports: 
+      image: eclipse-mosquitto
+      ports:
         - 1883:1883
       volumes:
         - /root/MQTT_server/config:/mosquitto/config
