@@ -1,0 +1,8 @@
+.task-wrapper {
+    display: flex;
+    justify-content: space-between;
+
+    width: 100%;
+    margin: 30px auto;
+    padding: 0 60px;
+}

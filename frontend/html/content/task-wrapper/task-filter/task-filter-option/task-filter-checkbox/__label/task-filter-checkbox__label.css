@@ -1,0 +1,7 @@
+.task-filter-checkbox__label {
+    display: flex;
+    align-items: center;
+
+    color: #4D4D4D;
+    font-size: 0.95rem;
+}

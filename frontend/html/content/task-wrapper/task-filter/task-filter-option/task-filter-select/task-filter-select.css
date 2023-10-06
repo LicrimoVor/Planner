@@ -1,0 +1,13 @@
+.task-filter-select {
+    height: 25px;
+
+    padding: 0 4px;
+
+    color: #6A6A6A;
+    font-size: 0.9rem;
+
+    background: none;
+    border: var(--table-border);
+    border-radius: 6px;
+    outline: none;
+}

@@ -1,0 +1,20 @@
+{
+  "name": "Planner",
+  "version": "1.0.0",
+  "description": "",
+  "main": "dist/init.js",
+  "scripts": {
+    "clean": "rimraf dist",
+    "build": "npm run clean & tsc & npx fix-esm-import-path dist"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "fix-esm-import-path": "^1.4.0",
+    "typescript": "^5.2.2"
+  },
+  "devDependencies": {
+    "@types/jquery": "^3.5.19"
+  }
+}

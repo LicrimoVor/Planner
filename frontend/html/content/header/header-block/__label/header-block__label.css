@@ -1,0 +1,32 @@
+.header-block__label {
+    color: black;
+    font-size: 1.15rem;
+
+    transition: color 150ms ease;
+}
+
+.header-block__label_large {
+    font-size: 1.5rem;
+}
+
+.header-block__label_adv {
+    color: rgb(90, 90, 90);
+    font-size: 1rem;
+}
+
+.header-block:hover .header-block__label_adv {
+    text-decoration: underline;
+    color: rgb(40, 40, 40);
+}
+
+.header-block__label_personal {
+    color: black;
+}
+
+.header-block__label_inactive {
+    color: rgb(150, 150, 150);
+}
+
+.header-block__label_inactive:hover {
+    color: rgb(80, 80, 80);
+}

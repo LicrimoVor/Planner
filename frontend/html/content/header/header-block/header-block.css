@@ -1,0 +1,17 @@
+.header-block {
+    display: flex;
+
+    padding: 10px;
+
+    cursor: pointer;
+
+    /* background-color: red; */
+}
+
+.header-block_column {
+    flex-direction: column;
+}
+
+.header-block_align-right {
+    text-align: right;
+}

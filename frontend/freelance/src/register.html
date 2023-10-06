@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Регистрация</title>
+    <link href="./css/output.css" rel="stylesheet" />
+  </head>
+  <body class="bg-gray-100">
+    <div class="flex items-center justify-center h-screen">
+      <div class="bg-white w-[715px] p-8 rounded-xl shadow-md">
+        <div class="text-center text-zinc-800 text-3xl font-normal">
+          Создание аккаунта
+        </div>
+        <div class="text-center text-stone-500 font-normal mt-[2px] mb-8">
+          Уже есть аккаунт?
+          <a href="./sign-in.html" class="text-neutral-900 underline">Вход</a>
+        </div>
+        <div class="mb-6">
+          <label class="text-stone-500 text-base font-normal block mb-1">
+            Логин пользователя
+          </label>
+          <input
+            id="usernameInput"
+            type="text"
+            class="w-full h-12 rounded-xl border border-stone-500 border-opacity-30 pl-4 focus:outline-none"
+            placeholder="Введите логин..."
+            oninput="toggleButtonState(); toggleUsernameError()"
+          />
+          <div
+            id="usernameError"
+            class="text-red-500 text-sm font-normal hidden mt-1"
+          >
+            Логин должен содержать английские буквы и символы
+          </div>
+        </div>
+        <div class="mb-6">
+          <label class="text-stone-500 text-base font-normal block mb-1">
+            Электронная почта
+          </label>
+          <input
+            type="email"
+            class="w-full h-12 rounded-xl border border-stone-500 border-opacity-30 pl-4 focus:outline-none"
+            placeholder="Введите адрес электронной почты..."
+          />
+        </div>
+        <div class="mb-6">
+          <label class="text-stone-500 text-base font-normal block mb-1">
+            Пароль
+          </label>
+          <input
+            id="passwordInput"
+            type="password"
+            class="w-full h-12 rounded-xl border border-stone-500 border-opacity-30 pl-4 focus:outline-none"
+            placeholder="Введите пароль"
+            oninput="toggleButtonState();"
+          />
+          <div class="text-stone-500 text-sm font-normal mt-1">
+            Используйте 8 или более символов, сочетающих буквы, цифры и условные
+            обозначения
+          </div>
+        </div>
+        <button
+          id="submitButton"
+          class="w-full h-12 bg-gray-300 text-white text-lg font-normal rounded-xl transition-opacity duration-300 cursor-not-allowed"
+          disabled
+          onclick="saveUserData()"
+        >
+          Создать аккаунт
+        </button>
+      </div>
+    </div>
+    <script src="./js/register.js"></script>
+  </body>
+</html>

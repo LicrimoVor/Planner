@@ -1,0 +1,10 @@
+.task-filter-checkbox__input {
+    width: 15px;
+    height: 15px;
+
+    margin-right: 4px;
+
+    border: none;
+    outline: none;
+    background: none;
+}

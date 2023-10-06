@@ -1,0 +1,13 @@
+.main-container {
+    display: flex;
+    flex-direction: column;
+
+    background-color: rgb(252, 252, 252);
+
+    min-height: 100dvh;
+}
+
+.main-container_align-center {
+    justify-content: center;
+    align-items: center;
+}

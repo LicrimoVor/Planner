@@ -1,0 +1,13 @@
+.trait__remove {
+    aspect-ratio: 1;
+    width: 14px;
+
+    margin-left: 6px;
+
+    opacity: 0.25;
+    transition: opacity 150ms ease;
+}
+
+.trait__remove:hover {
+    opacity: 0.35;
+}

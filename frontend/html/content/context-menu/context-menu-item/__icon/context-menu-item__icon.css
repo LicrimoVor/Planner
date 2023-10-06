@@ -1,0 +1,6 @@
+.context-menu-item__icon {
+    aspect-ratio: 1;
+    width: 20px;
+    opacity: 0.65;
+    margin-right: 4px;
+}

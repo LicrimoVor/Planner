@@ -1,0 +1,18 @@
+.trait {
+    display: flex;
+    align-items: center;
+
+    background-color: var(--trait-color);
+    border-radius: 100dvw;
+
+    height: fit-content;
+    padding: 2px 16px;
+}
+
+.trait:hover {
+    /* outline: solid 2px color-mix(in srgb, var(--trait-bg-color) 100%, black 15%); */
+}
+
+.trait:has(.trait__remove) {
+    padding-right: 10px;
+}

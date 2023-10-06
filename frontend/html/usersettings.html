@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Настройки аккаунта</title>
+
+    <link rel="stylesheet" href="/frontend/html/content/form/form.css">
+    <link rel="stylesheet" href="/frontend/html/content/form/__title/form__title.css">
+    <link rel="stylesheet" href="/frontend/html/content/form/__other/form__other.css">
+    <link rel="stylesheet" href="/frontend/html/content/form/__label/form__label.css">
+    <link rel="stylesheet" href="/frontend/html/content/form/__ref/form__ref.css">
+    <link rel="stylesheet" href="/frontend/html/content/form/__input/form__input.css">
+    <link rel="stylesheet" href="/frontend/html/content/form/__error/form__error.css">
+
+    <link rel="stylesheet" href="/frontend/html/content/user-settings/user-settings.css">
+
+    <link rel="stylesheet" href="/frontend/html/content/loading/loading.css">
+
+    <script src="/frontend/utils/code.jquery.com_jquery-3.7.1.min.js"></script>
+</head>
+<body>
+    <div class="main-container">
+        <div data-include="header"></div>
+
+        <div class="view-block view-block_inactive">
+            <p class="view-block__label">Настройка аккаунта</p>
+        </div>
+
+        <div class="user-settings">
+            <form action="" class="form form_user-settings">
+                <p class="form__label">Имя</p>
+                <input name="first_name" type="text" class="form__input form__input_text" placeholder="Введите имя...">
+                <p class="form__error form__error_first_name"></p>
+    
+                <p class="form__label">Фамилия</p>
+                <input name="last_name" type="text" class="form__input form__input_text" placeholder="Введите фамилию...">
+                <p class="form__error form__error_last_name"></p>
+
+                <p class="form__label">ID Телеграма</p>
+                <input name="telegram_id" type="text" class="form__input form__input_text" placeholder="Введите id телеграма (необязательно)...">
+                <p class="form__error form__error_telegram_id"></p>
+
+                <p class="form__label">Электронная почта</p>
+                <input name="email" type="text" class="form__input form__input_text" placeholder="Введите адрес электронной почты...">
+                <p class="form__error form__error_email"></p>
+
+                <p class="form__label">Текущий пароль</p>
+                <input name="current_password" type="password" class="form__input form__input_text" placeholder="Введите текущий пароль...">
+                <p class="form__error form__error_current_password"></p>
+
+                <p class="form__label">Новый пароль</p>
+                <input name="new_password" type="password" class="form__input form__input_text" placeholder="Введите новый пароль...">
+                <p class="form__error form__error_new_password"></p>
+    
+                <input type="submit" class="form__input form__input_button" value="Сохранить">
+            </form>
+            
+            <img class="loading" src="/frontend/html/img/loading.png">
+        </div>
+    </div>
+
+    <script type="module" src="/frontend/dist/scripts/init.js"></script>
+    <script type="module" src="/frontend/dist/scripts/user_settings/init.js"></script>
+</body>
+</html>
