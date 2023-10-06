@@ -91,13 +91,12 @@ services:
       - ./planer:/usr/src/app
       - ./.env:/.env
 
-
-    mosquitto:
-      container_name: MQTT_server
-      image: eclipse-mosquitto
-      ports:
-        - 1883:1883
-      volumes:
-        - /root/MQTT_server/config:/mosquitto/config
-        - /root/MQTT_server/data:/mosquitto/data
-        - /root/MQTT_server/log:/mosquitto/log eclipse-mosquitto
+  mosquitto:
+    container_name: MQTT_server
+    image: eclipse-mosquitto
+    ports:
+      - 1883:1883
+    volumes:
+      - /root/MQTT_server/config:/mosquitto/config
+      - /root/MQTT_server/data:/mosquitto/data
+      - /root/MQTT_server/log:/mosquitto/log eclipse-mosquitto
