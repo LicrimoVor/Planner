@@ -1,9 +1,17 @@
 FROM node:18-alpine as build
+
 WORKDIR /app
-COPY . ./
+
 COPY package*.json ./
-RUN mkdir dist
-RUN touch dist/init.js
+
 RUN npm install
+
+COPY . ./
+
+# RUN chmod +x filename
+# RUN mkdir dist
+# RUN touch dist/init.js
+
 RUN npm run build
+
 CMD cp -r /app /frontend
