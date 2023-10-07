@@ -31,10 +31,8 @@ services:
 
   frontend:
     build: ../frontend/
-    command: cp -r /app/. /frontend/
-    env_file: .env
     volumes:
-      - static:/frontend
+      - static:/app
 
   nginx:
     image: nginx:1.19.3

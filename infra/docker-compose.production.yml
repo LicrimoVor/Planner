@@ -34,9 +34,8 @@ services:
 
   frontend:
     image: licrimovor/planner_frontend
-    command: cp -r /app/. /frontend/
     volumes:
-      - static:/frontend
+      - static:/app
 
   nginx:
     container_name: planner_nginx
