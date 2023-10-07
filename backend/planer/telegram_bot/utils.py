@@ -2,7 +2,7 @@ import requests
 
 from asgiref.sync import sync_to_async
 
-from task.models import PersonalTaskModel, SubPersonalTasksM2M
+from task.models import PersonalTaskModel
 
 
 @sync_to_async
@@ -17,8 +17,7 @@ def get_new_image(URL):
 
 @sync_to_async
 def get_task_queryset(user, numb_page: int, count: int):
-    subtasts_id = SubPersonalTasksM2M.objects.values_list("subtask", flat=True).distinct()
-    queryset = PersonalTaskModel.objects.filter(author=user).exclude(id__in=subtasts_id).order_by("-deadline")[numb_page*count:(numb_page+1)*count]
+    queryset = PersonalTaskModel.objects.filter(author=user, parent__isnull=True).order_by("-deadline")[numb_page*count:(numb_page+1)*count]
     return queryset
 
 
