@@ -13,5 +13,5 @@ COPY . ./
 RUN mkdir dist
 RUN chmod +x /bin/sh
 
-RUN rm -rf node_modules
+# RUN rm -rf node_modules
 RUN npm run build_prod
