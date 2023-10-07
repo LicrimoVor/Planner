@@ -5,7 +5,8 @@ WORKDIR /app
 COPY package*.json ./
 
 RUN npm install
-RUN npm install typescript
+RUN npm install -g tsc
+# RUN npm install -g typescript
 
 COPY . ./
 
