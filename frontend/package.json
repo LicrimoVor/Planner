@@ -5,7 +5,7 @@
   "main": "dist/init.js",
   "scripts": {
     "clean": "rimraf dist",
-    "build": "npm run clean & tsc & npx fix-esm-import-path dist"
+    "build": "tsc & npx fix-esm-import-path dist"
   },
   "keywords": [],
   "author": "",
