@@ -11,11 +11,14 @@ const includes = $("[data-include]");
 
 window.onload = async function () {
     if(window.location.pathname.includes(REDIRECT_URL.REGISTER) || window.location.pathname.includes(REDIRECT_URL.AUTH)) {
+        
         if(Client.getToken())
             return RedirectManager.redirect(REDIRECT_URL.MAIN_PAGE);
     }
     else {
+        
         if(!await UserAPI.getMe()) {
+            console.log("redirect");
             Client.clearToken();
             return RedirectManager.redirect(REDIRECT_URL.AUTH);
         }

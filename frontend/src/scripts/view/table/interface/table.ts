@@ -1,5 +1,6 @@
 import { IStatusModel } from "../../../../api/status/interface/model";
 import { ITagModel } from "../../../../api/tag/interface/model";
+import { IUserModel } from "../../../../api/user/interface/model";
 import { ViewTableAdd } from "../implement/add";
 import { ViewTable } from "../implement/table";
 import { ViewTableTask } from "../implement/task";
@@ -24,6 +25,11 @@ export interface IViewTable {
      * Список тегов
      */
     tags_list: ITagModel[];
+
+    /**
+     * Список участников
+     */
+    staff_list: IUserModel[];
 
     /**
      * Является ли персональной таблицей
@@ -67,6 +73,11 @@ export interface IViewTableConfig {
      * Список тегов
      */
     tags_list: ITagModel[];
+
+    /**
+     * Список участников
+     */
+    staff_list: IUserModel[];
 
     /**
      * Callback создания новой задачи

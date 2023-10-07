@@ -1,10 +1,11 @@
 import { PersonalTaskAPI } from "../../../api/personal_task/init";
-import { IPersonalTaskModel, PersonalTaskModelDefault } from "../../../api/personal_task/interface/model";
+import { PersonalTaskModelDefault } from "../../../api/personal_task/interface/model";
 import { SpaceTaskAPI } from "../../../api/space_task/init";
 import { ISpaceTaskModel, SpaceTaskModelDefault } from "../../../api/space_task/interface/model";
 import { IStatusModel } from "../../../api/status/interface/model";
 import { ITagModel } from "../../../api/tag/interface/model";
 import { ITaskModel } from "../../../api/task/interface";
+import { IUserModel } from "../../../api/user/interface/model";
 import { getFilterParams } from "../filter/init";
 import { ViewTable } from "./implement/table";
 import { ViewTableTask } from "./implement/task";
@@ -14,10 +15,11 @@ let is_personal: boolean;
 let space_id: number;
 let user_id: number;
 
-export function createViewTable(status_list: IStatusModel[], tags_list: ITagModel[], _space_id?: number, _user_id?: number) {
-    is_personal = space_id ? true : false;
+export function createViewTable(status_list: IStatusModel[], tags_list: ITagModel[], _space_id?: number, _user_id?: number, staff_list?: IUserModel[]) {
     space_id = _space_id;
     user_id = _user_id;
+
+    is_personal = space_id ? false : true;
 
     table = new ViewTable({
         header: is_personal ? [ // Персональная таблица
@@ -30,13 +32,14 @@ export function createViewTable(status_list: IStatusModel[], tags_list: ITagMode
             ["name", "Название"],
             ["status", "Статус"],
             ["tags", "Теги"],
-            ["responsible", "Ответственные"],
+            ["responsibles", "Ответственные"],
             ["deadline", "Дедлайн"],
             ["description", "Описание"],
         ],
         is_personal: is_personal,
         status_list: status_list,
         tags_list: tags_list,
+        staff_list: staff_list,
         onAdd: async () => {
             let task = is_personal ?
                 await PersonalTaskAPI.create(PersonalTaskModelDefault) :
@@ -56,8 +59,6 @@ export function updateViewTable(tasks: ITaskModel[]) {
     table.clear();
 
     for(const task of tasks.reverse()) {
-        if(!is_personal)
-            console.log((task as ISpaceTaskModel).responsible);
         addViewTableTask(task);
     }
 }
@@ -100,16 +101,16 @@ export function addViewTableTask(task: ITaskModel, parent?: ViewTableTask): View
                 await SpaceTaskAPI.updateFields(space_id, task.id, {tags: tags} as {});
         },
 
-        onResponsibleAdd: async (users: number[]) => {
+        onResponsiblesAdd: async (users: number[]) => {
             return is_personal ?
                 false :
-                await SpaceTaskAPI.updateFields(space_id, task.id, {responsible: users} as {});
+                await SpaceTaskAPI.updateFields(space_id, task.id, {responsibles: users} as {});
         },
 
-        onResponsibleRemove: async (users: number[]) => {
+        onResponsiblesRemove: async (users: number[]) => {
             return is_personal ?
                 false :
-                await SpaceTaskAPI.updateFields(space_id, task.id, {responsible: users} as {});
+                await SpaceTaskAPI.updateFields(space_id, task.id, {responsibles: users} as {});
         },
 
         onDeadlineChange: async (deadline: number) => {

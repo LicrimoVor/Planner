@@ -3,5 +3,5 @@ export const SpaceTaskModelDefault = {
     description: "",
     subtasks: [],
     tags: [],
-    responsible: []
+    responsibles: []
 };

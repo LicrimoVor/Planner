@@ -16,6 +16,11 @@ export interface IViewFilterParams {
     tags: number[];
 
     /**
+     * Ответственные
+     */
+    responsible?: number[];
+
+    /**
      * Только актуальные задачи
      */
     actual: boolean;
@@ -31,5 +36,6 @@ export const ViewFilterParamsDefault: IViewFilterParams = {
     status: [],
     tags: [],
     actual: false,
-    ordering: ""
+    ordering: "",
+    responsible: []
 };

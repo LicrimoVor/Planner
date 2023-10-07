@@ -30,6 +30,7 @@ p, a, input, label {
     --table-cell-name: 325px;
     --table-cell-status: 165px;
     --table-cell-tags: 215px;
+    --table-cell-responsibles: 215px;
     --table-cell-deadline: 140px;
     --table-cell-description: 180px;
 }

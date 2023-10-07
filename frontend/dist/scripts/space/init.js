@@ -1,4 +1,5 @@
 import { getParamFromUrl } from "../../api/config.js";
+import { SpaceAPI } from "../../api/space/init.js";
 import { SpaceTaskAPI } from "../../api/space_task/init.js";
 import { StatusAPI } from "../../api/status/init.js";
 import { TagAPI } from "../../api/tag/init.js";
@@ -8,13 +9,14 @@ import { createViewTable, updateViewTable } from "../view/table/init.js";
 const space_id = parseInt(getParamFromUrl("id"));
 $(async function () {
     const user = await UserAPI.getMe();
+    const space = await SpaceAPI.getByID(space_id);
     const status_list = await StatusAPI.getList();
     const tags_list = await TagAPI.getList();
-    createViewTable(status_list, tags_list, space_id, user.id);
+    createViewTable(status_list, tags_list, space_id, user.id, space.staff);
     createFilterMenu(status_list, tags_list, async () => {
         updateTable();
         return true;
-    });
+    }, space.staff);
     updateTable();
 });
 async function updateTable() {

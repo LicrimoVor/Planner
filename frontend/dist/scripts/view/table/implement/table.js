@@ -9,6 +9,7 @@ export class ViewTable {
         this.is_personal = config.is_personal;
         this.status_list = config.status_list;
         this.tags_list = config.tags_list;
+        this.staff_list = config.staff_list;
         this.onAdd = config.onAdd;
         new ViewTableHeader(this, config.header);
         this.add = new ViewTableAdd(this);

@@ -17,7 +17,7 @@ export interface ISpaceTaskModel extends ITaskModel {
     /**
      * Список ответственных пользователей за эту задачу
      */
-    responsible?: IUserModel[];
+    responsibles?: IUserModel[];
 }
 
 export const SpaceTaskModelDefault: ISpaceTaskModel = {
@@ -25,7 +25,7 @@ export const SpaceTaskModelDefault: ISpaceTaskModel = {
     description: "",
     subtasks: [],
     tags: [],
-    responsible: []
+    responsibles: []
 }
 
 export type ISpaceTaskListModel = IObjectListModel & {

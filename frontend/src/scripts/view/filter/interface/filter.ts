@@ -1,6 +1,7 @@
 import { ViewFilterActual } from "../implement/actual";
 import { ViewFilterDescription } from "../implement/description";
 import { ViewFilterName } from "../implement/name";
+import { ViewFilterResponsibles } from "../implement/responsibles";
 import { ViewFilterSortBy } from "../implement/sort_by";
 import { ViewFilterStatus } from "../implement/status";
 import { ViewFilterTags } from "../implement/tags";
@@ -39,6 +40,11 @@ export interface IViewFilter {
     tags: ViewFilterTags;
 
     /**
+     * Фильтр ответственных
+     */
+    responsibles: ViewFilterResponsibles;
+
+    /**
      * Фильтр только актуальных задач
      */
     actual: ViewFilterActual;
@@ -73,6 +79,11 @@ export interface IViewFilterConfig {
      * Список тегов
      */
     tags_list: IViewFilterCheckboxConfig[];
+
+    /**
+     * Список участников
+     */
+    staff_list: IViewFilterCheckboxConfig[];
 
     /**
      * Callback имзенения состояния чекбокса активных задач

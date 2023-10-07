@@ -4,7 +4,7 @@ import { ITaskModel } from "../../../../api/task/interface";
 import { ViewTableDeadline } from "../implement/deadline";
 import { ViewTableDescription } from "../implement/description";
 import { ViewTableName } from "../implement/name";
-import { ViewTableResponsible } from "../implement/responsible";
+import { ViewTableResponsibles } from "../implement/responsibles";
 import { ViewTableStatus } from "../implement/status";
 import { ViewTableTags } from "../implement/tags";
 import { ViewTableTask } from "../implement/task";
@@ -56,7 +56,7 @@ export interface IViewTableTask extends IViewTableRow {
     /**
      * Ячейка с ответственными
      */
-    responsible?: ViewTableResponsible;
+    responsibles?: ViewTableResponsibles;
 
     /**
      * Ячейка дедлайна
@@ -114,14 +114,14 @@ export interface IViewTableTask extends IViewTableRow {
      * @param users Массив из ID пользователей
      * @returns Обязательно возвращать true в случае успеха, иначе - false!!!
      */
-    onResponsibleAdd: (users: number[]) => Promise<boolean>;
+    onResponsiblesAdd: (users: number[]) => Promise<boolean>;
 
     /**
      * Callback удаления тега
      * @param users Массив из ID пользователей
      * @returns Обязательно возвращать true в случае успеха, иначе - false!!!
      */
-    onResponsibleRemove: (users: number[]) => Promise<boolean>;
+    onResponsiblesRemove: (users: number[]) => Promise<boolean>;
 
     /**
      * Callback изменения дедлайна
@@ -190,9 +190,9 @@ export interface IViewTableTaskConfig {
 
     onTagRemove: (tags: number[]) => Promise<boolean>;
 
-    onResponsibleAdd?: (tags: number[]) => Promise<boolean>;
+    onResponsiblesAdd?: (tags: number[]) => Promise<boolean>;
 
-    onResponsibleRemove?: (tags: number[]) => Promise<boolean>;
+    onResponsiblesRemove?: (tags: number[]) => Promise<boolean>;
 
     onDeadlineChange: (deadline: number) => Promise<boolean>;
 

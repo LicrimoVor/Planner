@@ -14,6 +14,7 @@ window.onload = async function () {
     }
     else {
         if (!await UserAPI.getMe()) {
+            console.log("redirect");
             Client.clearToken();
             return RedirectManager.redirect(REDIRECT_URL.AUTH);
         }

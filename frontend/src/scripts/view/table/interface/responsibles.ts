@@ -2,7 +2,7 @@ import { IUserModel } from "../../../../api/user/interface/model";
 import { ViewTableTags } from "../implement/tags";
 import { IViewTableCell } from "./cell";
 
-export interface IViewTableResponsible extends IViewTableCell {
+export interface IViewTableResponsibles extends IViewTableCell {
     /**
      * Кнопка "Добавить ответственного"
      */

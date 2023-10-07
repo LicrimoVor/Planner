@@ -3,7 +3,7 @@ import { ContextMenu } from "../../../context/menu.js";
 import { ViewTableDeadline } from "./deadline.js";
 import { ViewTableDescription } from "./description.js";
 import { ViewTableName } from "./name.js";
-import { ViewTableResponsible } from "./responsible.js";
+import { ViewTableResponsibles } from "./responsibles.js";
 import { ViewTableRow } from "./row.js";
 import { ViewTableStatus } from "./status.js";
 import { ViewTableTags } from "./tags.js";
@@ -25,8 +25,8 @@ export class ViewTableTask extends ViewTableRow {
         this.onStatusChange = config.onStatusChange;
         this.onTagAdd = config.onTagAdd;
         this.onTagRemove = config.onTagRemove;
-        this.onResponsibleAdd = config.onResponsibleAdd;
-        this.onResponsibleRemove = config.onResponsibleRemove;
+        this.onResponsiblesAdd = config.onResponsiblesAdd;
+        this.onResponsiblesRemove = config.onResponsiblesRemove;
         this.onDeadlineChange = config.onDeadlineChange;
         this.onDescriptionChange = config.onDescriptionChange;
         this.onRemove = config.onRemove;
@@ -46,7 +46,7 @@ export class ViewTableTask extends ViewTableRow {
         this.status = new ViewTableStatus(this);
         this.tags = new ViewTableTags(this);
         if (!this.table.is_personal)
-            this.responsible = new ViewTableResponsible(this);
+            this.responsibles = new ViewTableResponsibles(this);
         this.deadline = new ViewTableDeadline(this);
         this.description = new ViewTableDescription(this);
         this.table.tasks.push(this);

@@ -1,4 +1,3 @@
-import { event } from "jquery";
 import { UserAPI } from "../../api/user/init";
 import { IUserModel } from "../../api/user/interface/model";
 import { LoadingCircle } from "../loading/init";

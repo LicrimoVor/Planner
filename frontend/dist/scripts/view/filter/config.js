@@ -3,5 +3,6 @@ export const ViewFilterParamsDefault = {
     status: [],
     tags: [],
     actual: false,
-    ordering: ""
+    ordering: "",
+    responsible: []
 };

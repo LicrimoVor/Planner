@@ -9,10 +9,10 @@ let table;
 let is_personal;
 let space_id;
 let user_id;
-export function createViewTable(status_list, tags_list, _space_id, _user_id) {
-    is_personal = space_id ? true : false;
+export function createViewTable(status_list, tags_list, _space_id, _user_id, staff_list) {
     space_id = _space_id;
     user_id = _user_id;
+    is_personal = space_id ? false : true;
     table = new ViewTable({
         header: is_personal ? [
             ["name", "Название"],
@@ -24,13 +24,14 @@ export function createViewTable(status_list, tags_list, _space_id, _user_id) {
             ["name", "Название"],
             ["status", "Статус"],
             ["tags", "Теги"],
-            ["responsible", "Ответственные"],
+            ["responsibles", "Ответственные"],
             ["deadline", "Дедлайн"],
             ["description", "Описание"],
         ],
         is_personal: is_personal,
         status_list: status_list,
         tags_list: tags_list,
+        staff_list: staff_list,
         onAdd: async () => {
             let task = is_personal ?
                 await PersonalTaskAPI.create(PersonalTaskModelDefault) :
@@ -46,8 +47,6 @@ export function createViewTable(status_list, tags_list, _space_id, _user_id) {
 export function updateViewTable(tasks) {
     table.clear();
     for (const task of tasks.reverse()) {
-        if (!is_personal)
-            console.log(task.responsible);
         addViewTableTask(task);
     }
 }
@@ -82,15 +81,15 @@ export function addViewTableTask(task, parent) {
                 await PersonalTaskAPI.updateFields(task.id, { tags: tags }) :
                 await SpaceTaskAPI.updateFields(space_id, task.id, { tags: tags });
         },
-        onResponsibleAdd: async (users) => {
+        onResponsiblesAdd: async (users) => {
             return is_personal ?
                 false :
-                await SpaceTaskAPI.updateFields(space_id, task.id, { responsible: users });
+                await SpaceTaskAPI.updateFields(space_id, task.id, { responsibles: users });
         },
-        onResponsibleRemove: async (users) => {
+        onResponsiblesRemove: async (users) => {
             return is_personal ?
                 false :
-                await SpaceTaskAPI.updateFields(space_id, task.id, { responsible: users });
+                await SpaceTaskAPI.updateFields(space_id, task.id, { responsibles: users });
         },
         onDeadlineChange: async (deadline) => {
             return is_personal ?

@@ -6,7 +6,7 @@ import { IViewTableTask, IViewTableTaskConfig } from "../interface/task";
 import { ViewTableDeadline } from "./deadline";
 import { ViewTableDescription } from "./description";
 import { ViewTableName } from "./name";
-import { ViewTableResponsible } from "./responsible";
+import { ViewTableResponsibles } from "./responsibles";
 import { ViewTableRow } from "./row";
 import { ViewTableStatus } from "./status";
 import { ViewTable } from "./table";
@@ -22,7 +22,7 @@ export class ViewTableTask extends ViewTableRow implements IViewTableTask {
     name?: ViewTableName;
     status?: ViewTableStatus;
     tags?: ViewTableTags;
-    responsible?: ViewTableResponsible;
+    responsibles?: ViewTableResponsibles;
     deadline?: ViewTableDeadline;
     description?: ViewTableDescription;
 
@@ -32,8 +32,8 @@ export class ViewTableTask extends ViewTableRow implements IViewTableTask {
     onStatusChange: (status_id: number) => Promise<boolean>;
     onTagAdd: (tags: number[]) => Promise<boolean>;
     onTagRemove: (tags: number[]) => Promise<boolean>;
-    onResponsibleAdd: (tags: number[]) => Promise<boolean>;
-    onResponsibleRemove: (tags: number[]) => Promise<boolean>;
+    onResponsiblesAdd: (tags: number[]) => Promise<boolean>;
+    onResponsiblesRemove: (tags: number[]) => Promise<boolean>;
     onDeadlineChange: (deadline: number) => Promise<boolean>;
     onDescriptionChange: (value: string) => Promise<boolean>;
     onAttach: (parent?: ViewTableTask) => Promise<boolean>;
@@ -55,8 +55,8 @@ export class ViewTableTask extends ViewTableRow implements IViewTableTask {
         this.onStatusChange = config.onStatusChange;
         this.onTagAdd = config.onTagAdd;
         this.onTagRemove = config.onTagRemove;
-        this.onResponsibleAdd = config.onResponsibleAdd;
-        this.onResponsibleRemove = config.onResponsibleRemove;
+        this.onResponsiblesAdd = config.onResponsiblesAdd;
+        this.onResponsiblesRemove = config.onResponsiblesRemove;
         this.onDeadlineChange = config.onDeadlineChange;
         this.onDescriptionChange = config.onDescriptionChange;
         this.onRemove = config.onRemove;
@@ -81,7 +81,7 @@ export class ViewTableTask extends ViewTableRow implements IViewTableTask {
         this.status = new ViewTableStatus(this)
         this.tags = new ViewTableTags(this);
         if(!this.table.is_personal)
-            this.responsible = new ViewTableResponsible(this);
+            this.responsibles = new ViewTableResponsibles(this);
         this.deadline = new ViewTableDeadline(this);
         this.description = new ViewTableDescription(this);
 

@@ -1,5 +1,6 @@
 import { IStatusModel } from "../../../api/status/interface/model";
 import { ITagModel } from "../../../api/tag/interface/model";
+import { IUserModel } from "../../../api/user/interface/model";
 import { IViewFilterParams, ViewFilterParamsDefault } from "./config";
 import { ViewFilter } from "./implement/filter";
 import { IViewFilterCheckboxConfig } from "./interface/checkbox";
@@ -9,7 +10,9 @@ let filter_menu;
 
 let filter_params: IViewFilterParams = ViewFilterParamsDefault;
 
-export function createFilterMenu (status_array: IStatusModel[], tags_array: ITagModel[], onUpdate: () => Promise<boolean>) {
+export function createFilterMenu (status_array: IStatusModel[], tags_array: ITagModel[], onUpdate: () => Promise<boolean>, staff_array?: IUserModel[]) {
+    let is_personal = staff_array ? false : true;
+    
     let status_list: IViewFilterCheckboxConfig[] = [];
     for(const status of status_array) {
         status_list.push({
@@ -42,6 +45,25 @@ export function createFilterMenu (status_array: IStatusModel[], tags_array: ITag
         } as IViewFilterCheckboxConfig);
     }
 
+    let staff_list: IViewFilterCheckboxConfig[];
+    if(staff_array) {
+        staff_list = [];
+        for(const user of staff_array) {
+            staff_list.push({
+                text: user.username,
+
+                onChange(is_checked: boolean) {
+                    if(!is_checked)
+                        filter_params.responsible = filter_params.responsible.filter(obj => obj != user.id);
+                    else
+                        filter_params.responsible.push(user.id);
+
+                    onUpdate();
+                }
+            } as IViewFilterCheckboxConfig);
+        }
+    }
+
     filter_menu = new ViewFilter({
         onNameChange(value: string) {
             filter_params.search = value;
@@ -56,6 +78,8 @@ export function createFilterMenu (status_array: IStatusModel[], tags_array: ITag
         status_list: status_list,
 
         tags_list: tags_list,
+
+        staff_list: staff_list,
 
         onActualChange(is_checked: boolean) {
             filter_params.actual = is_checked;

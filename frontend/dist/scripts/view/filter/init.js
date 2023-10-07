@@ -2,7 +2,8 @@ import { ViewFilterParamsDefault } from "./config.js";
 import { ViewFilter } from "./implement/filter.js";
 let filter_menu;
 let filter_params = ViewFilterParamsDefault;
-export function createFilterMenu(status_array, tags_array, onUpdate) {
+export function createFilterMenu(status_array, tags_array, onUpdate, staff_array) {
+    let is_personal = staff_array ? false : true;
     let status_list = [];
     for (const status of status_array) {
         status_list.push({
@@ -29,6 +30,22 @@ export function createFilterMenu(status_array, tags_array, onUpdate) {
             }
         });
     }
+    let staff_list;
+    if (staff_array) {
+        staff_list = [];
+        for (const user of staff_array) {
+            staff_list.push({
+                text: user.username,
+                onChange(is_checked) {
+                    if (!is_checked)
+                        filter_params.responsible = filter_params.responsible.filter(obj => obj != user.id);
+                    else
+                        filter_params.responsible.push(user.id);
+                    onUpdate();
+                }
+            });
+        }
+    }
     filter_menu = new ViewFilter({
         onNameChange(value) {
             filter_params.search = value;
@@ -39,6 +56,7 @@ export function createFilterMenu(status_array, tags_array, onUpdate) {
         },
         status_list: status_list,
         tags_list: tags_list,
+        staff_list: staff_list,
         onActualChange(is_checked) {
             filter_params.actual = is_checked;
             onUpdate();

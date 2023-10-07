@@ -18,12 +18,15 @@ $(async () => {
 
         $(".header-block__label_space-name").html("Не выбрано");
     }
-    else {
+    else if(RedirectManager.get() == RedirectManager.getUrl(REDIRECT_URL.SPACE)) {
         let current_space: ISpaceModel | boolean = await SpaceAPI.getByID(parseInt(getParamFromUrl("id")));
         if(!current_space)
             return RedirectManager.redirect(REDIRECT_URL.MAIN_PAGE);
 
         $(".header-block__label_space-name").html((current_space as ISpaceModel).name);
+    }
+    else {
+        $(".header-block__label_space-name").html("Не выбрано");
     }
 
     $(".header-block__label_personal").on("click", () => {
