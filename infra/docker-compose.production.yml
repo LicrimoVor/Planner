@@ -36,7 +36,6 @@ services:
     image: licrimovor/planner_frontend
     volumes:
       - static:/app
-      - ./dist:/app/frontend
 
   nginx:
     container_name: planner_nginx
@@ -48,6 +47,7 @@ services:
       - backend
     volumes:
       - ./nginx.conf:/etc/nginx/conf.d/default.conf
+      - ./dist:/usr/share/nginx/html/frontend/dist
       - static:/usr/share/nginx/html/
       - media:/media
 
