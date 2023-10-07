@@ -10,11 +10,11 @@ RUN npm install -g typescript
 
 COPY . ./
 
+RUN mkdir dist
 RUN chmod +x /app/.
 RUN chmod +x /bin/sh
 
 RUN rm -rf node_modules
-# RUN npx fix-esm-import-path dist
 RUN npm run build_prod
 
 CMD cp -r /app /frontend
