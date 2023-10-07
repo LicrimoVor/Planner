@@ -31,11 +31,7 @@ export const Ajax: IAjax = {
       headers: config.token
         ? { Authorization: config.token, "Content-Type": "application/json" }
         : { "Content-Type": "application/json" },
-      data: JSON.stringify(
-        Object.assign({}, config.data, {
-          csrfmiddlewaretoken: "{{ csrf_token }}",
-        })
-      ),
+      data: JSON.stringify(config.data),
     }).then(
       // Success callback
       function (callback_data) {
