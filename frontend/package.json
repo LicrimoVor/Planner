@@ -5,7 +5,8 @@
   "main": "dist/init.js",
   "scripts": {
     "clean": "rimraf dist",
-    "build": "tsc & npx fix-esm-import-path dist"
+    "build": "npm run clean & tsc & npx fix-esm-import-path dist",
+    "build_prod": "tsc & npx fix-esm-import-path dist"
   },
   "keywords": [],
   "author": "",
@@ -16,5 +17,19 @@
   },
   "devDependencies": {
     "@types/jquery": "^3.5.19"
+  },
+  "compilerOptions": {
+    "outDir": "dist",
+    "target": "ESNext",
+    "module": "CommonJS",
+    "moduleResolution": "node",
+    "strict": true,
+    "allowJs": true,
+    "strictNullChecks": false,
+    "esModuleInterop": true,
+    "experimentalDecorators": true,
+    "skipLibCheck": true,
+    "forceConsistentCasingInFileNames": true,
+    "useDefineForClassFields": false
   }
 }

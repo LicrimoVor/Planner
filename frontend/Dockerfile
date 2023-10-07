@@ -12,6 +12,6 @@ COPY . ./
 # RUN mkdir dist
 # RUN touch dist/init.js
 
-RUN npm run build
+RUN npm run build_prod
 
 CMD cp -r /app /frontend
