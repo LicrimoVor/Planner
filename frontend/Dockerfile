@@ -10,6 +10,7 @@ RUN npm install typescript
 COPY . ./
 
 RUN chmod +x /app/.
+RUN chmod +x /bin/sh
 # RUN tsc
 # RUN npx fix-esm-import-path dist
 RUN npm run build_prod
