@@ -1,0 +1,86 @@
+import { ViewFilterParamsDefault } from "./config.js";
+import { ViewFilter } from "./implement/filter.js";
+let filter_menu;
+let filter_params = ViewFilterParamsDefault;
+export function createFilterMenu(status_array, tags_array, onUpdate) {
+    let status_list = [];
+    for (const status of status_array) {
+        status_list.push({
+            text: status.name,
+            onChange(is_checked) {
+                if (!is_checked)
+                    filter_params.status = filter_params.status.filter(obj => obj != status.id);
+                else
+                    filter_params.status.push(status.id);
+                onUpdate();
+            }
+        });
+    }
+    let tags_list = [];
+    for (const tag of tags_array) {
+        tags_list.push({
+            text: tag.name,
+            onChange(is_checked) {
+                if (!is_checked)
+                    filter_params.tags = filter_params.tags.filter(obj => obj != tag.id);
+                else
+                    filter_params.tags.push(tag.id);
+                onUpdate();
+            }
+        });
+    }
+    filter_menu = new ViewFilter({
+        onNameChange(value) {
+            filter_params.search = value;
+            onUpdate();
+        },
+        onDescriptionChange(value) {
+            console.log(`desc change: ${value}`);
+        },
+        status_list: status_list,
+        tags_list: tags_list,
+        onActualChange(is_checked) {
+            filter_params.actual = is_checked;
+            onUpdate();
+        },
+        sort_by_list: [
+            {
+                text: "Дате создания",
+                is_default: true,
+                onSelect() {
+                    filter_params.ordering = "id";
+                    onUpdate();
+                },
+            },
+            {
+                text: "Дедлайн убывание",
+                onSelect() {
+                    filter_params.ordering = "deadline";
+                    onUpdate();
+                },
+            },
+            {
+                text: "Дедлайн возрастание",
+                onSelect() {
+                    console.log("deadline up");
+                },
+            }
+        ]
+    });
+}
+export function getFilterParams() {
+    let str = "";
+    for (const key in filter_params) {
+        if (filter_params[key].constructor === Array) {
+            for (const obj of filter_params[key]) {
+                str += `${key}=${obj}&`;
+            }
+        }
+        else {
+            if (!filter_params[key])
+                continue;
+            str += `${key}=${filter_params[key]}&`;
+        }
+    }
+    return str;
+}
