@@ -168,8 +168,7 @@ async def more_data(callback: types.CallbackQuery, user_model, callback_data: Nu
     for tag in task_model.tags.all():
         tags += f" {tag.name},"
     if tags != "":
-        tags[-1] = ""
-        tags += "\n"
+        tags = tags[:-1] + "\n"
     text = (
         f"Основная задача\n"
         +f"Название: {task_model.name}\n"
