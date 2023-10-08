@@ -15,7 +15,7 @@ from .keyboards import (
     NumbersCallbackFactory, ActionCallbackFactory,
 )
 from .utils import get_new_image, get_task_queryset, get_task_answ, get_page
-from task.models import PersonalTaskModel
+from task.models import PersonalTaskModel, StatusModel
 
 
 URL_SITE = os.getenv("CSRF_TRUSTED_ORIGINS").split(" ")[-1]
@@ -144,7 +144,7 @@ async def user_params(callback: types.CallbackQuery, user_model, **kwargs):
 async def done_task(callback: types.CallbackQuery, user_model, callback_data: NumbersCallbackFactory):
     task_id = callback_data.number
     task_model = PersonalTaskModel.objects.get(id=task_id, author=user_model)
-    task_model.status = STATUS_COMPLETE
+    task_model.status = StatusModel.objects.get(id=STATUS_COMPLETE)
     task_model.save()
 
     await callback.bot.send_message(
@@ -158,12 +158,6 @@ async def done_task(callback: types.CallbackQuery, user_model, callback_data: Nu
 async def more_data(callback: types.CallbackQuery, user_model, callback_data: NumbersCallbackFactory):
     task_id = callback_data.number
     task_model = PersonalTaskModel.objects.get(id=task_id, author=user_model)
-
-    await callback.bot.send_message(
-        callback.from_user.id,
-        "Задача успешно выполнена!",
-        reply_markup=main_menu.as_markup(),
-    )
     if task_model.deadline is not None:
         deadline = task_model.deadline.strftime('%H:%M - %d.%m.%Y') + dt.timedelta(hours=task_model.author.time_zone)
     status = "Его нет)"
@@ -172,7 +166,7 @@ async def more_data(callback: types.CallbackQuery, user_model, callback_data: Nu
     tags = ""
     for tag in task_model.tags.all():
         tags += f" {tag.name},"
-    if tags:
+    if tags != "":
         tags[-1] = ""
         tags += "\n"
     text = (
