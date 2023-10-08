@@ -28,8 +28,8 @@ services:
       - db
     volumes:
       - static:/backend_static
-      - media:/app/media
-      - ./data:/data
+      - media:/app/backend/media
+      - ./data:/app/data
       - ./.env:/.env
 
   frontend:

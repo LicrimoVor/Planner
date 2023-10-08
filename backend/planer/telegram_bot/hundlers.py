@@ -158,6 +158,7 @@ async def done_task(callback: types.CallbackQuery, user_model, callback_data: Nu
 async def more_data(callback: types.CallbackQuery, user_model, callback_data: NumbersCallbackFactory):
     task_id = callback_data.number
     task_model = PersonalTaskModel.objects.get(id=task_id, author=user_model)
+    deadline = "Его нет)"
     if task_model.deadline is not None:
         deadline = task_model.deadline.strftime('%H:%M - %d.%m.%Y') + dt.timedelta(hours=task_model.author.time_zone)
     status = "Его нет)"

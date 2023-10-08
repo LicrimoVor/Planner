@@ -31,7 +31,10 @@ def get_task(user, task_id):
     return model
 
 
-def get_task_answ(task, numb_task) -> tuple[str, InlineKeyboardBuilder]:
+def get_task_answ(task, numb_task, flag_sub: bool = False) -> tuple[str, InlineKeyboardBuilder]:
+    name_task = "Задача"
+    if flag_sub:
+        name_task = "Подзадача"
     builder = InlineKeyboardBuilder()
     deadline = "Его нет)"
     if task.deadline is not None:
@@ -40,7 +43,7 @@ def get_task_answ(task, numb_task) -> tuple[str, InlineKeyboardBuilder]:
     if task.status is not None:
         status = task.status.name
     text = (
-        f"Подзадача {numb_task+1}\n"
+        f"{name_task} {numb_task+1}\n"
         +f"Название: {task.name}\n"
         +f"Статус: {status}\n"
         +f"Дедлайн: {deadline}"
