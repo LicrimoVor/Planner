@@ -192,8 +192,8 @@ async def more_data(callback: types.CallbackQuery, user_model, callback_data: Nu
     
     builder = InlineKeyboardBuilder()
     page = get_page(callback.from_user.id)
-    builder.button("🏃‍♂️Вернуться", callback_data=NumbersCallbackFactory(action="task_list", number=page))
-    builder.button("🏠 Меню", callback_data=ActionCallbackFactory(action="main_menu"))
+    builder.button(text="🏃‍♂️Вернуться", callback_data=NumbersCallbackFactory(action="task_list", number=page))
+    builder.button(text="🏠 Меню", callback_data=ActionCallbackFactory(action="main_menu"))
 
     await callback.bot.send_message(
             callback.from_user.id, "",
