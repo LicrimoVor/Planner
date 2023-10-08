@@ -5,6 +5,7 @@ from django.contrib.auth import get_user_model
 from space.models import SpaceModel
 from .user import UserSerializer
 
+from .abstract import Base64ImageField
 
 
 User = get_user_model()
@@ -13,10 +14,11 @@ User = get_user_model()
 class SpaceNotPermSerializer(serializers.ModelSerializer):
     """Сериализатор пространств общий. Реализует Post/Get запросы."""
     admin = UserSerializer(read_only=True)
+    avatar = Base64ImageField(allow_null=False, required=False,)
 
     class Meta:
         model = SpaceModel
-        fields = ("id", "name", "admin")
+        fields = ("id", "name", "admin", "avatar")
 
     def create(self, validated_data):
         admin = self.context["request"].user
@@ -32,10 +34,11 @@ class SpacePermSerializer(serializers.ModelSerializer):
     """
     admin = UserSerializer(read_only=True)
     staff = UserSerializer(many=True)
+    avatar = Base64ImageField(allow_null=False, required=False,)
 
     class Meta:
         model = SpaceModel
-        fields = ("id", "name", "admin", "staff")
+        fields = ("id", "name", "admin", "staff", "avatar")
 
     def update(self, instance, validated_data):
         admin = self.context["request"].user

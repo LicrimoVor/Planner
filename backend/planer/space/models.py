@@ -22,6 +22,11 @@ class SpaceModel(models.Model):
         through="UserSpaceModel",
         related_name="staff",
     )
+    avatar = models.ImageField(
+        verbose_name="Аватарка пространства",
+        upload_to="space/image/",
+        default='space/image/default_space.jpg',
+    )
 
     class Meta:
         db_table = "Spaces"

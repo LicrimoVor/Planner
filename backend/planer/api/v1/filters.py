@@ -31,7 +31,7 @@ class MainTaskFilter(BaseFilterBackend):
 
     def filter_queryset(self, request, queryset, view):
         if request.query_params.get('main'):
-            queryset = queryset.exclude(parent__isnull=True)
+            queryset = queryset.filter(parent__isnull=True)
         return queryset
 
 

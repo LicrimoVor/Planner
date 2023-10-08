@@ -46,6 +46,8 @@ class Command(BaseCommand):
         if options['model'] == "all":
             files_list = os.listdir(PATH_DATA)
             for name_model in files_list:
+                if name_model[-4:] != ".csv":
+                    continue
                 import_data(name_model[:-4])
         else:
             name_model = options['model']

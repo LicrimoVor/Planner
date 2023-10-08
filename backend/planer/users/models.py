@@ -31,7 +31,13 @@ class UserModel(AbstractUser):
         validators=[validate_hex],
         default="#D7D2D2"
     )
+    avatar = models.ImageField(
+        verbose_name="Аватарка пользователя",
+        upload_to="user/image/",
+        default='user/image/default_user.jpg',
+    )
     groups = None
+    
 
     def __str__(self):
         return self.username

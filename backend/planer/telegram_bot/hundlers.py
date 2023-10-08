@@ -1,4 +1,5 @@
 import os
+import datetime as dt
 
 from aiogram import F
 from aiogram import types
@@ -13,7 +14,7 @@ from .keyboards import (
     dog_cat, task_pagination, main_menu,
     NumbersCallbackFactory, ActionCallbackFactory,
 )
-from .utils import get_new_image, get_task_queryset
+from .utils import get_new_image, get_task_queryset, get_task_answ, get_page
 from task.models import PersonalTaskModel
 
 
@@ -21,6 +22,7 @@ URL_SITE = os.getenv("CSRF_TRUSTED_ORIGINS").split(" ")[-1]
 URL_DOG = os.getenv("URL_DOG")
 URL_CAT = os.getenv("URL_CAT")
 COUNT_TASK = 5
+STATUS_COMPLETE = 4
 
 
 @dp.message(Command("start"))
@@ -90,50 +92,22 @@ async def next_doggy(callback: types.CallbackQuery):
 async def task_list(callback: types.CallbackQuery,
                     callback_data: NumbersCallbackFactory,
                     user_model):
-    value = db_redis.get(callback.from_user.id)
-    if value is None:
-        value = 0
-    else:
-        value = int(value)
-    value = value+callback_data.number
-    value = value if value > 0 else 0
+    page = get_page(callback.from_user.id)
+    page = page+callback_data.number
+    page = page if page > 0 else 0
 
-    db_redis.set(callback.from_user.id, value)
-    qyeryset = await get_task_queryset(user_model, value, COUNT_TASK)
+    db_redis.set(callback.from_user.id, page)
+    qyeryset = await get_task_queryset(user_model, page, COUNT_TASK)
 
     for numb_task, task in enumerate(qyeryset):
-        builder = InlineKeyboardBuilder()
-        deadline = "Его нет)"
-        if task.deadline is not None:
-            deadline = task.deadline.strftime('%H:%M - %d.%m.%Y')
-        status = "Его нет)"
-        if task.status is not None:
-            status = task.status.name
-        text = (
-            f"Задача {numb_task+1}\n"
-            +f"Название: {task.name}\n"
-            +f"Статус: {status}\n"
-            +f"Дедлайн: {deadline}"
-        )
-        builder.button(
-            text="✔️ Выполнить",
-            callback_data=NumbersCallbackFactory(action="done", number=task.id)
-        )
-        builder.button(
-            text="📃 Подробнее",
-            callback_data=NumbersCallbackFactory(action="archive", number=task.id)
-        )
-        builder.button(
-            text="✏️ Изменить",
-            callback_data=NumbersCallbackFactory(action="change", number=task.id)
-        )
+        text, builder = get_task_answ(task, numb_task)
         await callback.bot.send_message(
             callback.from_user.id, text, reply_markup=builder.as_markup(),
         )
 
     await callback.bot.send_message(
         callback.from_user.id,
-        f"Страница {value+1}",
+        f"Страница {page+1}",
         reply_markup=task_pagination.as_markup(),
     )
 
@@ -164,4 +138,70 @@ async def user_params(callback: types.CallbackQuery, user_model, **kwargs):
         +f"Всего задач: {count_task}\n"
         +f"Всего пространств: {count_space}",
         reply_markup=main_menu.as_markup(),
+    )
+
+@dp.callback_query(NumbersCallbackFactory.filter(F.action=="done"), IsUserFilter())
+async def done_task(callback: types.CallbackQuery, user_model, callback_data: NumbersCallbackFactory):
+    task_id = callback_data.number
+    task_model = PersonalTaskModel.objects.get(id=task_id, author=user_model)
+    task_model.status = STATUS_COMPLETE
+    task_model.save()
+
+    await callback.bot.send_message(
+        callback.from_user.id,
+        "Задача успешно выполнена!",
+        reply_markup=main_menu.as_markup(),
+    )
+
+
+@dp.callback_query(NumbersCallbackFactory.filter(F.action=="more_data"), IsUserFilter())
+async def more_data(callback: types.CallbackQuery, user_model, callback_data: NumbersCallbackFactory):
+    task_id = callback_data.number
+    task_model = PersonalTaskModel.objects.get(id=task_id, author=user_model)
+
+    await callback.bot.send_message(
+        callback.from_user.id,
+        "Задача успешно выполнена!",
+        reply_markup=main_menu.as_markup(),
+    )
+    if task_model.deadline is not None:
+        deadline = task_model.deadline.strftime('%H:%M - %d.%m.%Y') + dt.timedelta(hours=task_model.author.time_zone)
+    status = "Его нет)"
+    if task_model.status is not None:
+        status = task_model.status.name
+    tags = ""
+    for tag in task_model.tags.all():
+        tags += f" {tag.name},"
+    if tags:
+        tags[-1] = ""
+        tags += "\n"
+    text = (
+        f"Основная задача\n"
+        +f"Название: {task_model.name}\n"
+        +f"Статус: {status}\n"
+        +f"Теги: {tags}\n"
+        +f"Дедлайн: {deadline}\n"
+        +f"Описание {task_model.description}\n"
+        +f"Подзадачи ({task_model.subtasks.all().count()})"
+    )
+    await callback.bot.send_message(
+        callback.from_user.id,
+        text,
+    )
+    numb_task = 0
+    for subtask in task_model.subtasks.all():
+        text, builder = get_task_answ(subtask, numb_task)
+        numb_task += 1
+        await callback.bot.send_message(
+            callback.from_user.id, text, reply_markup=builder.as_markup(),
+        )
+    
+    builder = InlineKeyboardBuilder()
+    page = get_page(callback.from_user.id)
+    builder.button("🏃‍♂️Вернуться", callback_data=NumbersCallbackFactory(action="task_list", number=page))
+    builder.button("🏠 Меню", callback_data=ActionCallbackFactory(action="main_menu"))
+
+    await callback.bot.send_message(
+            callback.from_user.id, "",
+            reply_markup=builder.as_markup(),
     )

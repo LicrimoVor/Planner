@@ -34,6 +34,7 @@ services:
 
   frontend:
     image: licrimovor/planner_frontend
+    container_name: planner_frontend
     volumes:
       - static:/app
 

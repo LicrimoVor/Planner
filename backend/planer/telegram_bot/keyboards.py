@@ -29,7 +29,7 @@ task_pagination.adjust(2)
 main_menu = InlineKeyboardBuilder()
 main_menu.button(text="🙍‍♂️ Пользователь", callback_data=ActionCallbackFactory(action="user"))
 main_menu.button(text="📒 Список задач", callback_data=NumbersCallbackFactory(action="task_list", number=0))
-main_menu.button(text="➕ Создать задачу", callback_data=ActionCallbackFactory(action="create_task"))
+# main_menu.button(text="➕ Создать задачу", callback_data=ActionCallbackFactory(action="create_task"))
 main_menu.adjust(1)
 
 
