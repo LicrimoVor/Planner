@@ -76,8 +76,8 @@ class SpaceTaskSerializer(serializers.ModelSerializer):
     def to_representation(self, instance):
         data = super().to_representation(instance)
         if data.get("deadline") is not None:
-            datetime = instance.deadline + dt.timedelta(hours=instance.author.time_zone)
-            data["deadline"] = datetime.strftime('%H:%M - %d.%m.%Y') + f" (+{instance.author.time_zone})"
+            data["deadline"] = instance.deadline + dt.timedelta(hours=instance.author.time_zone)
+            # data["deadline"] = datetime.strftime('%H:%M - %d.%m.%Y') + f" (+{instance.author.time_zone})"
         return data
 
 
