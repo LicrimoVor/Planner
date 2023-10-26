@@ -5,7 +5,7 @@
   "version": "0.2.0",
   "configurations": [
     {
-      "name": "Python: Telegram",
+      "name": "Telegram",
       "type": "python",
       "request": "launch",
       "program": "${workspaceFolder}\\backend\\planer\\manage.py",
@@ -14,7 +14,7 @@
       "justMyCode": true
     },
     {
-      "name": "Python: Django",
+      "name": "Django",
       "type": "python",
       "request": "launch",
       "program": "${workspaceFolder}\\backend\\planer\\manage.py",
@@ -23,7 +23,7 @@
       "justMyCode": true
     },
     {
-      "name": "Python: Мейки",
+      "name": "Мейки",
       "type": "python",
       "request": "launch",
       "program": "${workspaceFolder}\\backend\\planer\\manage.py",
@@ -32,11 +32,24 @@
       "justMyCode": true
     },
     {
-      "name": "Python: Мигрейти",
+      "name": "Мигрейти",
       "type": "python",
       "request": "launch",
       "program": "${workspaceFolder}\\backend\\planer\\manage.py",
       "args": ["migrate"],
+      "django": true,
+      "justMyCode": true
+    },
+    {
+      "name": "Django Plus",
+      "type": "python",
+      "request": "launch",
+      "program": "${workspaceFolder}\\backend\\planer\\manage.py",
+      "args": [
+        "runserver_plus",
+        "--cert-file",
+        "${workspaceFolder}\\backend\\planer\\cert.crt"
+      ],
       "django": true,
       "justMyCode": true
     }

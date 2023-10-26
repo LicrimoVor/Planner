@@ -20,9 +20,9 @@ class StatusTaskFilter(BaseFilterBackend):
     def filter_queryset(self, request, queryset, view):
         if request.query_params.get('status'):
             status_list = request.query_params.getlist('status')
-            if ID_ARCHIVE not in status_list:
-                queryset = queryset.exclude(status__id=ID_ARCHIVE).distinct()
             queryset = queryset.filter(status__id__in=status_list).distinct()
+        else:
+            queryset = queryset.exclude(status__id=ID_ARCHIVE).distinct()
         return queryset
 
 

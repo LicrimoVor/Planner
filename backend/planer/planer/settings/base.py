@@ -45,7 +45,7 @@ DJANGO_ALLOW_ASYNC_UNSAFE = True
 
 ROOT_URLCONF = 'planer.urls'
 AUTH_USER_MODEL = 'users.UserModel'
-TEMPLATES_DIR = BASE_DIR / 'templates'
+TEMPLATES_DIR = BASE_DIR / 'static'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',

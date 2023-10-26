@@ -3,7 +3,7 @@ openapi: 3.0.0
 info:
   description: |
     # Введение
-    Данная документация API приведена для проекта [Planner o_0](ссылочка**). Проект назначен на
+    Данная документация API приведена для проекта [Planer o_0](ссылочка**). Проект назначен на
     создание плана для пространств и личного плана работников без высокого уровня
     вхождения (с минимальным интерфейсом и без перегружения функционала). 
 
@@ -18,7 +18,7 @@ info:
     "Authorization: Token TOKENVALUE"'
     <SecurityDefinitions />
 
-  version: 1.0.0
+  version: 1.2.0
   title: Planer o_0
   # termsOfService: ''
   contact:
@@ -249,6 +249,7 @@ paths:
           $ref: "#/components/responses/AuthenticationError"
       tags:
         - Пользователи
+
   /api/tags/:
     get:
       operationId: Cписок тегов
@@ -1369,16 +1370,20 @@ components:
           example: "Градусов"
       required:
         - username
+        - email
+        - first_name
+        - last_name
     Tag:
       type: object
       $ref: "#/components/models/Tag"
     Status:
       type: object
       $ref: "#/components/models/Status"
-    space:
+
+    Space:
       type: object
       $ref: "#/components/models/space"
-    spaceList:
+    SpaceList:
       properties:
         id:
           externalDocs:
@@ -1391,13 +1396,13 @@ components:
           description: Название пространства
           maxLength: 200
           type: string
-          example: Planner o_0
+          example: Planer o_0
         admin:
           description: Администратор пространства
           allOf:
             - $ref: "#/components/schemas/User"
       type: object
-    spaceCreate:
+    SpaceCreate:
       type: object
       required:
         - name
@@ -1406,7 +1411,7 @@ components:
           description: Название пространства
           maxLength: 200
           type: string
-          example: Planner o_0
+          example: Planer o_0
         staff:
           description: Сотрудники пространства (id)
           minItems: 0
@@ -1924,10 +1929,6 @@ components:
 
     TaskPersonal:
       type: object
-      required:
-        - name
-        - author
-        - space
       properties:
         id:
           externalDocs:
@@ -1957,10 +1958,6 @@ components:
           type: datetime
           description: Время дедлайна
           example: 21.06.2023
-        subtasks:
-          description: Подзадачи
-          allOf:
-            - $ref: "#/components/schemas/SubTaskPersonalResp"
         tags:
           description: Теги задачи
           minItems: 0
@@ -1970,10 +1967,6 @@ components:
           items:
             $ref: "#/components/models/Tag"
     TaskPersonalCreate:
-      required:
-        - name
-        - description
-        - status
       type: object
       properties:
         name:
@@ -2033,9 +2026,6 @@ components:
           type: datetime
           description: Время дедлайна
           example: 21.06.2023
-        subtasks:
-          description: Подзадачи
-          example: []
         tags:
           description: Теги задачи
           minItems: 0
@@ -2045,8 +2035,6 @@ components:
           items:
             $ref: "#/components/models/Tag"
     TaskPersonalUpdate:
-      required:
-        - name
       type: object
       properties:
         name:
@@ -2108,9 +2096,6 @@ components:
           type: datetime
           description: Время дедлайна
           example: 17.07.2023
-        subtasks:
-          description: Подзадачи
-          example: []
         tags:
           description: Теги задачи
           minItems: 0
@@ -2142,6 +2127,10 @@ components:
           description: Статус задачи
           allOf:
             - $ref: "#/components/models/Status"
+        author:
+          description: Автор задачи
+          allOf:
+            - $ref: "#/components/schemas/User"
         deadline:
           type: datetime
           description: Время дедлайна
@@ -2155,8 +2144,6 @@ components:
           items:
             $ref: "#/components/models/Tag"
     SubTaskPersonalCreate:
-      required:
-        - name
       type: object
       properties:
         name:
@@ -2216,9 +2203,6 @@ components:
           type: datetime
           description: Время дедлайна
           example: 10.06.2023
-        subtasks:
-          description: Подзадачи
-          example: []
         tags:
           description: Теги задачи
           minItems: 0
@@ -2228,8 +2212,6 @@ components:
           items:
             $ref: "#/components/models/Tag"
     SubTaskPersonalUpdate:
-      required:
-        - name
       type: object
       properties:
         name:
@@ -2289,51 +2271,6 @@ components:
           type: datetime
           description: Время дедлайна
           example: 20.06.2023
-        subtasks:
-          description: Подзадачи
-          example: []
-        tags:
-          description: Теги задачи
-          minItems: 0
-          xml:
-            name: tag
-            wrapped: true
-          items:
-            $ref: "#/components/models/Tag"
-    SubTaskPersonalList:
-      type: object
-      properties:
-        id:
-          externalDocs:
-            description: Id задачи
-          description: Id задачи
-          type: integer
-          readOnly: true
-          example: 1
-        name:
-          description: Название задачи
-          maxLength: 200
-          type: string
-          example: Изучение математики
-        description:
-          description: Описание задачи
-          type: string
-          example: Изучение тер-вера, ДУ, линейной алгебры и интегрирования
-        status:
-          description: Статус задачи
-          allOf:
-            - $ref: "#/components/models/Status"
-        author:
-          description: Автор задачи
-          allOf:
-            - $ref: "#/components/schemas/User"
-        deadline:
-          type: datetime
-          description: Время дедлайна
-          example: 20.06.2023
-        subtasks:
-          description: Подзадачи
-          example: []
         tags:
           description: Теги задачи
           minItems: 0
@@ -2374,10 +2311,6 @@ components:
           maxLength: 150
           description: "Фамилия"
           example: "Градусов"
-        id_telegram:
-          type: integer
-          description: "Для использования телеграмм-бота необохдим id-пользователя"
-          example: 17515414930
       required:
         - username
         - first_name
@@ -2524,10 +2457,9 @@ components:
           maxLength: 150
           description: "Пароль пользователя"
           example: "Qwerty123"
-        id_telegram:
-          type: integer
-          description: "Для использования телеграмм-бота необохдим id-пользователя"
-          example: 1751541493
+        avatar:
+          type: base64
+          description: "Аватарка пользователя"
       required:
         - username
         - password
@@ -2596,7 +2528,7 @@ components:
           maxLength: 7
           description: Цвет статуса в HEX-формате
           example: "#00F154"
-    space:
+    Space:
       type: object
       required:
         - name
@@ -2614,7 +2546,7 @@ components:
           description: Название пространства
           maxLength: 200
           type: string
-          example: Planner o_0
+          example: Planer o_0
         admin:
           description: Администратор пространства
           allOf:
@@ -2627,6 +2559,10 @@ components:
             wrapped: true
           items:
             $ref: "#/components/schemas/User"
+        avatar:
+          type: base64
+          description: "Аватарка пользователя"
+
     Taskspace:
       type: object
       required:
@@ -2673,8 +2609,8 @@ components:
           type: datetime
           description: Время дедлайна
           example: 15.08.2023
-        subtasks:
-          description: Подзадачи
+        parent:
+          description: Родитель
           allOf:
             - $ref: "#/components/models/Taskspace"
         tags:
@@ -2687,7 +2623,7 @@ components:
             $ref: "#/components/models/Tag"
         history:
           description: История изменения задачи
-          example: пока хз)
+          example: я где то описывал это, но опять лЭнь XD
           type: <HistoricalTaskspace>
           readOnly: true
     TaskPersonal:
@@ -2723,8 +2659,8 @@ components:
           type: datetime
           description: Время дедлайна
           example: 21.06.2023
-        subtasks:
-          description: Подзадачи
+        parent:
+          description: Родитель
           allOf:
             - $ref: "#/components/models/TaskPersonal"
         tags:
