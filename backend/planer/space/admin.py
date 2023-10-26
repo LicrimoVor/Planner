@@ -8,11 +8,10 @@ class StaffInline(admin.TabularInline):
     extra = 0
 
 
+@admin.register(SpaceModel)
 class SpaceAdmin(admin.ModelAdmin):
     """Отображение пространств в админ-панеле."""
     list_display = ("id", "name", "admin")
-    list_filter = ("name", "admin")
+    list_filter = ("name", "admin", "staff")
+    search_fields = ("name", "admin__username",)
     inlines = [StaffInline,]
-
-
-admin.site.register(SpaceModel, SpaceAdmin)

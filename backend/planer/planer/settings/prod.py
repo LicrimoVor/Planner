@@ -3,6 +3,9 @@ import os
 
 from .base import *
 
+
+INSTALLED_APPS += ["django.contrib.postgres",]
+
 DEBUG = os.getenv('DEBUG', "False") == "True"
 if DEBUG:
     THIRD_PARTY_APPS = ["debug_toolbar", ]

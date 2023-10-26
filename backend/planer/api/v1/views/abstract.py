@@ -1,13 +1,10 @@
 import logging
 
-from rest_framework import filters, status
-from rest_framework.viewsets import ModelViewSet
+from rest_framework import filters, status, exceptions, mixins
+from rest_framework.viewsets import ModelViewSet, GenericViewSet
 from rest_framework.views import APIView
 from rest_framework.response import Response
-from rest_framework import exceptions
 from django.shortcuts import get_object_or_404
-from rest_framework.viewsets import GenericViewSet
-from rest_framework import mixins
 
 from ..filters import (TagTaskFilter, StatusTaskFilter,
                        ActualTaskFilter, MainTaskFilter)
@@ -27,6 +24,7 @@ class GetPostSet(mixins.ListModelMixin,
 
 class TaskSet(ModelViewSet):
     """ViewSet задач."""
+
     model_task: TaskModel
     filter_backends = [filters.SearchFilter,
                        filters.OrderingFilter,
@@ -37,13 +35,10 @@ class TaskSet(ModelViewSet):
     search_fields = ("name", "description")
     ordering_fields = ("deadline",)
 
-    def update(self, request, *args, **kwargs):
-        logging.info(request.data)
-        return super().update(request, *args, **kwargs)
-
 
 class SubTaskSet(GetPostSet):
     """View подзадач."""
+
     model_task: TaskModel
     filter_backends = (filters.SearchFilter,
                        filters.OrderingFilter,
@@ -72,7 +67,8 @@ class SubTaskSet(GetPostSet):
 
 
 class TaskTreeView(APIView):
-    """View дерева задач."""
+    """АК-View удаления дерева задач."""
+
     model_task: TaskModel
 
     def delete(self, request, *args, **kwargs):
@@ -89,6 +85,8 @@ class TaskTreeView(APIView):
 
 
 class SubTaskChangeView(APIView):
+    """АК-View для измены родителя подзадачи по get-запросу."""
+
     model_task: TaskModel
       
     def get(self, request, *args, **kwargs):

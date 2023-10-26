@@ -3,6 +3,8 @@ import datetime as dt
 from rest_framework import serializers
 from rest_framework import exceptions
 from django.contrib.auth import get_user_model
+from django.utils.safestring import mark_safe
+from markdown import markdown
 
 from task.models import SpaceTaskModel
 from .user import UserSerializer
@@ -15,6 +17,7 @@ User = get_user_model()
 
 class SpaceTaskSerializer(serializers.ModelSerializer):
     """Сериализатор задач пространств."""
+
     author = UserSerializer(read_only=True)
     responsibles = UserSerializer(many=True, required=False)
     tags = TagSerializer(many=True, required=False)
@@ -44,7 +47,7 @@ class SpaceTaskSerializer(serializers.ModelSerializer):
         tags = validated_data.pop("tags") if validated_data.get("tags") is not None else []
         responsibles = validated_data.pop("responsibles") if validated_data.get("responsibles") is not None else []
         if validated_data.get("deadline") is not None:
-            validated_data["deadline"] -= dt.timedelta(hours=author.user.time_zone)
+            validated_data["deadline"] -= dt.timedelta(hours=author.user.profile.time_zone)
         model = SpaceTaskModel.objects.create(space=space,
                                               author=author, **validated_data)
         model.responsibles.set(responsibles)
@@ -65,7 +68,7 @@ class SpaceTaskSerializer(serializers.ModelSerializer):
                 getattr(instance, m2m_filed).set(values_field)
 
         if validated_data.get("deadline") is not None:
-            validated_data["deadline"] -= dt.timedelta(hours=self.context["request"].user.time_zone)
+            validated_data["deadline"] -= dt.timedelta(hours=self.context["request"].user.profile.time_zone)
 
         for name, value in validated_data.items():
             setattr(instance, name, value)
@@ -76,13 +79,15 @@ class SpaceTaskSerializer(serializers.ModelSerializer):
     def to_representation(self, instance):
         data = super().to_representation(instance)
         if data.get("deadline") is not None:
-            data["deadline"] = instance.deadline + dt.timedelta(hours=instance.author.time_zone)
-            # data["deadline"] = datetime.strftime('%H:%M - %d.%m.%Y') + f" (+{instance.author.time_zone})"
+            data["deadline"] = instance.deadline + dt.timedelta(hours=instance.author.profile.time_zone)
+        if data.get("description") is not None:
+            data["description"] = mark_safe(markdown(instance.description))
         return data
 
 
 class HistorySerializer(serializers.Serializer):
     """Сериализатор истории изменений задач."""
+
     author = serializers.SerializerMethodField(read_only=True)
     datetime = serializers.SerializerMethodField(read_only=True)
     name_task = serializers.SerializerMethodField(read_only=True)

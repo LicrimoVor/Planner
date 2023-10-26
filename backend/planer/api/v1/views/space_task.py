@@ -18,6 +18,7 @@ from .abstract import TaskSet, SubTaskSet, SubTaskChangeView, TaskTreeView
 
 class SpaceTaskSet(TaskSet):
     """ViewSet задач пространств."""
+
     model_task = SpaceTaskModel
     queryset = SpaceTaskModel.objects.all()
     serializer_class = SpaceTaskSerializer
@@ -44,6 +45,7 @@ class SpaceTaskSet(TaskSet):
 
 class SpaceSubTaskSet(SubTaskSet):
     """ViewSet подзадач пространств."""
+
     model_task = SpaceTaskModel
     queryset = SpaceTaskModel.objects.all()
     serializer_class = SpaceTaskSerializer
@@ -65,12 +67,15 @@ class SpaceSubTaskSet(SubTaskSet):
 
 
 class SpaceTaskTreeView(TaskTreeView):
-    """View дерева персональной задачи."""
+    """View для удаления дерева задачи ораганизации."""
+
     model_task = SpaceTaskModel
     permission_classes = [IsAuthenticated&SpaceStaffPermission]
 
 
 class SpaceSubTaskChangeView(SubTaskChangeView):
+    """View для измены родителя подзадачи организации по get-запросу."""
+
     model_task = SpaceTaskModel
     permission_classes = [IsAuthenticated&SpaceStaffPermission]
       
@@ -88,6 +93,7 @@ class SpaceSubTaskChangeView(SubTaskChangeView):
 
 class HistoryView(APIView, LimitOffsetPagination):
     """View истории всех изменений."""
+
     permission_classes = [IsAuthenticated&SpaceStaffPermission]
 
     def get_queryset(self):
@@ -113,6 +119,7 @@ class HistoryView(APIView, LimitOffsetPagination):
 
 class HistoryTaskView(APIView, LimitOffsetPagination):
     """View истории изменений одной задачи."""
+
     permission_classes = [IsAuthenticated&SpaceStaffPermission]
 
     def get_queryset(self):

@@ -1,15 +1,16 @@
 from rest_framework.permissions import IsAuthenticated
-from django.shortcuts import get_object_or_404
+# from django.shortcuts import get_object_or_404
 
 from task.models import PersonalTaskModel
 from ..permissions import AuthorPermission
-
 from ..serializers.personal_task import PersonalTaskSerializer
 from .abstract import TaskSet, SubTaskSet, SubTaskChangeView, TaskTreeView
 
 
+
 class PersonalTaskSet(TaskSet):
     """ViewSet персональных задач."""
+
     model_task = PersonalTaskModel
     queryset = PersonalTaskModel.objects.all()
     serializer_class = PersonalTaskSerializer
@@ -23,6 +24,7 @@ class PersonalTaskSet(TaskSet):
 
 class PersonalSubTaskSet(SubTaskSet):
     """View персональных подзадач."""
+
     model_task = PersonalTaskModel
     queryset = PersonalTaskModel.objects.all()
     serializer_class = PersonalTaskSerializer
@@ -35,11 +37,14 @@ class PersonalSubTaskSet(SubTaskSet):
 
 
 class PersonalTaskTreeView(TaskTreeView):
-    """View дерева персональной задачи."""
+    """View для удаления дерева персональной задачи."""
+
     permission_classes = [IsAuthenticated&AuthorPermission]
     model_task = PersonalTaskModel
 
 
 class PersonalSubTaskChangeView(SubTaskChangeView):
+    """View для измены родителя персональной подзадачи по get-запросу."""
+
     permission_classes = [IsAuthenticated&AuthorPermission]
     model_task = PersonalTaskModel

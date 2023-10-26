@@ -7,7 +7,6 @@ from .base import *
 INSTALLED_APPS += [
     'django_extensions',
 ]
-print(ALLOWED_HOSTS)
 
 DEBUG = os.getenv('DEBUG', "False") == "True"
 if DEBUG:

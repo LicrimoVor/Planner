@@ -40,6 +40,7 @@ class SpaceSet(ModelViewSet):
 
 class SpaceMeView(APIView, LimitOffsetPagination):
     """View для get-запрос получения своих организаций."""
+    
     permission_classes = (IsAuthenticated, )
 
     def get_queryset(self, user):

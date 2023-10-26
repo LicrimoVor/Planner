@@ -3,6 +3,8 @@ import datetime as dt
 
 from rest_framework import serializers
 from django.contrib.auth import get_user_model
+from django.utils.safestring import mark_safe
+from markdown import markdown
 
 from task.models import PersonalTaskModel
 from .user import UserSerializer
@@ -17,6 +19,7 @@ logger = logging.getLogger(__name__)
 
 class PersonalTaskSerializer(serializers.ModelSerializer):
     """Сериализатор персональных задач."""
+
     author = UserSerializer(User.objects.all(), read_only=True)
     tags = TagSerializer(many=True, required=False)
     status = StatusSerializer(required=False)
@@ -32,7 +35,7 @@ class PersonalTaskSerializer(serializers.ModelSerializer):
         author = self.context["request"].user
         tags = validated_data.pop("tags") if validated_data.get("tags") is not None else []
         if validated_data.get("deadline") is not None:
-            validated_data["deadline"] -= dt.timedelta(hours=author.time_zone)
+            validated_data["deadline"] -= dt.timedelta(hours=author.profile.time_zone)
         model = PersonalTaskModel.objects.create(author=author, **validated_data)
         model.tags.set(tags)
         return model
@@ -49,7 +52,7 @@ class PersonalTaskSerializer(serializers.ModelSerializer):
             instance.tags.set(values_field)
 
         if validated_data.get("deadline") is not None:
-            validated_data["deadline"] -= dt.timedelta(hours=self.context["request"].user.time_zone)
+            validated_data["deadline"] -= dt.timedelta(hours=self.context["request"].user.profile.time_zone)
 
         logger.info(validated_data)
         for name, value in validated_data.items():
@@ -61,6 +64,7 @@ class PersonalTaskSerializer(serializers.ModelSerializer):
     def to_representation(self, instance):
         data = super().to_representation(instance)
         if data.get("deadline") is not None:
-            data["deadline"] = instance.deadline + dt.timedelta(hours=instance.author.time_zone)
-            # data["deadline"] = datetime.strftime('%H:%M - %d.%m.%Y') + f" (+{instance.author.time_zone})"
+            data["deadline"] = instance.deadline + dt.timedelta(hours=instance.author.profile.time_zone)
+        if data.get("description") is not None:
+            data["description"] = mark_safe(markdown(instance.description))
         return data
