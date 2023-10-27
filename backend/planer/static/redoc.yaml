@@ -78,7 +78,10 @@ paths:
   /api/users/:
     get:
       operationId: Список пользователей
-      description: Получение списка всех пользователей. Подключен пагинатор с 10 элементами на выводе
+      description: |
+        Получение списка всех пользователей. <br>
+        Подключен пагинатор с 10 элементами на выводе. <br>
+        Возможен поиск по username/last_name/first_name:  http://127.0.0.1:8000/users/search/lic/ <br>
       parameters:
         - name: page
           required: false
@@ -145,8 +148,8 @@ paths:
         - Пользователи
   /api/users/{id}/:
     get:
-      operationId: Профиль пользователя
-      description: Профиль пользователя, допступного через его id
+      operationId: Информация о пользователе
+      description: Информация о пользователя, допступного через его id
       security:
         - Token: []
       parameters:
@@ -172,7 +175,7 @@ paths:
   /api/users/me/:
     get:
       operationId: Текущий пользователь
-      description: Профиль текущего пользователя
+      description: Информация текущего пользователя
       parameters: []
       security:
         - Token: []
@@ -187,6 +190,7 @@ paths:
           $ref: "#/components/responses/AuthenticationError"
       tags:
         - Пользователи
+  /api/users/profile/
   /api/users/set_password/:
     post:
       security:
@@ -247,6 +251,15 @@ paths:
           description: ""
         "401":
           $ref: "#/components/responses/AuthenticationError"
+      tags:
+        - Пользователи
+  /api/auth/login/{backend}-oauth2/:
+    redirect:
+      operationId: Социальная авторизация
+      description: |
+        Позволяет авторизоваться с помощью различных сервисов. <br>
+        Доступные сервисы: yandex, mailru, google, vk. <br>
+        После успешной авторизации происходит редирект на главную страницу.
       tags:
         - Пользователи
 
@@ -1368,6 +1381,12 @@ components:
           maxLength: 150
           description: "Фамилия"
           example: "Градусов"
+        color:
+          type: string
+          pattern: ^[-A-F0-9]+$
+          maxLength: 7
+          description: Цвет тега в HEX-формате
+          example: "#00FF00"
       required:
         - username
         - email
@@ -2311,6 +2330,12 @@ components:
           maxLength: 150
           description: "Фамилия"
           example: "Градусов"
+        color:
+          type: string
+          pattern: ^[-A-F0-9]+$
+          maxLength: 7
+          description: Цвет тега в HEX-формате
+          example: "#00FF00"
       required:
         - username
         - first_name
@@ -2424,18 +2449,18 @@ components:
     User:
       type: object
       properties:
-        email:
-          type: string
-          format: email
-          maxLength: 254
-          description: "Адрес электронной почты"
-          example: "ignasi_grad@yandex.ru"
         id:
           type: integer
           externalDocs:
             description: Id пользователя
           description: Id пользователя
           readOnly: true
+        email:
+          type: string
+          format: email
+          maxLength: 254
+          description: "Адрес электронной почты"
+          example: "ignasi_grad@yandex.ru"
         username:
           type: string
           description: "Уникальный username"
@@ -2466,6 +2491,27 @@ components:
         - first_name
         - last_name
         - email
+    Profile:
+      type: object
+      properties:
+        user:
+          description: Пользователь
+          allOf:
+            - $ref: "#/components/schemas/User"
+        avatar:
+          type: base64
+          description: "Аватарка пользователя"
+        time_zone:
+          type: integer
+          description: Часовой пояс
+          example: 8
+        color:
+          type: string
+          pattern: ^[-A-F0-9]+$
+          maxLength: 7
+          description: Цвет тега в HEX-формате
+          example: "#FF0000"
+
     Tag:
       type: object
       required:
@@ -2609,6 +2655,14 @@ components:
           type: datetime
           description: Время дедлайна
           example: 15.08.2023
+        created:
+          type: datetime
+          description: Дата создания
+          example: 01.08.2023
+        updated:
+          type: datetime
+          description: Дата обновления
+          example: 12.08.2023
         parent:
           description: Родитель
           allOf:
@@ -2702,7 +2756,7 @@ components:
     Token:
       description: 'Авторизация по токену. <br>
         Все запросы от имени пользователя должны выполняться
-        с заголовком "Authorization: Token TOKENVALUE"'
+        с заголовком "Authorization: Token *TOKEN_VALUE*"'
       type: http
       scheme: token
 
@@ -2719,8 +2773,12 @@ x-tagGroups:
   - name: Models
     tags:
       - Модель пользователя
+      - Модель профиля пользователя
       - Модель тега
       - Модель статуса
       - Модель пространства
       - Модель задачи пространства
       - Модель персональной задачи
+  - name: Прочие
+    tags:
+      - Привязка телеграма

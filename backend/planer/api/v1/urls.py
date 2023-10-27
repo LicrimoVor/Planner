@@ -14,7 +14,7 @@ from api.v1.views.personal_task import (
 from api.v1.views.space import SpaceMeView, SpaceSet
 from api.v1.views.status import StatusSet
 from api.v1.views.tag import TagSet
-from api.v1.views.users import UsersView, ProfileView
+# from api.v1.views.users import UsersView, ProfileView
 
 
 router = DefaultRouter()
@@ -51,8 +51,8 @@ urlpatterns = [
 
      # path("users/search/<str:search_field>/",
      #      UsersView.as_view(), name="user_search"),
-     path("users/profile/",
-          ProfileView.as_view(), name="profile_user"),
+     # path("users/profile/",
+     #      ProfileView.as_view(), name="profile_user"),
 
      path("", include(router.urls)),
 ]

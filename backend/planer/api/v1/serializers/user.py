@@ -11,9 +11,11 @@ User = get_user_model()
 class UserSerializer(serializers.ModelSerializer):
     """Сериализтор пользователей."""
 
+    color = serializers.CharField(source='profile.color', read_only=True,)
+
     class Meta:
         model = User
-        fields = ['id', 'email', 'username', 'last_name', 'first_name']
+        fields = ['id', 'email', 'username', 'last_name', 'first_name', 'color']
 
     def create(self, validated_data):
         user = super().create(validated_data)
@@ -37,3 +39,7 @@ class ProfileSerializer(serializers.ModelSerializer):
     class Meta:
         model = Profile
         fields = ['time_zone', 'color', 'avatar', 'user']
+
+    def create(self, validated_data):
+        self.validated_data['user'] = self.context["request"].user
+        return super().create(validated_data)

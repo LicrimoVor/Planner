@@ -5,7 +5,7 @@ from rest_framework.pagination import LimitOffsetPagination
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework import status
-# from django.contrib.postgres.search import SearchVector
+from django.contrib.postgres.search import SearchVector
 
 from ..serializers.user import UserSerializer, ProfileSerializer
 
@@ -18,7 +18,6 @@ class UsersView(ListAPIView, LimitOffsetPagination):
     permission_classes = [IsAuthenticated,]
 
     def get_queryset(self, search_field):
-        from django.contrib.postgres.search import SearchVector
         queryset = User.objects.annotate(
             search=SearchVector('first_name', 'last_name', 'username')
         ).filter(search=search_field)

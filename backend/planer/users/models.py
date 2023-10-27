@@ -8,6 +8,7 @@ from core.validators import validate_hex
 
 class UserModel(AbstractUser):
     """Модель пользователя."""
+
     is_staff = models.BooleanField(
         "Администратор",
         default=False,
@@ -19,7 +20,6 @@ class UserModel(AbstractUser):
     groups = None
 
     def __str__(self):
-        print("!"*100)
         return self.username
 
     class Meta:
@@ -38,7 +38,7 @@ class Profile(models.Model):
         primary_key=True,
     )
     time_zone = models.IntegerField(
-        "Часовой пояс",
+        verbose_name="Часовой пояс",
         default=5,
         validators=[MinValueValidator(0, "В пределах России, окей?"), MaxValueValidator(12, "В пределах России, окей?")]
     )

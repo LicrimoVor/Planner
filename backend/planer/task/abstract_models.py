@@ -38,10 +38,17 @@ class TaskModel(models.Model):
         on_delete=models.CASCADE,
         related_name="+",
     )
-    
-    
+    created = models.DateField(
+        auto_now_add=True,
+    )
+    updated = models.DateField(
+        auto_now=True,
+    )
+
+
     class Meta:
         abstract = True
+        ordering = ['-created',]
     
     def __str__(self) -> str:
         return self.name

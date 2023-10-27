@@ -6,6 +6,7 @@ User = get_user_model()
 
 class SpaceModel(models.Model):
     """Модель пространства"""
+
     name = models.CharField(
         verbose_name="Название",
         max_length=200

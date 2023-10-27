@@ -44,6 +44,7 @@ DJANGO_ALLOW_ASYNC_UNSAFE = True
 
 ROOT_URLCONF = 'planer.urls'
 AUTH_USER_MODEL = 'users.UserModel'
+LOGIN_REDIRECT_URL = '/'
 TEMPLATES_DIR = BASE_DIR / 'static'
 TEMPLATES = [
     {

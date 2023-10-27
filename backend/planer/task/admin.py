@@ -18,6 +18,7 @@ class TagPersonalTaskInline(admin.TabularInline):
     extra = 0
     verbose_name_plural = "Теги"
 
+
 class ResponsibleSpaceTasksAdmin(admin.TabularInline):
     model = ResponsibleSpaceTasks
     extra = 0
@@ -27,6 +28,7 @@ class ResponsibleSpaceTasksAdmin(admin.TabularInline):
 @admin.register(TagModel)
 class TagAdmin(admin.ModelAdmin):
     """Отображение тегов в админ-панеле."""
+
     list_display = ("id", "name", 'color_fun')
     search_fields = ('name', )
 
@@ -40,6 +42,7 @@ class TagAdmin(admin.ModelAdmin):
 @admin.register(StatusModel)
 class StatusAdmin(admin.ModelAdmin):
     """Отображение статусов в админ-панеле."""
+
     list_display = ("id", "name", 'color_fun')
     search_fields = ('name', )
 
@@ -53,6 +56,7 @@ class StatusAdmin(admin.ModelAdmin):
 @admin.register(PersonalTaskModel)
 class PersonalTaskAdmin(admin.ModelAdmin):
     """Отображение персональных задач в админ-панеле."""
+
     list_display = ("id", "name", "author", "status", "deadline")
     list_filter = ("name", "author", "status", "deadline")
     search_fields = ['name', 'author__username']
@@ -62,6 +66,7 @@ class PersonalTaskAdmin(admin.ModelAdmin):
 @admin.register(SpaceTaskModel)
 class SpaceTaskAdmin(SimpleHistoryAdmin):
     """Отображение задач простравства в админ-панеле."""
+
     list_display = ("id", "name", "author", "status", "deadline")
     list_filter = ("name", "author", "status", "deadline")
     history_list_display = ["status"]
