@@ -51,7 +51,9 @@ urlpatterns = [
 
      # path("users/search/<str:search_field>/",
      #      UsersView.as_view(), name="user_search"),
-     # path("users/profile/",
+     # path("users/me/profile/",
+     #      ProfileView.as_view(), name="profile_user"),
+     # path("users/<int:user_id>/profile/",
      #      ProfileView.as_view(), name="profile_user"),
 
      path("", include(router.urls)),

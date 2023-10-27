@@ -12,8 +12,12 @@ info:
     которые используются для создания или редактирования: задач, тегов, пользователей
 
     # Аунтентификация
-
-    Планнер поддерживает одну форму аунтетификации - TokenAuthentication.
+    - На основе сессий:
+      Основная форма аунтетификации сервиса - session-based. При авторизации 
+    данным способом sessionid сохраняется в cookie браузера и сопоставляется с 
+    id пользователем. Дополнительно отправлять ничего не надо.
+    - На основе токена:
+      Планнер поддерживает еще одну форму аунтетификации - TokenAuthentication.
     Все запросы от имени пользователя должны выполняться с заголовком: <br>
     "Authorization: Token TOKENVALUE"'
     <SecurityDefinitions />
@@ -28,6 +32,8 @@ info:
 
 tags:
   - name: Пользователи
+    description: |
+      Поиск по username/last_name/first_name: http://127.0.0.1:8000/users/search/lic/ <br>
   - name: Теги
   - name: Статусы
   - name: Пространства
@@ -53,6 +59,10 @@ tags:
     x-displayName: Модель пользователя
     description: |
       <SchemaDefinition schemaRef="#/components/models/User" />
+  - name: Модель профиля пользователя
+    x-displayName: Модель профиля пользователя
+    description: |
+      <SchemaDefinition schemaRef="#/components/models/Profile" />
   - name: Модель тега
     x-displayName: Модель тега
     description: |
@@ -64,7 +74,7 @@ tags:
   - name: Модель задачи пространства
     x-displayName: Модель задачи пространства
     description: |
-      <SchemaDefinition schemaRef="#/components/models/Taskspace" />
+      <SchemaDefinition schemaRef="#/components/models/TaskSpace" />
   - name: Модель персональной задачи
     x-displayName: Модель персональной задачи
     description: |
@@ -72,11 +82,19 @@ tags:
   - name: Модель пространства
     x-displayName: Модель пространства
     description: |
-      <SchemaDefinition schemaRef="#/components/models/space" />
+      <SchemaDefinition schemaRef="#/components/models/Space" />
+
+  - name: Привязка телеграма
+    x-displayName: Модель пространства
+    description: |
+      https://t.me/My_first_LKX_bot?start=TOKEN
 
 paths:
   /api/users/:
     get:
+      security:
+        - Token: []
+        - Sessionid: []
       operationId: Список пользователей
       description: |
         Получение списка всех пользователей. <br>
@@ -146,12 +164,13 @@ paths:
           $ref: "#/components/responses/ValidationError"
       tags:
         - Пользователи
-  /api/users/{id}/:
+  /api/users/{id_user}/:
     get:
-      operationId: Информация о пользователе
-      description: Информация о пользователя, допступного через его id
       security:
         - Token: []
+        - Sessionid: []
+      operationId: Информация о пользователе
+      description: Информация о пользователя, допступного через его id
       parameters:
         - name: id
           in: path
@@ -179,6 +198,7 @@ paths:
       parameters: []
       security:
         - Token: []
+        - Sessionid: []
       responses:
         "200":
           content:
@@ -190,13 +210,18 @@ paths:
           $ref: "#/components/responses/AuthenticationError"
       tags:
         - Пользователи
-  /api/users/profile/
+  /api/users/me/profile/:
+    get:
+    put:
+  /api/users/{id_user}/profile/:
+    get:
   /api/users/set_password/:
     post:
       security:
         - Token: []
+        - Sessionid: []
       operationId: Изменение пароля
-      description: "Изменение пароля текущего пользователя"
+      description: "Изменение пароля текущего пользователя."
       parameters: []
       requestBody:
         content:
@@ -212,16 +237,45 @@ paths:
           $ref: "#/components/responses/AuthenticationError"
       tags:
         - Пользователи
-  /api/auth/token/login/:
+  /api/auth/login/:
     post:
-      operationId: Получить токен авторизации
-      description: Используется для авторизации по емейлу и паролю, чтобы далее использовать токен при запросах.
+      operationId: Авторизация сессии
+      description: |
+        Используется для авторизации по username и password. <br>
+        Создает session-id и сохраняет в cookie браузера. <br>
+        В заголовке нужно указать CSRF-токен (а мб и не надо). <br>
       parameters: []
       requestBody:
         content:
           application/json:
             schema:
-              $ref: "#/components/schemas/TokenCreate"
+              $ref: "#/components/schemas/Login"
+      responses:
+        "302":
+          description: "Редирект на главную страницу."
+      tags:
+        - Пользователи
+  /api/auth/login/{backend}-oauth2/:
+    redirect:
+      operationId: Социальная авторизация
+      description: |
+        Позволяет авторизоваться с помощью различных сервисов. <br>
+        Доступные сервисы: yandex, mailru, google, vk. <br>
+        После успешной авторизации происходит редирект на главную страницу.
+      tags:
+        - Пользователи
+  /api/auth/token/login/:
+    post:
+      operationId: Получить токен авторизации
+      description: |
+        Используется для авторизации по username и password. <br>
+        Токен используется в качестве авторизации и для некоторых эндпоинтов (телеграм). <br>
+      parameters: []
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/Login"
       responses:
         "201":
           content:
@@ -253,18 +307,34 @@ paths:
           $ref: "#/components/responses/AuthenticationError"
       tags:
         - Пользователи
-  /api/auth/login/{backend}-oauth2/:
-    redirect:
-      operationId: Социальная авторизация
-      description: |
-        Позволяет авторизоваться с помощью различных сервисов. <br>
-        Доступные сервисы: yandex, mailru, google, vk. <br>
-        После успешной авторизации происходит редирект на главную страницу.
+  /api/auth/logout/:
+    get:
+      security:
+        - Sessionid: []
+      operationId: Удаление sessionid
+      description: Удаляет sessionid текущего пользователя.
+      parameters: []
+      requestBody:
+        content:
+          application/json:
+            schema: {}
+
+      responses:
+        "200":
+          content:
+            application/json:
+              schema: {}
+          description: ""
+        "401":
+          $ref: "#/components/responses/AuthenticationError"
       tags:
         - Пользователи
 
   /api/tags/:
     get:
+      security:
+        - Token: []
+        - Sessionid: []
       operationId: Cписок тегов
       description: Получение списка всех тегов. Подключен пагинатор с 10 элементами на выводе
       parameters: []
@@ -300,10 +370,11 @@ paths:
       tags:
         - Теги
     post:
-      operationId: Создание тега
-      description: Создание тега. Доступно пока что только администраторам сервиса.
       security:
         - Token: []
+        - Sessionid: []
+      operationId: Создание тега
+      description: Создание тега. Доступно пока что только администраторам сервиса.
       requestBody:
         content:
           application/json:
@@ -322,10 +393,13 @@ paths:
           $ref: "#/components/responses/AuthenticationError"
       tags:
         - Теги
-  /api/tags/{id}/:
+  /api/tags/{id_tag}/:
     get:
+      security:
+        - Token: []
+        - Sessionid: []
       operationId: Получение тега
-      description: Получение тега по его id
+      description: Получение тега по его id.
       parameters:
         - name: id
           in: path
@@ -345,9 +419,10 @@ paths:
       tags:
         - Теги
     put:
-      operationId: Обновление тега
       security:
         - Token: []
+        - Sessionid: []
+      operationId: Обновление тега
       description: "Обновление полей тега (Доступно так же Patch). Доступно пока что только администраторам сервиса"
       parameters:
         - name: id
@@ -377,10 +452,11 @@ paths:
       tags:
         - Теги
     delete:
-      operationId: Удаление тега
-      description: Удаление тега. Доступно пока что только администраторам сервиса
       security:
         - Token: []
+        - Sessionid: []
+      operationId: Удаление тега
+      description: Удаление тега. Доступно пока что только администраторам сервиса
       parameters:
         - name: id
           in: path
@@ -402,6 +478,9 @@ paths:
 
   /api/status/:
     get:
+      security:
+        - Token: []
+        - Sessionid: []
       operationId: Cписок статусов
       description: Получение списка всех статусов. Подключен пагинатор с 10 элементами на выводе
       parameters: []
@@ -437,10 +516,11 @@ paths:
       tags:
         - Статусы
     post:
-      operationId: Создание статуса
-      description: Создание статуса для задач. Доступно пока что только администраторам сервиса
       security:
         - Token: []
+        - Sessionid: []
+      operationId: Создание статуса
+      description: Создание статуса для задач. Доступно пока что только администраторам сервиса
       requestBody:
         content:
           application/json:
@@ -461,10 +541,13 @@ paths:
           $ref: "#/components/responses/PermissionDenied"
       tags:
         - Статусы
-  /api/status/{id}/:
+  /api/status/{id_space}/:
     get:
+      security:
+        - Token: []
+        - Sessionid: []
       operationId: Получение статуса
-      description: Получение статуса по его id
+      description: Получение статуса по его id.
       parameters:
         - name: id
           in: path
@@ -484,10 +567,13 @@ paths:
       tags:
         - Статусы
     put:
-      operationId: Обновление статуса
       security:
         - Token: []
-      description: "Обновление полей статуса (Доступно так же Patch). Доступно пока что только администраторам сервиса"
+        - Sessionid: []
+      operationId: Обновление статуса
+      description: |
+        Обновление полей статуса (Доступно так же Patch). <br>
+        Доступно только администраторам сервиса. <br>
       parameters:
         - name: id
           in: path
@@ -516,10 +602,11 @@ paths:
       tags:
         - Статусы
     delete:
-      operationId: Удаление статуса
-      description: Удаление статуса. Доступно пока что только администраторам сервиса
       security:
         - Token: []
+        - Sessionid: []
+      operationId: Удаление статуса
+      description: Удаление статуса. Доступно пока что только администраторам сервиса
       parameters:
         - name: id
           in: path
@@ -541,11 +628,14 @@ paths:
 
   /api/space/:
     get:
-      operationId: Cписок пространств
-      description: Получение списка всех пространств. Подключен пагинатор с 10 элементами на выводе
-      parameters: []
       security:
         - Token: []
+        - Sessionid: []
+      operationId: Cписок пространств
+      description: |
+        Получение списка всех пространств. <br>
+        Подключен пагинатор с 10 элементами на выводе. <br>
+      parameters: []
       responses:
         "200":
           content:
@@ -572,7 +662,7 @@ paths:
                   results:
                     type: array
                     items:
-                      $ref: "#/components/schemas/spaceList"
+                      $ref: "#/components/schemas/SpaceList"
                     description: "Список объектов текущей страницы"
           description: ""
         "401":
@@ -580,21 +670,23 @@ paths:
       tags:
         - Пространства
     post:
-      operationId: Создание пространства
-      description: Создание пространства
       security:
         - Token: []
+        - Sessionid: []
+      operationId: Создание пространства
+      description: |
+        Создание пространства. Ну все логиШно)
       requestBody:
         content:
           application/json:
             schema:
-              $ref: "#/components/schemas/spaceCreate"
+              $ref: "#/components/schemas/SpaceCreate"
       responses:
         "201":
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/space"
+                $ref: "#/components/schemas/Space"
           description: "пространство успешно создана"
         "400":
           $ref: "#/components/responses/ValidationError"
@@ -602,12 +694,15 @@ paths:
           $ref: "#/components/responses/AuthenticationError"
       tags:
         - Пространства
-  /api/space/{id}/:
+  /api/space/{id_space}/:
     get:
-      operationId: Получение пространства
-      description: Получение пространства по её id. Доступно только участникам пространства.
       security:
         - Token: []
+        - Sessionid: []
+      operationId: Получение пространства
+      description: |
+        Получение пространства по её id. <br>
+        Доступно только участникам пространства. <br>
       parameters:
         - name: id
           in: path
@@ -620,7 +715,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/space"
+                $ref: "#/components/schemas/Space"
           description: ""
         "401":
           $ref: "#/components/responses/AuthenticationError"
@@ -631,10 +726,13 @@ paths:
       tags:
         - Пространства
     put:
-      operationId: Обновление пространства
       security:
         - Token: []
-      description: "Обновление полей пространства (Доступно так же Patch). Доступно только администратору пространства"
+        - Sessionid: []
+      operationId: Обновление пространства
+      description: |
+        Обновление полей пространства (Доступно так же Patch).
+        Доступно только администратору пространства.
       parameters:
         - name: id
           in: path
@@ -646,13 +744,13 @@ paths:
         content:
           application/json:
             schema:
-              $ref: "#/components/schemas/spaceCreate"
+              $ref: "#/components/schemas/SpaceCreate"
       responses:
         "200":
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/space"
+                $ref: "#/components/schemas/Space"
           description: "пространство успешна обновлена"
         "401":
           $ref: "#/components/responses/AuthenticationError"
@@ -663,10 +761,13 @@ paths:
       tags:
         - Пространства
     delete:
-      operationId: Удаление пространства
-      description: Удаление пространства. Доступно только администратору пространства
       security:
         - Token: []
+        - Sessionid: []
+      operationId: Удаление пространства
+      description: |
+        Удаление пространства. <br>
+        Доступно только администратору пространства.
       parameters:
         - name: id
           in: path
@@ -726,7 +827,7 @@ paths:
                   results:
                     type: array
                     items:
-                      $ref: "#/components/schemas/spaceList"
+                      $ref: "#/components/schemas/SpaceList"
                     description: "Список объектов текущей страницы"
           description: ""
         "401":
@@ -734,16 +835,16 @@ paths:
       tags:
         - Пространства
 
-  /api/space/{id}/task/:
+  /api/space/{id_space}/task/:
     get:
-      operationId: Cписок задач
       security:
         - Token: []
+        - Sessionid: []
+      operationId: Cписок задач
       description: |
         Получение списка задач текущей пространства. <br>
         Доступно только участникам пространства <br>
         Подключен пагинатор с 10 элементами на выводе <br>
-
       parameters: []
       responses:
         "200":
@@ -783,10 +884,11 @@ paths:
       tags:
         - Задачи пространства
     post:
-      operationId: Создание задачи
-      description: Создание задачи
       security:
         - Token: []
+        - Sessionid: []
+      operationId: Создание задачи
+      description: Создание задачи
       requestBody:
         content:
           application/json:
@@ -809,10 +911,11 @@ paths:
           $ref: "#/components/responses/NotFound"
       tags:
         - Задачи пространства
-  /api/space/{id}/task/{id}/:
+  /api/space/{id_space}/task/{id_task}/:
     get:
       security:
         - Token: []
+        - Sessionid: []
       operationId: Получение задачи
       description: Получение задачи по его id (Так же применяется и для подзадач)
       parameters:
@@ -838,9 +941,10 @@ paths:
       tags:
         - Задачи пространства
     put:
-      operationId: Обновление задачи
       security:
         - Token: []
+        - Sessionid: []
+      operationId: Обновление задачи
       description: Обновление полей задачи (Так же применяется и для подзадач). (Доступно так же Patch)
       parameters:
         - name: id
@@ -870,10 +974,11 @@ paths:
       tags:
         - Задачи пространства
     delete:
-      operationId: Удаление задачи
-      description: Удаление задачи (Так же применяется и для подзадач)
       security:
         - Token: []
+        - Sessionid: []
+      operationId: Удаление задачи
+      description: Удаление задачи (Так же применяется и для подзадач).
       parameters:
         - name: id
           in: path
@@ -892,7 +997,7 @@ paths:
           $ref: "#/components/responses/NotFound"
       tags:
         - Задачи пространства
-  /api/space/{id}/task/{id}/subtasks/:
+  /api/space/{id_space}/task/{id_task}/subtasks/:
     get:
       operationId: Cписок подзадач
       security:
@@ -941,10 +1046,11 @@ paths:
       tags:
         - Задачи пространства
     post:
-      operationId: Создание подзадачи
-      description: Создание подзадачи
       security:
         - Token: []
+        - Sessionid: []
+      operationId: Создание подзадачи
+      description: Создание подзадачи
       requestBody:
         content:
           application/json:
@@ -967,7 +1073,11 @@ paths:
           $ref: "#/components/responses/NotFound"
       tags:
         - Задачи пространства
-  /api/space/{id}/task/history/:
+  /api/space/{id_space}/task/{id_task_from}/to/{id_task_to}/:
+    get:
+  /api/space/{id_space}/task/{id_task_id}/all_tree/:
+    delete:
+  /api/space/{id_space}/task/history/:
     get:
       operationId: История всех задач
       security:
@@ -1014,11 +1124,12 @@ paths:
           $ref: "#/components/responses/NotFound"
       tags:
         - Задачи пространства
-  /api/space/{id}/task/{id}/history/:
+  /api/space/{id_space}/task/{id_task}/history/:
     get:
-      operationId: История задачи
       security:
         - Token: []
+        - Sessionid: []
+      operationId: История задачи
       description: |
         Получение списка изменений задачи текущей пространства. <br>
         Доступно только участникам пространства <br>
@@ -1064,13 +1175,13 @@ paths:
 
   /api/task_me/:
     get:
-      operationId: Cписок персональных задач
       security:
         - Token: []
+        - Sessionid: []
+      operationId: Cписок персональных задач
       description: |
         Получение списка персональных задач <br>
         Подключен пагинатор с 10 элементами на выводе <br>
-
       parameters: []
       responses:
         "200":
@@ -1110,10 +1221,11 @@ paths:
       tags:
         - Персональные задачи
     post:
-      operationId: Создание задачи
-      description: Создание задачи
       security:
         - Token: []
+        - Sessionid: []
+      operationId: Создание задачи
+      description: Создание задачи
       requestBody:
         content:
           application/json:
@@ -1136,14 +1248,14 @@ paths:
         - Персональные задачи
   /api/task_me/spaces/:
     get:
-      operationId: Cписок задач орагнизаций
       security:
         - Token: []
+        - Sessionid: []
+      operationId: Cписок задач орагнизаций
       description: |
         Получение списка задач пространств, в которых пользователь отмечен, как ответственный. <br>
         Подключен пагинатор с 10 элементами на выводе <br>
         Фильтрация по пространства: http://127.0.0.1:8000/api/task_me/spaces/?space=1 <br>
-
       parameters: []
       responses:
         "200":
@@ -1182,10 +1294,11 @@ paths:
           $ref: "#/components/responses/NotFound"
       tags:
         - Персональные задачи
-  /api/task_me/{id}/:
+  /api/task_me/{id_task}/:
     get:
       security:
         - Token: []
+        - Sessionid: []
       operationId: Получение задачи
       description: Получение задачи по его id (Так же применяется и для подзадач)
       parameters:
@@ -1209,9 +1322,10 @@ paths:
       tags:
         - Персональные задачи
     put:
-      operationId: Обновление задачи
       security:
         - Token: []
+        - Sessionid: []
+      operationId: Обновление задачи
       description: Обновление полей задачи (Так же применяется и для подзадач). (Доступно так же Patch)
       parameters:
         - name: id
@@ -1239,10 +1353,11 @@ paths:
       tags:
         - Персональные задачи
     delete:
-      operationId: Удаление задачи
-      description: Удаление задачи (только задачи)
       security:
         - Token: []
+        - Sessionid: []
+      operationId: Удаление задачи
+      description: Удаление задачи (только задачи)
       parameters:
         - name: id
           in: path
@@ -1259,15 +1374,15 @@ paths:
           $ref: "#/components/responses/NotFound"
       tags:
         - Персональные задачи
-  /api/task_me/{id}/subtasks/:
+  /api/task_me/{id_task}/subtasks/:
     get:
-      operationId: Cписок подзадач
       security:
         - Token: []
+        - Sessionid: []
+      operationId: Cписок подзадач
       description: |
-        Получение списка персональных подзадач <br>
-        Подключен пагинатор с 10 элементами на выводе <br>
-
+        Получение списка персональных подзадач. <br>
+        Подключен пагинатор с 10 элементами на выводе. <br>
       parameters: []
       responses:
         "200":
@@ -1305,10 +1420,11 @@ paths:
       tags:
         - Персональные задачи
     post:
-      operationId: Создание подзадачи
-      description: Создание подзадачи
       security:
         - Token: []
+        - Sessionid: []
+      operationId: Создание подзадачи
+      description: Создание подзадачи
       requestBody:
         content:
           application/json:
@@ -1329,12 +1445,15 @@ paths:
           $ref: "#/components/responses/NotFound"
       tags:
         - Персональные задачи
-  /api/task_me/{id}/all_tree/:
+  /api/task_me/{id_task_from}/to/{id_task_to}/:
+    get:
+  /api/task_me/{id_task}/all_tree/:
     delete:
-      operationId: Удаление дерева задачи
-      description: Удаление задачи (Так же применяется и для подзадач)
       security:
         - Token: []
+        - Sessionid: []
+      operationId: Удаление дерева задачи
+      description: Удаление задачи (Так же применяется и для подзадач)
       parameters:
         - name: id
           in: path
@@ -1401,7 +1520,7 @@ components:
 
     Space:
       type: object
-      $ref: "#/components/models/space"
+      $ref: "#/components/models/Space"
     SpaceList:
       properties:
         id:
@@ -1476,7 +1595,7 @@ components:
         space:
           description: пространство, в которой находится задача
           allOf:
-            - $ref: "#/components/schemas/spaceList"
+            - $ref: "#/components/schemas/SpaceList"
         responsible:
           description: Исполнители задачи
           minItems: 0
@@ -1578,7 +1697,7 @@ components:
         space:
           description: пространство, в которой находится задача
           allOf:
-            - $ref: "#/components/schemas/spaceList"
+            - $ref: "#/components/schemas/SpaceList"
         responsible:
           description: Исполнители задачи
           minItems: 0
@@ -1680,7 +1799,7 @@ components:
         space:
           description: пространство, в которой находится задача
           allOf:
-            - $ref: "#/components/schemas/spaceList"
+            - $ref: "#/components/schemas/SpaceList"
         responsible:
           description: Исполнители задачи
           minItems: 0
@@ -1823,7 +1942,7 @@ components:
         space:
           description: пространство, в которой находится задача
           allOf:
-            - $ref: "#/components/schemas/spaceList"
+            - $ref: "#/components/schemas/SpaceList"
         responsible:
           description: Исполнители задачи
           minItems: 0
@@ -1921,7 +2040,7 @@ components:
         space:
           description: пространство, в которой находится задача
           allOf:
-            - $ref: "#/components/schemas/spaceList"
+            - $ref: "#/components/schemas/SpaceList"
         responsible:
           description: Исполнители задачи
           minItems: 0
@@ -2084,6 +2203,46 @@ components:
           items:
             type: integer
     TaskPersonalUpdateResp:
+      type: object
+      properties:
+        id:
+          externalDocs:
+            description: Id задачи
+          description: Id задачи
+          type: integer
+          readOnly: true
+          example: 1
+        name:
+          description: Название задачи
+          maxLength: 200
+          type: string
+          example: Сессия
+        description:
+          description: Описание задачи
+          type: string
+          example: Успешная сдача сессии. Подготовка к сессии.
+            Закрытие всех зачетов и прохождение практики
+        status:
+          description: Статус задачи
+          allOf:
+            - $ref: "#/components/models/Status"
+        author:
+          description: Автор задачи
+          allOf:
+            - $ref: "#/components/schemas/User"
+        deadline:
+          type: datetime
+          description: Время дедлайна
+          example: 17.07.2023
+        tags:
+          description: Теги задачи
+          minItems: 0
+          xml:
+            name: tag
+            wrapped: true
+          items:
+            $ref: "#/components/models/Tag"
+    SubTaskPersonalList:
       type: object
       properties:
         id:
@@ -2390,12 +2549,12 @@ components:
           maxLength: 254
       required:
         - current_password
-    TokenCreate:
+    Login:
       type: object
       properties:
         password:
           type: string
-        email:
+        username:
           type: string
     TokenGetResponse:
       type: object
@@ -2482,9 +2641,6 @@ components:
           maxLength: 150
           description: "Пароль пользователя"
           example: "Qwerty123"
-        avatar:
-          type: base64
-          description: "Аватарка пользователя"
       required:
         - username
         - password
@@ -2578,7 +2734,6 @@ components:
       type: object
       required:
         - name
-        - staff
         - admin
       properties:
         id:
@@ -2609,7 +2764,7 @@ components:
           type: base64
           description: "Аватарка пользователя"
 
-    Taskspace:
+    TaskSpace:
       type: object
       required:
         - author
@@ -2642,7 +2797,7 @@ components:
         space:
           description: пространство, в которой находится задача
           allOf:
-            - $ref: "#/components/models/space"
+            - $ref: "#/components/models/Space"
         responsible:
           description: Исполнители задачи
           minItems: 0
@@ -2666,7 +2821,7 @@ components:
         parent:
           description: Родитель
           allOf:
-            - $ref: "#/components/models/Taskspace"
+            - $ref: "#/components/models/TaskSpace"
         tags:
           description: Теги задачи
           minItems: 0
@@ -2678,7 +2833,7 @@ components:
         history:
           description: История изменения задачи
           example: я где то описывал это, но опять лЭнь XD
-          type: <HistoricalTaskspace>
+          type: <HistoricalTaskSpace>
           readOnly: true
     TaskPersonal:
       type: object
@@ -2754,11 +2909,19 @@ components:
 
   securitySchemes:
     Token:
-      description: 'Авторизация по токену. <br>
-        Все запросы от имени пользователя должны выполняться
+      description: |
+        Авторизация по токену. <br>
+        Запрос от имени пользователя должен выполняться
         с заголовком "Authorization: Token *TOKEN_VALUE*"'
       type: http
       scheme: token
+    Sessionid:
+      description: |
+        Авторизация по сессии. <br>
+        Запрос от имени пользователя должен выполняться
+        в режиме сессии. В cookie должно передаваться "sessionid=SESSION_TOKEN"
+      type: http
+      scheme: sessionid
 
 x-tagGroups:
   - name: API
@@ -2779,6 +2942,6 @@ x-tagGroups:
       - Модель пространства
       - Модель задачи пространства
       - Модель персональной задачи
-  - name: Прочие
+  - name: Others
     tags:
       - Привязка телеграма

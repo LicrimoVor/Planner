@@ -1,4 +1,5 @@
 from django.contrib.auth import get_user_model
+from django.shortcuts import get_object_or_404
 from rest_framework.views import APIView
 from rest_framework.generics import ListAPIView
 from rest_framework.pagination import LimitOffsetPagination
@@ -39,7 +40,10 @@ class ProfileView(APIView):
     permission_classes = [IsAuthenticated,]
 
     def get(self, request, *args, **kwargs):
-        user = request.user
+        if kwargs.get("user_id"):
+            user = get_object_or_404(User, id=kwargs.get("user_id"))
+        else:
+            user = request.user
         serializer = ProfileSerializer(user.profile)
         return Response(data=serializer.data, status=status.HTTP_200_OK)
 
@@ -58,9 +62,13 @@ class ProfileView(APIView):
         return serializer_profile.data
 
     def patch(self, request, *args, **kwargs):
+        if kwargs.get("user_id"):
+            return Response(status=status.HTTP_405_METHOD_NOT_ALLOWED)
         data = self.update(request, False)
         return Response(data=data, status=status.HTTP_200_OK)
 
     def put(self, request, *args, **kwargs):
+        if kwargs.get("user_id"):
+            return Response(status=status.HTTP_405_METHOD_NOT_ALLOWED)
         data = self.update(request, True)
         return Response(data=data, status=status.HTTP_200_OK)
