@@ -10,7 +10,7 @@ User = get_user_model()
 class TaskModel(models.Model):
     """Абстрактная модель задач"""
     name = models.CharField(
-        verbose_name="Имя",
+        verbose_name="Название задачи",
         max_length=255,
         null=True,
         blank=True,

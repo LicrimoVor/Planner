@@ -85,7 +85,7 @@ tags:
       <SchemaDefinition schemaRef="#/components/models/Space" />
 
   - name: Привязка телеграма
-    x-displayName: Модель пространства
+    x-displayName: телеграмчик
     description: |
       https://t.me/My_first_LKX_bot?start=TOKEN
 
@@ -193,12 +193,13 @@ paths:
         - Пользователи
   /api/users/me/:
     get:
-      operationId: Текущий пользователь
-      description: Информация текущего пользователя
-      parameters: []
       security:
         - Token: []
         - Sessionid: []
+      operationId: Текущий пользователь
+      description: Информация текущего пользователя
+      parameters: []
+
       responses:
         "200":
           content:
@@ -212,9 +213,24 @@ paths:
         - Пользователи
   /api/users/me/profile/:
     get:
+      security:
+        - Token: []
+        - Sessionid: []
+      operationId: Профиль текущего пользователя
+      parameters: []
     put:
+      security:
+        - Token: []
+        - Sessionid: []
+      operationId: Профиль текущего пользователя
+      parameters: []
   /api/users/{id_user}/profile/:
     get:
+      security:
+        - Token: []
+        - Sessionid: []
+      operationId: Профиль пользователя
+      parameters: []
   /api/users/set_password/:
     post:
       security:
@@ -1075,8 +1091,18 @@ paths:
         - Задачи пространства
   /api/space/{id_space}/task/{id_task_from}/to/{id_task_to}/:
     get:
+      security:
+        - Token: []
+        - Sessionid: []
+      operationId: Замена родителя задачи
+      parameters: []
   /api/space/{id_space}/task/{id_task_id}/all_tree/:
     delete:
+      security:
+        - Token: []
+        - Sessionid: []
+      operationId: Удаление дерева задач
+      parameters: []
   /api/space/{id_space}/task/history/:
     get:
       operationId: История всех задач
@@ -1447,6 +1473,11 @@ paths:
         - Персональные задачи
   /api/task_me/{id_task_from}/to/{id_task_to}/:
     get:
+      security:
+        - Token: []
+        - Sessionid: []
+      operationId: Замена родителя задачи
+      parameters: []
   /api/task_me/{id_task}/all_tree/:
     delete:
       security:

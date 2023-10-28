@@ -25,6 +25,22 @@ class ResponsibleSpaceTasksAdmin(admin.TabularInline):
     verbose_name_plural = "Ответственные"
 
 
+class SubPersonalTasksAdmin(admin.TabularInline):
+    fields = ["status", "name", "deadline", "description",]
+    readonly_fields = ("name", "deadline", "description",)
+    model = PersonalTaskModel
+    extra = 0
+    verbose_name_plural = "Подзадачи"
+
+
+class SubSpaceTasksAdmin(admin.TabularInline):
+    fields = ["status", "name", "deadline", "description",]
+    readonly_fields = ("name", "deadline", "description",)
+    model = SpaceTaskModel
+    extra = 0
+    verbose_name_plural = "Подзадачи"
+
+
 @admin.register(TagModel)
 class TagAdmin(admin.ModelAdmin):
     """Отображение тегов в админ-панеле."""
@@ -57,18 +73,20 @@ class StatusAdmin(admin.ModelAdmin):
 class PersonalTaskAdmin(admin.ModelAdmin):
     """Отображение персональных задач в админ-панеле."""
 
-    list_display = ("id", "name", "author", "status", "deadline")
+    readonly_fields = ("created", "updated", )
+    list_display = ("id", "name", "author", "status", "deadline",)
     list_filter = ("name", "author", "status", "deadline")
     search_fields = ['name', 'author__username']
-    inlines = [TagPersonalTaskInline, ]
+    inlines = [TagPersonalTaskInline, SubPersonalTasksAdmin]
 
 
 @admin.register(SpaceTaskModel)
 class SpaceTaskAdmin(SimpleHistoryAdmin):
     """Отображение задач простравства в админ-панеле."""
 
+    readonly_fields = ("created", "updated", )
     list_display = ("id", "name", "author", "status", "deadline")
     list_filter = ("name", "author", "status", "deadline")
     history_list_display = ["status"]
-    inlines = [TagSpaceTaskInline, ResponsibleSpaceTasksAdmin,]
+    inlines = [TagSpaceTaskInline, ResponsibleSpaceTasksAdmin, SubSpaceTasksAdmin]
     search_fields = ['name', 'author__username']
