@@ -20,7 +20,7 @@ class LoginView(APIView):
                 'access-control-allow-credentials': "true",
             })
         login(request, user)
-        return Response(status=status.HTTP_201_CREATED)
+        return Response(data={"csrfToken": request.stream.META.get("CSRF_COOKIE")}, status=status.HTTP_201_CREATED)
 
 
 class LogoutView(APIView):
