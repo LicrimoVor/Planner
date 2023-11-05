@@ -1,3 +1,7 @@
+import logging
+
+logger = logging.getLogger(__name__)
+
 class CheckAuthorizationMiddleWare(object):
     def __init__(self, get_response):
         self.get_response = get_response
@@ -7,7 +11,9 @@ class CheckAuthorizationMiddleWare(object):
         Code to be executed for each request before the view (and later
         middleware) are called.
         """
+        request.META["CSRF_COOKIE"] = request.COOKIES.get("csrftoken")
         response = self.get_response(request)
+        logger.error(response.content)
         response.headers._store['access-control-allow-origin'] = ('access-control-allow-origin', "http://localhost:3000")
         response.headers._store['access-control-allow-credentials'] = ('access-control-allow-credentials', "true")
         return response

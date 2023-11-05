@@ -11,7 +11,7 @@ SECRET_KEY = os.getenv('SECRET_KEY')
 
 ALLOWED_HOSTS = os.getenv('ALLOWED_HOSTS', "127.0.0.1").split(" ")
 CORS_ALLOWED_ORIGINS = os.getenv('CSRF_TRUSTED_ORIGINS', "http://127.0.0.1").split(" ")
-CORS_EXPOSE_HEADERS = ['Content-Type', 'X-CSRFToken']
+# CORS_EXPOSE_HEADERS = ['Content-Type', 'csrftoken']
 CORS_ALLOW_CREDENTIALS = True
 
 INSTALLED_APPS = [
@@ -30,9 +30,10 @@ INSTALLED_APPS = [
 ]
 
 MIDDLEWARE = [
+    'core.middleware.CheckAuthorizationMiddleWare',
+    "corsheaders.middleware.CorsMiddleware",
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
-    "corsheaders.middleware.CorsMiddleware",
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
