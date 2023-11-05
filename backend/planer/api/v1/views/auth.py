@@ -13,7 +13,10 @@ class LoginView(APIView):
         password = request.data.get("password")
         user = authenticate(password=password, username=username)
         if user is None:
-            return Response(status=status.HTTP_400_BAD_REQUEST)
+            return Response(status=status.HTTP_400_BAD_REQUEST, headers={
+                'access-control-allow-origin': "http://localhost:3000",
+                'access-control-allow-credentials': "true",
+            })
         login(request, user)
         return Response(status=status.HTTP_201_CREATED)
 
