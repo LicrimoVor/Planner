@@ -10,6 +10,9 @@ BASE_DIR = Path(__file__).resolve().parent.parent.parent
 SECRET_KEY = os.getenv('SECRET_KEY')
 
 ALLOWED_HOSTS = os.getenv('ALLOWED_HOSTS', "127.0.0.1").split(" ")
+CORS_ALLOWED_ORIGINS = os.getenv('CSRF_TRUSTED_ORIGINS', "http://127.0.0.1").split(" ")
+CORS_EXPOSE_HEADERS = ['Content-Type', 'X-CSRFToken']
+CORS_ALLOW_CREDENTIALS = True
 
 INSTALLED_APPS = [
     'django.contrib.admin',
@@ -40,10 +43,13 @@ MIDDLEWARE = [
 
 CORS_ALLOW_ALL_ORIGINS = True
 DJANGO_ALLOW_ASYNC_UNSAFE = True
-CSRF_COOKIE_SAMESITE = 'Strict'
+# SESSION_COOKIE_DOMAIN = ""
+CSRF_COOKIE_SAMESITE = 'Lax'
 SESSION_COOKIE_SAMESITE = 'Strict'
-CSRF_COOKIE_HTTPONLY = False
+CSRF_COOKIE_HTTPONLY = True
 SESSION_COOKIE_HTTPONLY = True
+CSRF_COOKIE_SECURE = True
+SESSION_COOKIE_SECURE = True
 
 
 ROOT_URLCONF = 'planer.urls'
