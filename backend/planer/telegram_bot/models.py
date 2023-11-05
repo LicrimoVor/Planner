@@ -6,7 +6,7 @@ User = get_user_model()
 
 
 class TelegramUser(models.Model):
-    """Пользователь телеграмма"""
+    """Пользователь телеграмма."""
 
     telegram_id = models.BigIntegerField(primary_key=True)
     first_name = models.CharField(max_length=64, null=True, blank=True)

@@ -17,12 +17,12 @@ class SpaceNotPermSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = SpaceModel
-        fields = ("id", "name", "admin", "avatar")
+        fields = ("id", "name", "admin", "avatar",)
 
     def create(self, validated_data):
         admin = self.context["request"].user
         model = SpaceModel.objects.create(admin=admin, **validated_data)
-        model.staff.set([admin.id])
+        model.staff.set([admin.id,])
         return model
 
 
@@ -34,10 +34,11 @@ class SpacePermSerializer(serializers.ModelSerializer):
     admin = UserSerializer(read_only=True)
     staff = UserSerializer(many=True)
     avatar = Base64ImageField(allow_null=False, required=False,)
-
+    favorite = serializers.SerializerMethodField()
+    
     class Meta:
         model = SpaceModel
-        fields = ("id", "name", "admin", "staff", "avatar")
+        fields = ("id", "name", "admin", "staff", "avatar", "favorite")
 
     def update(self, instance, validated_data):
         admin = self.context["request"].user
@@ -49,3 +50,9 @@ class SpacePermSerializer(serializers.ModelSerializer):
             staff_list.append(admin)
         instance.staff.set(staff_list)
         return super().update(instance, validated_data)
+
+    def get_favorite(self, space, *args, **kwargs):
+        user = self.context.get("request").user
+        print(space.staff.username)
+        staff_user = space.staff.filter(user=user)
+        return staff_user.favorite

@@ -11,10 +11,13 @@ from api.v1.views.personal_task import (
      PersonalTaskSet, PersonalSubTaskSet,
      PersonalTaskTreeView, PersonalSubTaskChangeView,
 )
+from api.v1.views.telegram import TelegramView
 from api.v1.views.space import SpaceMeView, SpaceSet
 from api.v1.views.status import StatusSet
 from api.v1.views.tag import TagSet
-# from api.v1.views.users import UsersView, ProfileView
+from api.v1.views.auth import LoginView, LogoutView
+from planer.settings import work_mode
+
 
 
 router = DefaultRouter()
@@ -49,12 +52,21 @@ urlpatterns = [
      path("task_me/space/",
           SpaceTaskMeView.as_view(), name="space_me_task"),
 
-     # path("users/search/<str:search_field>/",
-     #      UsersView.as_view(), name="user_search"),
-     # path("users/me/profile/",
-     #      ProfileView.as_view(), name="profile_user"),
-     # path("users/<int:user_id>/profile/",
-     #      ProfileView.as_view(), name="profile_user"),
+     path("telegram/kitty/", TelegramView.as_view(), name="telegram_url"),
+     path("auth/login/", LoginView.as_view(), name="user_login_session"),
+     path("auth/logout/", LogoutView.as_view(), name="user_logout_session"),
 
      path("", include(router.urls)),
 ]
+
+
+if work_mode == "prod":
+    from api.v1.views.users import UsersView, ProfileView
+    urlpatterns += [
+          path("users/search/<str:search_field>/",
+               UsersView.as_view(), name="user_search"),
+          path("users/me/profile/",
+               ProfileView.as_view(), name="profile_user"),
+          path("users/<int:user_id>/profile/",
+               ProfileView.as_view(), name="profile_user"),
+    ]

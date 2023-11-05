@@ -23,6 +23,15 @@
       "justMyCode": true
     },
     {
+      "name": "Django ЛОКАЛЬНО",
+      "type": "python",
+      "request": "launch",
+      "program": "${workspaceFolder}\\backend\\planer\\manage.py",
+      "args": ["runserver", "26.237.125.178:8000"],
+      "django": true,
+      "justMyCode": true
+    },
+    {
       "name": "Мейки",
       "type": "python",
       "request": "launch",
@@ -50,6 +59,15 @@
         "--cert-file",
         "${workspaceFolder}\\backend\\planer\\cert.crt"
       ],
+      "django": true,
+      "justMyCode": true
+    },
+    {
+      "name": "Регитсрация",
+      "type": "python",
+      "request": "launch",
+      "program": "${workspaceFolder}\\backend\\planer\\manage.py",
+      "args": ["createsuperuser"],
       "django": true,
       "justMyCode": true
     }

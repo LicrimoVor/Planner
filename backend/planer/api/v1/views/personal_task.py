@@ -7,7 +7,6 @@ from ..serializers.personal_task import PersonalTaskSerializer
 from .abstract import TaskSet, SubTaskSet, SubTaskChangeView, TaskTreeView
 
 
-
 class PersonalTaskSet(TaskSet):
     """ViewSet персональных задач."""
 

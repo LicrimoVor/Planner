@@ -7,7 +7,7 @@ from .views import AdminTemplateView
 urlpatterns = [
     path('', include("api.v1.urls")), # весь остальной планер
     path('', include('djoser.urls')), # базовый набор эндпоинтов пользователя
-    path('auth/', include('rest_framework.urls')), # авторизация сессии
+#     path('auth/', include('rest_framework.urls')), # авторизация сессии
     path('auth/', include('social_django.urls', namespace='social')), # социальная авторизация
     path('auth/', include('djoser.urls.authtoken')), # авторизация по токену
     path('__receiver/', TemplateView.as_view(template_name="_receiver.html",), name='receiver'), # для маила

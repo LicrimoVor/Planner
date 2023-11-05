@@ -8,6 +8,8 @@ class CheckAuthorizationMiddleWare(object):
         middleware) are called.
         """
         response = self.get_response(request)
+        response.headers._store['access-control-allow-origin'] = ('access-control-allow-origin', "http://localhost:3000")
+        response.headers._store['access-control-allow-credentials'] = ('access-control-allow-credentials', "true")
         return response
 
     def process_view(self, request, view_func, view_args, view_kwargs):

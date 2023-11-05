@@ -36,11 +36,15 @@ MIDDLEWARE = [
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     'simple_history.middleware.HistoryRequestMiddleware',
-    # 'core.middleware.CheckAuthorizationMiddleWare',
 ]
 
 CORS_ALLOW_ALL_ORIGINS = True
 DJANGO_ALLOW_ASYNC_UNSAFE = True
+CSRF_COOKIE_SAMESITE = 'Strict'
+SESSION_COOKIE_SAMESITE = 'Strict'
+CSRF_COOKIE_HTTPONLY = False
+SESSION_COOKIE_HTTPONLY = True
+
 
 ROOT_URLCONF = 'planer.urls'
 AUTH_USER_MODEL = 'users.UserModel'

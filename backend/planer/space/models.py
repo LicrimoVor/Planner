@@ -48,6 +48,10 @@ class UserSpaceModel(models.Model):
         on_delete=models.CASCADE,
         related_name="user_space",
     )
+    favorite = models.BooleanField(
+        verbose_name="Избранное",
+        default=False,
+    )
 
     class Meta:
         unique_together = ["space", "user"]
