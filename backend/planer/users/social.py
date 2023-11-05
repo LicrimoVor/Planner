@@ -11,5 +11,5 @@ def save_profile(backend, user, response, *args, **kwargs):
             return None
         profile.gender = response.get('gender')
         profile.color = "#"+str(hex(random.randint(0, 16_581_375)))[2:].upper()
-        profile.time_zone = response.get('timezone')
+        profile.time_zone = response.get('timezone', 0)
         profile.save()
