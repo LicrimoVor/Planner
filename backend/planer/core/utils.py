@@ -6,7 +6,7 @@ from celery import shared_task
 @shared_task
 def send_activation(email: BaseEmailMessage, to: str) -> str:
     """Отправляет письмо"""
-    email.send([to,])
+    email.send(to,)
     return f"Письмо с активацией отправлено {to}"
 
 

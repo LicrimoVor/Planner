@@ -84,3 +84,17 @@ class AuthorPermission(BasePermission):
                 if user!= author:
                     return False
         return True
+
+
+class ActivatePermission(BasePermission):
+    """
+    Проверка на активированную учетную запись пользователя.
+    """
+
+    message = "Необходимо активировать учетную запись."
+
+    def has_permission(self, request, view):
+        return request.user.is_active
+
+    def has_object_permission(self, request, view, obj):
+        return request.user.is_active

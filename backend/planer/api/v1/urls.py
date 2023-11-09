@@ -15,7 +15,7 @@ from api.v1.views.telegram import TelegramView
 from api.v1.views.space import SpaceMeView, SpaceSet
 from api.v1.views.status import StatusSet
 from api.v1.views.tag import TagSet
-from api.v1.views.auth import LoginView, LogoutView
+from api.v1.views.auth import LoginView, LogoutView, RegistrationView
 from planer.settings import work_mode
 
 
@@ -55,6 +55,7 @@ urlpatterns = [
      path("telegram/kitty/", TelegramView.as_view(), name="telegram_url"),
      path("auth/login/", LoginView.as_view(), name="user_login_session"),
      path("auth/logout/", LogoutView.as_view(), name="user_logout_session"),
+     path("auth/registration/", RegistrationView.as_view(), name="user_registation"),
 
      path("", include(router.urls)),
 ]

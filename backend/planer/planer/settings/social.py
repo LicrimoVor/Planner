@@ -1,6 +1,6 @@
 import os
 
-from .base import INSTALLED_APPS, TEMPLATES, MIDDLEWARE
+from .base import INSTALLED_APPS, TEMPLATES
 
 
 INSTALLED_APPS += [
@@ -48,7 +48,3 @@ TEMPLATES[0]["OPTIONS"]["context_processors"] += [
     'social_django.context_processors.backends',
     'social_django.context_processors.login_redirect',
 ]
-
-# MIDDLEWARE += (
-#     'social.apps.django_app.middleware.SocialAuthExceptionMiddleware',
-# )
