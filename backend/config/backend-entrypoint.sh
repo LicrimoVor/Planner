@@ -12,7 +12,7 @@ done
 
 python manage.py makemigrations
 python manage.py migrate --noinput
-python manage.py collectstatic
+python manage.py collectstatic --no-input
 cp -r /app/backend/collected_static/. /backend_static/static/
 
 gunicorn planer.wsgi --bind 0.0.0.0:8000

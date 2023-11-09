@@ -36,10 +36,10 @@ services:
       - media:/app/backend/media
       - ../data:/app/data
 
-  frontend:
-    build: ../frontend/
-    volumes:
-      - static:/app
+  # frontend:
+  #   build: ../frontend/
+  #   volumes:
+  #     - static:/app
 
   nginx:
     image: nginx:1.19.3
@@ -74,11 +74,11 @@ services:
       - redis
       - worker
 
-  tg_bot:
-    container_name: planner_tg_bot
-    build: ../backend/
-    command: python backend/manage.py runtelegram
-    env_file: .env
-    depends_on:
-      - backend
-      - redis
+  # tg_bot:
+  #   container_name: planner_tg_bot
+  #   build: ../backend/
+  #   command: python backend/manage.py runtelegram
+  #   env_file: .env
+  #   depends_on:
+  #     - backend
+  #     - redis
