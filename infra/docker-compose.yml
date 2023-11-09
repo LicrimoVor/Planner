@@ -12,6 +12,13 @@ services:
     volumes:
       - pg_data:/var/lib/postgresql/data
 
+  pg_bouncer:
+    build: ../backend/pg_bouncer/
+    ports:
+      - "6432:6432"
+    depends_on:
+      - db
+
   redis:
     image: redis
     restart: always

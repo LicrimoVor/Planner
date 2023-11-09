@@ -32,11 +32,11 @@ services:
       - ./data:/app/data
       - ./.env:/.env
 
-  frontend:
-    image: licrimovor/planner_frontend
-    container_name: planner_frontend
-    volumes:
-      - static:/app
+  # frontend:
+  #   image: licrimovor/planner_frontend
+  #   container_name: planner_frontend
+  #   volumes:
+  #     - static:/app
 
   nginx:
     container_name: planner_nginx
