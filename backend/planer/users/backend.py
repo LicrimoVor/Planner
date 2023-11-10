@@ -12,7 +12,8 @@ class UserBackend(ModelBackend):
     def authenticate(self, request, email=None, username=None, password=None, **kwargs):
         if (username is None or email is None) and password is None:
             return
-        
+
+        user = None
         if username is not None:
             try:
                 user = User._default_manager.get_by_natural_key(username)
@@ -24,7 +25,7 @@ class UserBackend(ModelBackend):
             except Http404:
                 User().set_password(password)
         
-        if user.check_password(password):
+        if user is not None and user.check_password(password):
             return user
 
     def get_group_permissions(self, *args, **kwargs) -> set[str]:

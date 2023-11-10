@@ -7,30 +7,37 @@ volumes:
 
 services:
   db:
+    container_name: planner_database
     image: postgres:13
     env_file: .env
     volumes:
       - pg_data:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
 
   pg_bouncer:
+    container_name: planner_bouncer
     build: ../backend/pg_bouncer/
+    env_file: .env
     ports:
       - "6432:6432"
     depends_on:
       - db
 
   redis:
+    container_name: planner_redis
     image: redis
     restart: always
     ports:
       - "6379:6379"
 
   backend:
+    container_name: planner_backend
     build: ../backend/
     env_file: .env
     entrypoint: /app/docker/backend-entrypoint.sh
     depends_on:
-      - db
+      - pg_bouncer
     volumes:
       - static:/backend_static
       - media:/app/backend/media
@@ -42,6 +49,7 @@ services:
   #     - static:/app
 
   nginx:
+    container_name: planner_nginx
     image: nginx:1.19.3
     ports:
       - "80:80"
@@ -53,7 +61,7 @@ services:
       - media:/media
 
   worker:
-    container_name: planner_celery_worker
+    container_name: planner_worker
     build: ../backend/
     entrypoint: /app/docker/worker-entrypoint.sh
     env_file: .env
@@ -65,7 +73,7 @@ services:
       - media:/app/media
 
   beat:
-    container_name: planner_celery_beat
+    container_name: planner_beat
     build: ../backend/
     entrypoint: /app/docker/beat-entrypoint.sh
     env_file: .env
