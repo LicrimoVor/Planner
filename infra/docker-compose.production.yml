@@ -17,7 +17,7 @@ services:
 
   pg_bouncer:
     container_name: planner_bouncer
-    build: ../backend/pg_bouncer/
+    build: ./pg_bouncer/
     env_file: .env
     ports:
       - "6432:6432"
