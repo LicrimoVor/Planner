@@ -1,6 +1,8 @@
 FROM alpine:3.17
 ARG VERSION=1.21.0
 
+COPY entrypoint.sh /entrypoint.sh
+
 RUN \
   apk add -U --no-cache --upgrade busybox && \
   apk add -U --no-cache autoconf autoconf-doc automake udns udns-dev curl gcc libc-dev libevent libevent-dev libtool make openssl-dev pkgconfig postgresql-client && \
@@ -15,12 +17,13 @@ RUN \
   cp etc/pgbouncer.ini /etc/pgbouncer/pgbouncer.ini.example && \
   cp etc/userlist.txt /etc/pgbouncer/userlist.txt.example && \
   touch /etc/pgbouncer/userlist.txt && \
-  chown -R postgres /var/run/pgbouncer /etc/pgbouncer && \
+  chown -R postgres /var/run/pgbouncer /etc/pgbouncer /entrypoint.sh  && \
   cd /tmp && \
   rm -rf /tmp/pgbouncer*  && \
   apk del --purge autoconf autoconf-doc automake udns-dev curl gcc libc-dev libevent-dev libtool make openssl-dev pkgconfig
 
-COPY entrypoint.sh /entrypoint.sh
+
+RUN chmod +x /entrypoint.sh
 USER postgres
 EXPOSE 6432
 ENTRYPOINT ["sh", "/entrypoint.sh"]
