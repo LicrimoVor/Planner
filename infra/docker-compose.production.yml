@@ -41,6 +41,7 @@ services:
     volumes:
       - static:/backend_static
       - media:/app/backend/media
+      - ./sent_emails:/app/backend/sent_emails
       - ./data:/app/data
       - ./.env:/.env
 
