@@ -11,6 +11,8 @@ do
 done
 
 python manage.py makemigrations
+python manage.py migrate social_auth --fake
+python manage.py migrate telegram --fake
 python manage.py migrate --noinput
 python manage.py collectstatic --no-input
 cp -r /app/backend/collected_static/. /backend_static/static/

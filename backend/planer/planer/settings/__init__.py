@@ -12,7 +12,7 @@ elif work_mode == "dev":
     from .dev import *
 
 from .social import *
-# from .email import *
+from .email import *
 from .logger import *
 from .celery import *
 
