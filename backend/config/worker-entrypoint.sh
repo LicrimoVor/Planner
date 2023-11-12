@@ -5,6 +5,6 @@ do
     echo "Waiting for server volume..."
 done
 
-sleep 5
+sleep 10
 
 celery -A planer worker -l INFO

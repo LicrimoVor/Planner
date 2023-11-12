@@ -4,16 +4,12 @@ do
     echo "Waiting for server volume..."
 done
 
-python manage.py migrate social_auth --fake
-
-until python manage.py migrate
+until python manage.py migrate --noinput
 do
     echo "Waiting for db to be ready..."
-    sleep 2
+    sleep 5
 done
 
-python manage.py makemigrations
-python manage.py migrate --noinput
 python manage.py collectstatic --no-input
 cp -r /app/backend/collected_static/. /backend_static/static/
 
