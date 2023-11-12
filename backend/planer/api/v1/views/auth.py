@@ -25,8 +25,20 @@ class LoginView(APIView):
         username = login_field if '@' not in login_field else None
         email = login_field if username is None else None
         user = authenticate(password=password, username=username, email=email)
+
         if user is None:
             return Response(status=status.HTTP_400_BAD_REQUEST)
+
+        if not user.is_active:
+            signals.user_registered.send(
+                sender=self.__class__, user=user, request=self.request
+            )
+            context = {"user": user}
+            to = [get_user_email(user)]
+            if settings.SEND_ACTIVATION_EMAIL:
+                CeleryActivationEmail(request, context).send(to)
+            return Response(data={"email": user.email}, status=status.HTTP_200_OK)
+        
         login(request, user, backend='users.backend.UserBackend')
         return Response(status=status.HTTP_201_CREATED)
 
