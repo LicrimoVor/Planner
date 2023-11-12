@@ -1,13 +1,19 @@
+import sys
+
+from django.contrib.auth import get_user_model
 from djoser.email import ActivationEmail, PasswordResetEmail, UsernameResetEmail
-from templated_mail.mail import BaseEmailMessage
 from celery import shared_task
+
+User = get_user_model()
 
 
 @shared_task
-def send_activation(email: BaseEmailMessage, to: str) -> str:
+def send_activation(class_name: str, email: str, *args, **kwargs) -> str:
     """Отправляет письмо"""
-    email.send(to,)
-    return f"Письмо с активацией отправлено {to}"
+    EmailCl = getattr(sys.modules[__name__], class_name)
+    user = User.objects.get(email=email)
+    EmailCl(context={"user":user}).send([email,])
+    return f"Письмо с активацией отправлено {email}"
 
 
 class CeleryActivationEmail(ActivationEmail):
@@ -18,7 +24,7 @@ class CeleryActivationEmail(ActivationEmail):
     """
 
     def send(self, to, *args, **kwargs) -> None:
-        send_activation.delay(self, to)
+        send_activation.delay(self.__class__.__bases__[0].__name__, *to)
 
 
 class CeleryPasswordResetEmail(PasswordResetEmail):
@@ -29,7 +35,7 @@ class CeleryPasswordResetEmail(PasswordResetEmail):
     """
 
     def send(self, to, *args, **kwargs) -> None:
-        send_activation.delay(self, to)
+        send_activation.delay(self.__class__.__bases__[0].__name__, *to)
 
 
 class CeleryUsernameResetEmail(UsernameResetEmail):
@@ -40,4 +46,4 @@ class CeleryUsernameResetEmail(UsernameResetEmail):
     """
 
     def send(self, to, *args, **kwargs) -> None:
-        send_activation.delay(self, to)
+        send_activation.delay(self.__class__.__bases__[0].__name__, *to)
