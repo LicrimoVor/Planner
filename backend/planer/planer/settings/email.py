@@ -4,9 +4,9 @@ from .base import DJOSER
 
 
 DJOSER |= {
-    'PASSWORD_RESET_CONFIRM_URL': 'api/user/password/reset/confirm/{uid}/{token}',
-    'USERNAME_RESET_CONFIRM_URL': 'api/user/username/reset/confirm/{uid}/{token}',
-    'ACTIVATION_URL': 'api/user/activate/{uid}/{token}',
+    'PASSWORD_RESET_CONFIRM_URL': 'recovery/password/{uid}/{token}',
+    'USERNAME_RESET_CONFIRM_URL': 'recovery/username/{uid}/{token}',
+    'ACTIVATION_URL': 'user/activate/{uid}/{token}',
     'SEND_ACTIVATION_EMAIL': True,
     'PASSWORD_RESET_SHOW_EMAIL_NOT_FOUND': True,
     'USERNAME_RESET_SHOW_EMAIL_NOT_FOUND': True,
