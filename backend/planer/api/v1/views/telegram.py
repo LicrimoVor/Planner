@@ -18,4 +18,4 @@ class TelegramView(APIView):
 
         user = request.user
         token_model, _ = Token.objects.get_or_create(user=user)
-        return Response(data={"url_telegram": token_model.key}, status=status.HTTP_200_OK)
+        return Response(data={"url_telegram": f"https://t.me/My_first_LKX_bot?start={token_model.key}"}, status=status.HTTP_200_OK)

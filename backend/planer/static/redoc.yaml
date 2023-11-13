@@ -34,6 +34,7 @@ tags:
   - name: Пользователи
     description: |
       Поиск по username/last_name/first_name: http://127.0.0.1:8000/users/search/lic/ <br>
+  - name: Профиль
   - name: Теги
   - name: Статусы
   - name: Пространства
@@ -85,7 +86,7 @@ tags:
       <SchemaDefinition schemaRef="#/components/models/Space" />
 
   - name: Привязка телеграма
-    x-displayName: телеграмчик
+    x-displayName: Телеграмчик
     description: |
       https://t.me/My_first_LKX_bot?start=TOKEN
 
@@ -211,26 +212,6 @@ paths:
           $ref: "#/components/responses/AuthenticationError"
       tags:
         - Пользователи
-  /api/users/me/profile/:
-    get:
-      security:
-        - Token: []
-        - Sessionid: []
-      operationId: Профиль текущего пользователя
-      parameters: []
-    put:
-      security:
-        - Token: []
-        - Sessionid: []
-      operationId: Профиль текущего пользователя
-      parameters: []
-  /api/users/{id_user}/profile/:
-    get:
-      security:
-        - Token: []
-        - Sessionid: []
-      operationId: Профиль пользователя
-      parameters: []
   /api/users/set_password/:
     post:
       security:
@@ -249,6 +230,48 @@ paths:
           description: "Пароль успешно изменен"
         "400":
           $ref: "#/components/responses/ValidationError"
+        "401":
+          $ref: "#/components/responses/AuthenticationError"
+      tags:
+        - Пользователи
+  /api/users/search/{search_field}/:
+    get:
+      security:
+        - Token: []
+        - Sessionid: []
+      operationId: Поиск пользователя
+      description: |
+        Осуществляет поиск пользователя по first_name, last_name, username. <br>
+        Подключен пагинатор с 10 элементами на выводе. <br>
+      parameters: []
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  count:
+                    type: integer
+                    example: 123
+                    description: "Общее количество объектов в базе"
+                  next:
+                    type: string
+                    nullable: true
+                    format: uri
+                    example: http://127.0.0.1:8000/api/users/search/{search_field}/?page=4
+                    description: "Ссылка на следующую страницу"
+                  previous:
+                    type: string
+                    nullable: true
+                    format: uri
+                    example: http://127.0.0.1:8000/api/users/search/{search_field}/?page=2
+                    description: "Ссылка на предыдущую страницу"
+                  results:
+                    type: array
+                    items:
+                      $ref: "#/components/schemas/CustomUserCreate"
+                    description: "Список объектов текущей страницы"
         "401":
           $ref: "#/components/responses/AuthenticationError"
       tags:
@@ -272,12 +295,16 @@ paths:
       tags:
         - Пользователи
   /api/auth/login/{backend}-oauth2/:
-    redirect:
+    get:
       operationId: Социальная авторизация
       description: |
         Позволяет авторизоваться с помощью различных сервисов. <br>
         Доступные сервисы: yandex, mailru, google, vk. <br>
         После успешной авторизации происходит редирект на главную страницу.
+      parameters: []
+      responses:
+        "302":
+          description: "Редирект на страницу авторизации сервиса."
       tags:
         - Пользователи
   /api/auth/token/login/:
@@ -916,7 +943,7 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/TaskSpaceCreateResp"
-          description: "Статус успешно создан"
+          description: "Задача успешна создана"
         "400":
           $ref: "#/components/responses/ValidationError"
         "401":
@@ -1018,6 +1045,7 @@ paths:
       operationId: Cписок подзадач
       security:
         - Token: []
+        - Sessionid: []
       description: |
         Получение списка подзадач этой задачи. <br>
         Доступно только участникам пространства <br>
@@ -1096,13 +1124,42 @@ paths:
         - Sessionid: []
       operationId: Замена родителя задачи
       parameters: []
+      responses:
+        "200":
+          description: "Замена успешна"
+        "401":
+          $ref: "#/components/responses/AuthenticationError"
+        "403":
+          $ref: "#/components/responses/PermissionDenied"
+        "404":
+          $ref: "#/components/responses/NotFound"
+      tags:
+        - Задачи пространства
   /api/space/{id_space}/task/{id_task_id}/all_tree/:
     delete:
       security:
         - Token: []
         - Sessionid: []
-      operationId: Удаление дерева задач
-      parameters: []
+      operationId: Удаление дерева задачи
+      description: Удаление задачи (Так же применяется и для подзадач)
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: "Уникальный идентификатор этой задачи"
+          schema:
+            type: string
+      responses:
+        "204":
+          description: "Дерево задач успешно удалено"
+        "401":
+          $ref: "#/components/responses/AuthenticationError"
+        "403":
+          $ref: "#/components/responses/PermissionDenied"
+        "404":
+          $ref: "#/components/responses/NotFound"
+      tags:
+        - Задачи пространства
   /api/space/{id_space}/task/history/:
     get:
       operationId: История всех задач
@@ -1343,6 +1400,8 @@ paths:
           description: ""
         "401":
           $ref: "#/components/responses/AuthenticationError"
+        "403":
+          $ref: "#/components/responses/PermissionDenied"
         "404":
           $ref: "#/components/responses/NotFound"
       tags:
@@ -1374,6 +1433,8 @@ paths:
           description: "Задача успешна обновлена"
         "401":
           $ref: "#/components/responses/AuthenticationError"
+        "403":
+          $ref: "#/components/responses/PermissionDenied"
         "404":
           $ref: "#/components/responses/NotFound"
       tags:
@@ -1396,6 +1457,8 @@ paths:
           description: "Задача успешна удалена"
         "401":
           $ref: "#/components/responses/AuthenticationError"
+        "403":
+          $ref: "#/components/responses/PermissionDenied"
         "404":
           $ref: "#/components/responses/NotFound"
       tags:
@@ -1441,6 +1504,8 @@ paths:
           description: ""
         "401":
           $ref: "#/components/responses/AuthenticationError"
+        "403":
+          $ref: "#/components/responses/PermissionDenied"
         "404":
           $ref: "#/components/responses/NotFound"
       tags:
@@ -1462,11 +1527,13 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/SubTaskPersonalCreateResp"
-          description: "Статус успешно создан"
+          description: "Подзадача успешна создана"
         "400":
           $ref: "#/components/responses/ValidationError"
         "401":
           $ref: "#/components/responses/AuthenticationError"
+        "403":
+          $ref: "#/components/responses/PermissionDenied"
         "404":
           $ref: "#/components/responses/NotFound"
       tags:
@@ -1478,6 +1545,17 @@ paths:
         - Sessionid: []
       operationId: Замена родителя задачи
       parameters: []
+      responses:
+        "200":
+          description: "Замена успешна"
+        "401":
+          $ref: "#/components/responses/AuthenticationError"
+        "403":
+          $ref: "#/components/responses/PermissionDenied"
+        "404":
+          $ref: "#/components/responses/NotFound"
+      tags:
+        - Персональные задачи
   /api/task_me/{id_task}/all_tree/:
     delete:
       security:
@@ -1494,11 +1572,106 @@ paths:
             type: string
       responses:
         "204":
-          description: "Задача успешна удалена"
+          description: "Дерево задач успешно удалено"
+        "401":
+          $ref: "#/components/responses/AuthenticationError"
+        "403":
+          $ref: "#/components/responses/PermissionDenied"
+        "404":
+          $ref: "#/components/responses/NotFound"
+      tags:
+        - Персональные задачи
+
+  /api/telegram/:
+    get:
+      security:
+        - Token: []
+        - Sessionid: []
+      operationId: ССылка на привязку
+      description: |
+        Получение ссылки на привязку телеграма <br>
+      parameters: []
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  url_telegram:
+                    type: str
+                    example: https://t.me/My_first_LKX_bot?start=token
+                    description: "Ссылка на привязку телеграма."
+          description: ""
         "401":
           $ref: "#/components/responses/AuthenticationError"
       tags:
-        - Персональные задачи
+        - Привязка телеграма
+
+  /api/users/me/profile/:
+    get:
+      security:
+        - Token: []
+        - Sessionid: []
+      parameters: []
+      operationId: Профиль текущего пользователя
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/models/Profile"
+          description: ""
+        "401":
+          $ref: "#/components/responses/AuthenticationError"
+      tags:
+        - Профиль
+    put:
+      security:
+        - Token: []
+        - Sessionid: []
+      operationId: Изменить профиль
+      parameters: []
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/Profile"
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/models/Profile"
+          description: ""
+        "401":
+          $ref: "#/components/responses/AuthenticationError"
+        "403":
+          $ref: "#/components/responses/PermissionDenied"
+        "404":
+          $ref: "#/components/responses/NotFound"
+      tags:
+        - Профиль
+  /api/users/{id_user}/profile/:
+    get:
+      security:
+        - Token: []
+        - Sessionid: []
+      operationId: Профиль пользователя
+      parameters: []
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/models/Profile"
+          description: ""
+        "401":
+          $ref: "#/components/responses/AuthenticationError"
+        "404":
+          $ref: "#/components/responses/NotFound"
+      tags:
+        - Профиль
 
 components:
   schemas:
@@ -1549,6 +1722,23 @@ components:
       type: object
       $ref: "#/components/models/Status"
 
+    Profile:
+      type: object
+      properties:
+        avatar:
+          type: base64
+          description: "Аватарка пользователя"
+        time_zone:
+          type: integer
+          description: Часовой пояс
+          example: 8
+        color:
+          type: string
+          pattern: ^[-A-F0-9]+$
+          maxLength: 7
+          description: Цвет тега в HEX-формате
+          example: "#FF0000"
+
     Space:
       type: object
       $ref: "#/components/models/Space"
@@ -1595,8 +1785,6 @@ components:
     TaskSpace:
       type: object
       required:
-        - name
-        - author
         - space
       properties:
         id:
@@ -1639,10 +1827,6 @@ components:
           type: datetime
           description: Время дедлайна
           example: 15.08.2023
-        subtasks:
-          description: Подзадачи
-          allOf:
-            - $ref: "#/components/schemas/SubTaskSpaceList"
         tags:
           description: Теги задачи
           minItems: 0
@@ -1653,9 +1837,6 @@ components:
             $ref: "#/components/models/Tag"
     TaskSpaceCreate:
       required:
-        - name
-        - description
-        - status
         - space
       type: object
       properties:
@@ -1741,9 +1922,6 @@ components:
           type: datetime
           description: Время дедлайна
           example: 15.08.2023
-        subtasks:
-          description: Подзадачи
-          example: []
         tags:
           description: Теги задачи
           minItems: 0
@@ -1754,8 +1932,6 @@ components:
             $ref: "#/components/models/Tag"
     TaskSpaceUpdate:
       required:
-        - name
-        - author
         - space
       type: object
       properties:
@@ -1843,9 +2019,6 @@ components:
           type: datetime
           description: Время дедлайна
           example: 15.08.2025
-        subtasks:
-          description: Подзадачи
-          example: []
         tags:
           description: Теги задачи
           minItems: 0
@@ -2084,9 +2257,6 @@ components:
           type: datetime
           description: Время дедлайна
           example: 25.08.2023
-        subtasks:
-          description: Подзадачи
-          example: []
         tags:
           description: Теги задачи
           minItems: 0
@@ -2958,6 +3128,7 @@ x-tagGroups:
   - name: API
     tags:
       - Пользователи
+      - Профиль
       - Теги
       - Статусы
       - Пространства
