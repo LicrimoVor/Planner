@@ -63,9 +63,26 @@ class RegistrationView(APIView):
         signals.user_registered.send(
             sender=self.__class__, user=user, request=self.request
         )
-        context = {"user": user}
-        to = [get_user_email(user)]
+        
         if settings.SEND_ACTIVATION_EMAIL:
+            context = {"user": user}
+            to = [get_user_email(user)]
             CeleryActivationEmail(request, context).send(to)
 
         return Response(serializer.data, status=status.HTTP_201_CREATED)
+
+
+class ResetPassword(APIView):
+    """Восстановление пароля."""
+
+    def post(self, request, *args, **kwargs):
+        serializer = settings.SERIALIZERS.password_reset(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        user = serializer.get_user()
+
+        if user:
+            context = {"user": user}
+            to = [get_user_email(user)]
+            settings.EMAIL.password_reset(self.request, context).send(to)
+
+        return Response(status=status.HTTP_204_NO_CONTENT)
