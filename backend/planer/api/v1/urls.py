@@ -52,7 +52,7 @@ urlpatterns = [
      path("task_me/space/",
           SpaceTaskMeView.as_view(), name="space_me_task"),
 
-     path("telegram/kitty/", TelegramView.as_view(), name="telegram_url"),
+     path("telegram/", TelegramView.as_view(), name="telegram_url"),
      path("auth/login/", LoginView.as_view(), name="user_login_session"),
      path("auth/logout/", LogoutView.as_view(), name="user_logout_session"),
      path("auth/registration/", RegistrationView.as_view(), name="user_registation"),

@@ -3,7 +3,7 @@ from django_celery_beat.apps import BeatConfig
 from .base import INSTALLED_APPS
 
 
-BeatConfig.verbose_name = "Celery-задачи (не для Алеши)"
+BeatConfig.verbose_name = "Celery-задачи"
 
 INSTALLED_APPS += [
     "django_celery_results",

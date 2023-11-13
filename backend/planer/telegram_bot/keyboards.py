@@ -36,4 +36,5 @@ main_menu.adjust(1)
 dog_cat = InlineKeyboardBuilder()
 dog_cat.button(text="🐶 Собачка", callback_data=ActionCallbackFactory(action="dog"))
 dog_cat.button(text="🐱 Котик", callback_data=ActionCallbackFactory(action="cat"))
-
+dog_cat.adjust(2)
+dog_cat.button(text="🏠 Меню", callback_data=ActionCallbackFactory(action="main_menu"))

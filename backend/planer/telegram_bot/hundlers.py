@@ -61,6 +61,7 @@ async def start(message: types.Message):
                 reply_markup=dog_cat.as_markup(),
             )
 
+
 @dp.message(Command("1q2w3e4r5t"))
 async def secret(message: types.Message):
     await message.bot.send_message(
