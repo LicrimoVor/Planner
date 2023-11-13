@@ -74,6 +74,7 @@ class RegistrationView(APIView):
 
 class ResetPassword(APIView):
     """Восстановление пароля."""
+    permission_classes = settings.PERMISSIONS.password_reset
 
     def post(self, request, *args, **kwargs):
         serializer = settings.SERIALIZERS.password_reset(data=request.data)
