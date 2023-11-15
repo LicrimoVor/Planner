@@ -34,8 +34,6 @@ class PersonalTaskSerializer(serializers.ModelSerializer):
     def create(self, validated_data):
         author = self.context["request"].user
         tags = validated_data.pop("tags") if validated_data.get("tags") is not None else []
-        if validated_data.get("deadline") is not None:
-            validated_data["deadline"] -= dt.timedelta(hours=author.profile.time_zone)
         model = PersonalTaskModel.objects.create(author=author, **validated_data)
         model.tags.set(tags)
         return model
@@ -50,10 +48,7 @@ class PersonalTaskSerializer(serializers.ModelSerializer):
             if values_field is None:
                 values_field = []
             instance.tags.set(values_field)
-
-        if validated_data.get("deadline") is not None:
-            validated_data["deadline"] -= dt.timedelta(hours=self.context["request"].user.profile.time_zone)
-
+    
         logger.info(validated_data)
         for name, value in validated_data.items():
             setattr(instance, name, value)
@@ -61,10 +56,18 @@ class PersonalTaskSerializer(serializers.ModelSerializer):
         instance.save()
         return instance
 
+    def to_internal_value(self, data):
+        if isinstance(data.get("deadline"), int):
+            data["deadline"] = (
+                dt.datetime.fromtimestamp(data["deadline"])
+                -dt.timedelta(hours=2*self.context["request"].user.profile.time_zone)).isoformat()
+        return super().to_internal_value(data)
+
     def to_representation(self, instance):
         data = super().to_representation(instance)
         if data.get("deadline") is not None:
             data["deadline"] = instance.deadline + dt.timedelta(hours=instance.author.profile.time_zone)
+            data["deadline"] = int(data["deadline"].timestamp())
         if data.get("description") is not None:
             data["description"] = mark_safe(markdown(instance.description))
         return data
