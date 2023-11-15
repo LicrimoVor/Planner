@@ -57,10 +57,10 @@ class PersonalTaskSerializer(serializers.ModelSerializer):
         return instance
 
     def to_internal_value(self, data):
-        logger.info(data)
+        logger.error(data)
         if isinstance(data.get("deadline"), int):
             data["deadline"] = (
-                dt.datetime.fromtimestamp(data["deadline"])
+                dt.datetime.fromtimestamp(data["deadline"]/1000)
                 -dt.timedelta(hours=2*self.context["request"].user.profile.time_zone)).isoformat()
         return super().to_internal_value(data)
 
@@ -68,7 +68,7 @@ class PersonalTaskSerializer(serializers.ModelSerializer):
         data = super().to_representation(instance)
         if data.get("deadline") is not None:
             data["deadline"] = instance.deadline + dt.timedelta(hours=instance.author.profile.time_zone)
-            data["deadline"] = int(data["deadline"].timestamp())
+            data["deadline"] = int(data["deadline"].timestamp()*1000)
         if data.get("description") is not None:
             data["description"] = mark_safe(markdown(instance.description))
         return data

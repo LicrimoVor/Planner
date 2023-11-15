@@ -51,7 +51,7 @@ class TaskModel(models.Model):
         ordering = ['-created',]
     
     def __str__(self) -> str:
-        return self.name
+        return str(self.id)
 
 
 class NameColorModel(models.Model):
