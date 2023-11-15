@@ -57,6 +57,7 @@ class PersonalTaskSerializer(serializers.ModelSerializer):
         return instance
 
     def to_internal_value(self, data):
+        logger.info(data)
         if isinstance(data.get("deadline"), int):
             data["deadline"] = (
                 dt.datetime.fromtimestamp(data["deadline"])
