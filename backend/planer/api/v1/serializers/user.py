@@ -33,7 +33,7 @@ class UserSerializer(serializers.ModelSerializer):
 class ProfileSerializer(serializers.ModelSerializer):
     """Сериализтор профиля пользователей."""
 
-    avatar = Base64ImageField(allow_null=False, required=False,)
+    avatar = Base64ImageField(allow_null=True, required=False,)
     user = UserSerializer(User.objects.all(), read_only=True,)
 
     class Meta:
@@ -43,3 +43,9 @@ class ProfileSerializer(serializers.ModelSerializer):
     def create(self, validated_data):
         self.validated_data['user'] = self.context["request"].user
         return super().create(validated_data)
+
+    def update(self, instance, validated_data):
+        if validated_data.get("avatar", 0) is None:
+            validated_data.pop("avatar")
+            instance.avatar = Profile.avatar.field.default
+        return super().update(instance, validated_data)
