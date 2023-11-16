@@ -45,7 +45,7 @@ class ProfileSerializer(serializers.ModelSerializer):
         return super().create(validated_data)
 
     def update(self, instance, validated_data):
-        if validated_data.get("avatar", 0) is None:
+        if validated_data.get("avatar") == "delete":
             validated_data.pop("avatar")
             instance.avatar = Profile.avatar.field.default
         return super().update(instance, validated_data)
