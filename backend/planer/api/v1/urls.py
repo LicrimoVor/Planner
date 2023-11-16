@@ -17,6 +17,7 @@ from api.v1.views.status import StatusSet
 from api.v1.views.tag import TagSet
 from api.v1.views.auth import (LoginView, LogoutView,
                                RegistrationView, ResetPassword)
+from api.v1.views.users import UsersView, ProfileView
 from planer.settings import work_mode
 
 
@@ -58,17 +59,9 @@ urlpatterns = [
      path("auth/registration/", RegistrationView.as_view(), name="user_registation"),
      path("auth/recovery_password/", ResetPassword.as_view(), name="user_recovery_password"),
 
+     path("users/me/profile/", ProfileView.as_view(), name="profile_user"),
+     path("users/search/<str:search_field>/", UsersView.as_view(), name="user_search"),
+     path("users/<int:user_id>/profile/", ProfileView.as_view(), name="profile_user"),
+
      path("", include(router.urls)),
 ]
-
-
-if work_mode == "prod":
-    from api.v1.views.users import UsersView, ProfileView
-    urlpatterns += [
-          path("users/search/<str:search_field>/",
-               UsersView.as_view(), name="user_search"),
-          path("users/me/profile/",
-               ProfileView.as_view(), name="profile_user"),
-          path("users/<int:user_id>/profile/",
-               ProfileView.as_view(), name="profile_user"),
-    ]

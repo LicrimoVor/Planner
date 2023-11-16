@@ -11,11 +11,11 @@ User = get_user_model()
 class UserSerializer(serializers.ModelSerializer):
     """Сериализтор пользователей."""
 
-    color = serializers.CharField(source="profile.color", read_only=True,)
+    # color = serializers.CharField(source="profile.color", read_only=True,)
 
     class Meta:
         model = User
-        fields = ['id', 'email', 'username', 'last_name', 'first_name', 'color']
+        fields = ['id', 'email', 'username', 'last_name', 'first_name']
 
     def create(self, validated_data):
         user = super().create(validated_data)

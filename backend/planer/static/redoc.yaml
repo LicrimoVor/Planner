@@ -1631,6 +1631,7 @@ paths:
         - Token: []
         - Sessionid: []
       operationId: Изменить профиль
+      description: (Доступно так же Patch)
       parameters: []
       requestBody:
         content:
@@ -1704,12 +1705,6 @@ components:
           maxLength: 150
           description: "Фамилия"
           example: "Градусов"
-        color:
-          type: string
-          pattern: ^[-A-F0-9]+$
-          maxLength: 7
-          description: Цвет тега в HEX-формате
-          example: "#00FF00"
       required:
         - username
         - email

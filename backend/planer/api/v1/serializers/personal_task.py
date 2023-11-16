@@ -6,7 +6,7 @@ from django.contrib.auth import get_user_model
 from django.utils.safestring import mark_safe
 from markdown import markdown
 
-from task.models import PersonalTaskModel
+from task.models import PersonalTaskModel, StatusModel
 from .user import UserSerializer
 from .tag import TagSerializer
 from .status import StatusSerializer
@@ -22,8 +22,8 @@ class PersonalTaskSerializer(serializers.ModelSerializer):
 
     author = UserSerializer(User.objects.all(), read_only=True)
     tags = TagSerializer(many=True, required=False)
-    status = StatusSerializer(required=False)
-    deadline = serializers.DateTimeField(required=False,)
+    status = StatusSerializer(required=False, allow_null=True)
+    deadline = serializers.DateTimeField(required=False, allow_null=True)
 
     class Meta:
         model = PersonalTaskModel
@@ -44,12 +44,11 @@ class PersonalTaskSerializer(serializers.ModelSerializer):
                 validated_data.setdefault(field, None)
         
         if validated_data.get("tags", 0) != 0:
-            values_field = validated_data.pop("tags")
-            if values_field is None:
-                values_field = []
-            instance.tags.set(values_field)
-    
-        logger.info(validated_data)
+            tags_id = validated_data.pop("tags")
+            if tags_id is None:
+                tags_id = []
+            instance.tags.set(tags_id)
+
         for name, value in validated_data.items():
             setattr(instance, name, value)
 
