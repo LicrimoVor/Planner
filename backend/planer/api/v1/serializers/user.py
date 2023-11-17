@@ -33,7 +33,7 @@ class UserSerializer(serializers.ModelSerializer):
 class ProfileSerializer(serializers.ModelSerializer):
     """Сериализтор профиля пользователей."""
 
-    avatar = Base64ImageField(allow_null=True, required=False,)
+    avatar = Base64ImageField(allow_null=False, required=False, use_url=False)
     user = UserSerializer(User.objects.all(), read_only=True,)
 
     class Meta:

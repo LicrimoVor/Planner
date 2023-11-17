@@ -33,7 +33,7 @@ class SpaceModel(models.Model):
         db_table = "Spaces"
         verbose_name = "Пространство"
         verbose_name_plural = "Пространства"
-
+    
 
 class UserSpaceModel(models.Model):
     """Модель персонала M2M"""

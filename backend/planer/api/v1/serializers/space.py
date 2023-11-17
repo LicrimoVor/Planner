@@ -13,7 +13,7 @@ User = get_user_model()
 class SpaceNotPermSerializer(serializers.ModelSerializer):
     """Сериализатор пространств общий. Реализует Post/Get запросы."""
     admin = UserSerializer(read_only=True)
-    avatar = Base64ImageField(allow_null=False, required=False,)
+    avatar = Base64ImageField(allow_null=False, required=False, use_url=False)
     favorite = serializers.SerializerMethodField()
 
     class Meta:
@@ -39,7 +39,7 @@ class SpacePermSerializer(serializers.ModelSerializer):
     """
     admin = UserSerializer(read_only=True)
     staff = UserSerializer(many=True)
-    avatar = Base64ImageField(allow_null=False, required=False,)
+    avatar = Base64ImageField(allow_null=False, required=False, use_url=False)
     favorite = serializers.SerializerMethodField()
     
     class Meta:
