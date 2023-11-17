@@ -49,3 +49,20 @@ class ProfileSerializer(serializers.ModelSerializer):
             validated_data.pop("avatar")
             instance.avatar = Profile.avatar.field.default
         return super().update(instance, validated_data)
+
+
+class UserColorSerializer(serializers.ModelSerializer):
+    """Сериализтор пользователей + их цвет."""
+
+    color = serializers.CharField(source="profile.color", read_only=True,)
+
+    class Meta:
+        model = User
+        fields = ['id', 'email', 'username', 'last_name', 'first_name', 'color']
+
+    def to_internal_value(self, data):
+        if isinstance(data, int):
+            return get_object_or_404(User, id=data)
+        else:
+            return super().to_internal_value(data)
+

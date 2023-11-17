@@ -2,7 +2,7 @@ from rest_framework import serializers
 from django.contrib.auth import get_user_model
 
 from space.models import SpaceModel, UserSpaceModel
-from .user import UserSerializer
+from .user import UserSerializer, UserColorSerializer
 
 from .abstract import Base64ImageField
 
@@ -38,7 +38,7 @@ class SpacePermSerializer(serializers.ModelSerializer):
     Так же при Get запросе выдает дополнительную информацию.
     """
     admin = UserSerializer(read_only=True)
-    staff = UserSerializer(many=True)
+    staff = UserColorSerializer(many=True)
     avatar = Base64ImageField(allow_null=False, required=False, use_url=False)
     favorite = serializers.SerializerMethodField()
     

@@ -7,7 +7,7 @@ from django.utils.safestring import mark_safe
 from markdown import markdown
 
 from task.models import SpaceTaskModel
-from .user import UserSerializer
+from .user import UserSerializer, UserColorSerializer
 from .tag import TagSerializer
 from .status import StatusSerializer
 from .space import SpaceNotPermSerializer
@@ -19,7 +19,7 @@ class SpaceTaskSerializer(serializers.ModelSerializer):
     """Сериализатор задач пространств."""
 
     author = UserSerializer(read_only=True)
-    responsibles = UserSerializer(many=True, required=False)
+    responsibles = UserColorSerializer(many=True, required=False)
     tags = TagSerializer(many=True, required=False)
     status = StatusSerializer(required=False)
     deadline = serializers.DateTimeField(required=False,)
