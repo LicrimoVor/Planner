@@ -17,7 +17,7 @@ from api.v1.views.status import StatusSet
 from api.v1.views.tag import TagSet
 from api.v1.views.auth import (LoginView, LogoutView,
                                RegistrationView, ResetPassword)
-from api.v1.views.users import UsersView, ProfileView
+from api.v1.views.users import UserSearchView, ProfileView
 from planer.settings import work_mode
 
 
@@ -60,7 +60,7 @@ urlpatterns = [
      path("auth/recovery_password/", ResetPassword.as_view(), name="user_recovery_password"),
 
      path("users/me/profile/", ProfileView.as_view(), name="profile_user"),
-     path("users/search/<str:search_field>/", UsersView.as_view(), name="user_search"),
+     path("users/search/<str:search_field>/", UserSearchView.as_view(), name="user_search"),
      path("users/<int:user_id>/profile/", ProfileView.as_view(), name="profile_user"),
 
      path("", include(router.urls)),

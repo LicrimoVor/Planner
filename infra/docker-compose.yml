@@ -60,27 +60,27 @@ services:
       - static:/usr/share/nginx/html/
       - media:/media
 
-  worker:
-    container_name: planner_worker
-    build: ../backend/
-    entrypoint: /app/docker/worker-entrypoint.sh
-    env_file: .env
-    depends_on:
-      - backend
-      - redis
-    volumes:
-      - static:/backend_static
-      - media:/app/media
+  # worker:
+  #   container_name: planner_worker
+  #   build: ../backend/
+  #   entrypoint: /app/docker/worker-entrypoint.sh
+  #   env_file: .env
+  #   depends_on:
+  #     - backend
+  #     - redis
+  #   volumes:
+  #     - static:/backend_static
+  #     - media:/app/media
 
-  beat:
-    container_name: planner_beat
-    build: ../backend/
-    entrypoint: /app/docker/beat-entrypoint.sh
-    env_file: .env
-    depends_on:
-      - backend
-      - redis
-      - worker
+  # beat:
+  #   container_name: planner_beat
+  #   build: ../backend/
+  #   entrypoint: /app/docker/beat-entrypoint.sh
+  #   env_file: .env
+  #   depends_on:
+  #     - backend
+  #     - redis
+  #     - worker
 
   # tg_bot:
   #   container_name: planner_tg_bot
