@@ -1,18 +1,15 @@
-FROM node:18-alpine as build
+FROM node:16.20-alpine
+WORKDIR '/app'
 
-WORKDIR /app/frontend
+COPY package.json .
+RUN npm install
+COPY tsconfig.* .
+COPY craco.config.js .
 
-COPY package*.json ./
+RUN mkdir src
+COPY src ./src
 
-# RUN npm install
-# RUN npm install -g typescript
-# RUN npm install -g typescript
-
-COPY . ./
-COPY dist ./
-# RUN mkdir dist
-# RUN chmod +x /bin/sh
-# RUN chmod +x node_modules
-
-# RUN rm -rf node_modules
-# RUN npm run build_prod
+RUN mkdir public
+COPY public ./public
+RUN npm run build
+CMD cp -r build result_build

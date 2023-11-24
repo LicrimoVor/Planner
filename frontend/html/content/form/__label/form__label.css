@@ -1,7 +1,0 @@
-.form__label {
-    color: rgb(109, 109, 109);
-}
-
-.form__label + .form__input {
-    margin-top: 5px;
-}

@@ -1,20 +1,71 @@
 {
-  "name": "Planner",
-  "version": "1.0.0",
-  "description": "",
-  "main": "dist/init.js",
-  "scripts": {
-    "clean": "rimraf dist",
-    "build": "npm run clean & tsc & npx fix-esm-import-path dist"
-  },
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
+  "name": "planner",
+  "version": "0.1.0",
+  "private": true,
   "dependencies": {
-    "fix-esm-import-path": "^1.4.0",
-    "typescript": "^5.2.2"
+    "@mui/base": "^5.0.0-beta.24",
+    "@tanstack/react-query": "^5.7.2",
+    "@tanstack/react-table": "^8.10.7",
+    "@testing-library/jest-dom": "^5.17.0",
+    "@testing-library/react": "^13.4.0",
+    "@testing-library/user-event": "^13.5.0",
+    "@types/jest": "^27.5.2",
+    "@types/js-cookie": "^3.0.5",
+    "@types/node": "^16.18.58",
+    "@types/react": "^18.2.27",
+    "@types/react-color": "^3.0.10",
+    "@types/react-cookies": "^0.1.2",
+    "@types/react-dom": "^18.2.12",
+    "@types/react-input-mask": "^3.0.4",
+    "@types/react-table": "^7.7.18",
+    "axios": "^1.5.1",
+    "classnames": "^2.3.2",
+    "craco": "^0.0.3",
+    "craco-alias": "^3.0.1",
+    "dart-sass": "^1.25.0",
+    "js-cookie": "^3.0.5",
+    "mobx": "^6.10.2",
+    "mobx-react-lite": "^4.0.5",
+    "mui": "^0.0.1",
+    "node-sass": "^7.0.3",
+    "react": "^18.2.0",
+    "react-color": "^2.19.3",
+    "react-cookies": "^0.1.1",
+    "react-dom": "^18.2.0",
+    "react-input-mask": "2.0.4",
+    "react-router-dom": "^6.16.0",
+    "react-scripts": "5.0.1",
+    "react-table": "^7.8.0",
+    "typescript": "^4.9.5",
+    "universal-cookie": "^6.1.1",
+    "web-vitals": "^2.1.4",
+    "zustand": "^4.4.4"
+  },
+  "scripts": {
+    "start": "craco start",
+    "build": "craco build",
+    "test": "craco test",
+    "eject": "craco eject"
+  },
+  "eslintConfig": {
+    "extends": [
+      "react-app",
+      "react-app/jest"
+    ]
+  },
+  "browserslist": {
+    "production": [
+      ">0.2%",
+      "not dead",
+      "not op_mini all"
+    ],
+    "development": [
+      "last 1 chrome version",
+      "last 1 firefox version",
+      "last 1 safari version"
+    ]
   },
   "devDependencies": {
-    "@types/jquery": "^3.5.19"
+    "@craco/craco": "^7.1.0"
   }
 }
