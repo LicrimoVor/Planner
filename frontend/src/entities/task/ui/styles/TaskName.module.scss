@@ -1,0 +1,59 @@
+.taskName {
+  display: flex;
+  align-items: center;
+  width: 100%;
+
+  margin: 0.5vw;
+
+  &__button {
+    width: 1.5vw;
+
+    transition: opacity 150ms ease;
+    cursor: pointer;
+
+    opacity: 0.6;
+
+    &_expand {
+      &_expanded {
+        transform: rotate(180deg);
+      }
+    }
+
+    &_add {
+      margin-right: 0.5vw;
+    }
+
+    &_edit {
+      width: 1vw;
+      margin-left: 0.5vw;
+    }
+
+    &:hover {
+      opacity: 0.8;
+    }
+  }
+
+  &__name {
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+
+    outline: none;
+    font-size: 1.1vw;
+
+    &:hover {
+
+    }
+  }
+
+  &__remove {
+    filter: invert(75%);
+    opacity: 0.5;
+    transition: opacity 150ms ease;
+    cursor: pointer;
+
+    &:hover {
+      opacity: 1;
+    }
+  }
+}

@@ -20,7 +20,7 @@ parts/
 sdist/
 media/
 cert*
-node_nodules/
+node_modules/
 # Installer logs
 pip-log.txt
 pip-delete-this-directory.txt

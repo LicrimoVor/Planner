@@ -1,0 +1,12 @@
+
+@import "/src/shared/assets/fonts/CoFo Sans";
+
+@import "variables";
+
+
+
+p, a, input, button, tr, th {
+  font-family: $main-fonts;
+  color: white;
+  font-size: 1vw;
+}

@@ -1,0 +1,65 @@
+.spacesList {
+  display: flex;
+  flex-direction: column;
+  width: fit-content;
+  height: fit-content;
+
+  padding: 1vw;
+
+  overflow: hidden;
+
+  outline: solid 3px transparent;
+
+  &__title {
+    text-align: center;
+    font-size: 2vw;
+    font-weight: bold;
+    margin: 1vw;
+  }
+}
+
+.spacesListCreate {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  margin: 1vw;
+  padding: 0.75vw;
+  border-radius: 1vw;
+
+  text-decoration: none;
+  background: #212122;
+  outline: solid 3px transparent;
+  transition: 150ms ease;
+
+  &:hover {
+    background: #232324;
+    outline: solid 3px #696969;
+
+    .spacesListCreate__image {
+      opacity: 1;
+    }
+
+    .spacesListCreate__label {
+      color: white;
+    }
+  }
+
+  &__image {
+    width: 1.5vw;
+
+    margin: 0 1vw;
+
+    opacity: 0.5;
+    transition: 150ms ease;
+  }
+
+  &__label {
+    text-align: center;
+
+    font-size: 1.25vw;
+    font-weight: 500;
+    color: #aaaaaa;
+    transition: 150ms ease;
+  }
+}

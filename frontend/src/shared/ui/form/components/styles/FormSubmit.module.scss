@@ -1,0 +1,20 @@
+.formSubmit {
+  font-size: 1.15vw;
+  font-weight: 500;
+  color: black;
+  background: #e5b200;
+
+  border: none;
+  border-radius: 1vw;
+  outline: none;
+  cursor: pointer;
+  transition: background 150ms linear;
+  width: 15vw;
+  height: 2.5vw;
+
+  margin: 0.5vw 20%;
+
+  &:hover {
+    background: #b79000;
+  }
+}

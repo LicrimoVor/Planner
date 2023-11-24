@@ -1,0 +1,19 @@
+.form {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: center;
+
+  padding: 1vw 0;
+
+  width: 35vw;
+
+  &_wide {
+    width: 70vw;
+  }
+
+  &_center {
+    margin-top: auto;
+    margin-bottom: auto;
+  }
+}

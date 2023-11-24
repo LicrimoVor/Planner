@@ -1,0 +1,18 @@
+.taskDescription {
+  display: flex;
+  align-items: center;
+  width: 100%;
+
+  &__description {
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+
+    outline: none;
+    font-size: 1.1vw;
+
+    &:hover {
+
+    }
+  }
+}

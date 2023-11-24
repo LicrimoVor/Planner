@@ -1,0 +1,9 @@
+$main-fonts: "CoFo Sans", sans-serif;
+
+$medium: "CoFo Sans Medium";
+$bold: "CoFo Sans Bold";
+
+@mixin header($size) {
+  font-family: $medium;
+  font-size: $size;
+}

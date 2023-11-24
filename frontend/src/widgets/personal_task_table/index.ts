@@ -1,0 +1,1 @@
+export { PersonalTaskTable } from "./ui/PersonalTaskTable";

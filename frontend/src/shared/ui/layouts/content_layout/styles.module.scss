@@ -1,0 +1,38 @@
+.contentLayout {
+  display: flex;
+  flex-direction: column;
+
+  width: 100%;
+  min-height: 100%;
+
+  animation: contentShow linear 500ms forwards;
+  @keyframes contentShow {
+    from {
+      opacity: 0;
+    }
+    to {
+      opacity: 1;
+    }
+  }
+
+  &_center {
+    align-items: center;
+    justify-content: center;
+  }
+
+  &_hCenter {
+    align-items: center;
+  }
+
+  &_vCenter {
+    justify-content: center;
+  }
+
+  &_row {
+    flex-direction: row;
+  }
+
+  &_noAnimation {
+    animation: none;
+  }
+}

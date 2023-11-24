@@ -1,0 +1,70 @@
+.spaceResponsibles {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+
+  width: 100%;
+
+  &__title {
+    font-size: 1.25vw;
+    font-weight: 500;
+    margin-bottom: 1vw;
+  }
+}
+
+.spaceResponsiblesList {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+
+  background: rgba(20, 20, 22, 0.35);
+  border-radius: 0.5vw;
+  padding: 1vw 2vw;
+
+  width: 50%;
+  height: fit-content;
+}
+
+.spaceResponsiblesItem {
+  display: flex;
+  align-items: center;
+
+  background: #191A1C;
+  width: 100%;
+  padding: 0.5vw 1.5vw;
+  border-radius: 1vw;
+
+  &__id {
+    margin-right: 1vw;
+
+    color: #bababa;
+    font-weight: 500;
+  }
+
+  &Info {
+    display: flex;
+    flex-direction: column;
+
+    font-size: 1.15vw;
+  }
+
+  &__button {
+    width: 1.5vw;
+    margin-left: auto;
+
+    filter: invert(50%);
+    opacity: 0.5;
+    transition: opacity 150ms ease;
+
+    cursor: pointer;
+
+    &:hover {
+      opacity: 0.85;
+    }
+  }
+
+  &:not(:last-child) {
+    margin-bottom: 0.5vw;
+  }
+}

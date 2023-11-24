@@ -1,0 +1,57 @@
+.space {
+  display: flex;
+
+  width: 45vw;
+  height: 10vw;
+
+  padding: 1vw;
+  background: #212122;
+  border-radius: 1vw;
+  outline: solid 3px transparent;
+  transition: outline 150ms ease;
+
+  &__avatar {
+    object-fit: cover;
+    border-radius: 1vw;
+    height: 100%;
+    aspect-ratio: 1;
+  }
+
+  &:hover {
+    outline: solid 3px #696969;
+  }
+
+  &:not(:last-child) {
+    margin-bottom: 1vw;
+  }
+}
+
+.spaceInfo {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+
+  padding: 0.5vw 1vw;
+
+  &__name {
+    font-size: 1.25vw;
+    font-weight: 500;
+  }
+
+  &__admin {
+    color: #ff9e26;
+    font-size: 1.15vw;
+    font-style: italic;
+  }
+
+  &__link {
+    font-weight: 500;
+    color: #919191;
+    text-decoration: none;
+    transition: color 150ms ease;
+
+    &:hover {
+      color: #d9d9d9;
+    }
+  }
+}

@@ -1,0 +1,34 @@
+.spinner {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  height: 100%;
+
+  animation: spinnerShow linear 100ms forwards;
+  @keyframes spinnerShow {
+    from {
+      opacity: 0;
+    }
+    50% {
+      opacity: 0;
+    }
+    to {
+      opacity: 1;
+    }
+  }
+
+  &__img {
+    width: 15vw;
+
+    animation: spinnerRotating linear 1000ms infinite;
+    @keyframes spinnerRotating {
+      from {
+        transform: rotate(0deg);
+      }
+      to {
+        transform: rotate(360deg);
+      }
+    }
+  }
+}
