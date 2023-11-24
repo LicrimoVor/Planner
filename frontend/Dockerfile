@@ -3,9 +3,9 @@ WORKDIR '/app'
 
 COPY package*.json ./
 RUN npm install
+RUN npm install --save-dev @types/uuid
 COPY tsconfig.* .
 COPY . ./
-COPY ./src ./src
 
 RUN npm run build
 CMD ["cp", "-r", "build", "result_build"]
