@@ -6,12 +6,7 @@ COPY package*.json ./
 RUN npm install
 COPY tsconfig.* .
 
-RUN mkdir src
-COPY ./src ./src
-COPY ./craco.config.js ./
-
-RUN mkdir public
-COPY ./public ./public 
+COPY . .
 
 RUN npm run build
 CMD ["cp", "-r", "build", "result_build"]
