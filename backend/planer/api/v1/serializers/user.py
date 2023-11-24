@@ -1,6 +1,7 @@
 from rest_framework import serializers
 from django.contrib.auth import get_user_model
 from django.shortcuts import get_object_or_404
+from django.contrib.auth.hashers import make_password
 
 from .abstract import Base64ImageField
 from users.models import Profile
@@ -26,6 +27,18 @@ class UserSerializer(serializers.ModelSerializer):
             return get_object_or_404(User, id=data)
         else:
             return super().to_internal_value(data)
+
+
+class UserPasswordSerializer(UserSerializer):
+    password = serializers.CharField(write_only=True)
+
+    class Meta:
+        model = User
+        fields = ['id', 'email', 'username', 'last_name', 'first_name', 'password']
+
+    def validate_password(self, attrs):
+        password = super().validate(attrs)
+        return make_password(password)
 
 
 class ProfileSerializer(serializers.ModelSerializer):

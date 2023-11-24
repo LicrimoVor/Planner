@@ -1,1 +1,1 @@
-"planner_user" "md5865dd83c0a8f76e3aa68143d67b4ee79"
+"planner_user" "planner_password"

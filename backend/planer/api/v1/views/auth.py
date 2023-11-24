@@ -8,7 +8,7 @@ from djoser.conf import settings
 from djoser.compat import get_user_email
 
 from core.utils import CeleryActivationEmail
-from api.v1.serializers.user import UserSerializer
+from api.v1.serializers.user import UserPasswordSerializer
 
 
 class LoginView(APIView):
@@ -57,18 +57,17 @@ class RegistrationView(APIView):
     permission_classes = (~IsAuthenticated, )
 
     def post(self, request, *args, **kwargs):
-        serializer = UserSerializer(data=request.data)
+        serializer = UserPasswordSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
+        
         user = serializer.save()
         signals.user_registered.send(
             sender=self.__class__, user=user, request=self.request
         )
-        
         if settings.SEND_ACTIVATION_EMAIL:
             context = {"user": user}
             to = [get_user_email(user)]
             CeleryActivationEmail(request, context).send(to)
-
         return Response(serializer.data, status=status.HTTP_201_CREATED)
 
 

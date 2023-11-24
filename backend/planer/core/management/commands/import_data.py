@@ -1,5 +1,6 @@
 import csv
 import os
+import shutil
 
 from django.core.management.base import BaseCommand
 
@@ -23,9 +24,6 @@ class Command(BaseCommand):
             '-m',
             '--model',
             type=str,
-            help='Выберете модель интеграции',
-            choices=("status", "tag", "all"),
-            default="all",
         )
 
     def handle(self, *args, **options):
@@ -43,13 +41,14 @@ class Command(BaseCommand):
                     model_list.append(inst_model)
             model.objects.bulk_create(model_list)
 
-        if options['model'] == "all":
-            files_list = os.listdir(PATH_DATA)
-            for name_model in files_list:
-                if name_model[-4:] != ".csv":
-                    continue
-                import_data(name_model[:-4])
-        else:
-            name_model = options['model']
-            import_data(name_model)
+        files_list = os.listdir(PATH_DATA)
+        for name_model in files_list:
+            if name_model[-4:] != ".csv":
+                continue
+            import_data(name_model[:-4])
         print("Импорт выполнен успешно!")
+
+        shutil.copyfile("/app/data/default_space.jpg", "/app/backend/media/default_space.jpg")
+        shutil.copyfile("/app/data/default_user.jpg", "/app/backend/media/default_user.jpg")
+
+        print("Стандартные фотографии загружены!")

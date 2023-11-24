@@ -3,7 +3,7 @@ from django.contrib.auth import get_user_model
 from django.contrib.auth.backends import ModelBackend
 from django.http import Http404
 
-User = get_user_model()
+UserModel = get_user_model()
 
 
 class UserBackend(ModelBackend):
@@ -16,14 +16,14 @@ class UserBackend(ModelBackend):
         user = None
         if username is not None:
             try:
-                user = User._default_manager.get_by_natural_key(username)
-            except User.DoesNotExist:
-                User().set_password(password)
+                user = UserModel._default_manager.get_by_natural_key(username)
+            except UserModel.DoesNotExist:
+                UserModel().set_password(password)
         else:
             try:
-                user = get_object_or_404(User, email=email)
+                user = get_object_or_404(UserModel, email=email)
             except Http404:
-                User().set_password(password)
+                UserModel().set_password(password)
         
         if user is not None and user.check_password(password):
             return user
